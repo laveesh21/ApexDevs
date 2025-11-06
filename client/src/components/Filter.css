@@ -1,0 +1,176 @@
+.filter-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.filter-container.collapsed {
+  padding: 0;
+  width: 60px;
+  background: transparent;
+  border: none;
+  overflow: visible;
+}
+
+/* Filter Icon Button */
+.filter-icon-btn {
+  width: 50px;
+  height: 50px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--accent-green);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 100px;
+}
+
+.filter-icon-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-green);
+  transform: scale(1.05);
+}
+
+.filter-icon-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.collapse-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+.selected-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  color: var(--accent-green);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.clear-button:hover {
+  background: var(--hover-bg);
+}
+
+.selected-count {
+  background: rgba(0, 190, 98, 0.15);
+  color: var(--accent-green);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba(0, 190, 98, 0.3);
+}
+
+.filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-chip {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+}
+
+.filter-chip:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-green);
+}
+
+.filter-chip.selected {
+  background: rgba(0, 190, 98, 0.15);
+  border: 2px solid var(--accent-green);
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.filter-chip.selected:hover {
+  background: rgba(0, 190, 98, 0.2);
+}
+
+.filter-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-container::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+}
+
+.filter-container::-webkit-scrollbar-thumb {
+  background: var(--accent-green);
+  border-radius: 10px;
+}
+
+.filter-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-green-dark);
+}
