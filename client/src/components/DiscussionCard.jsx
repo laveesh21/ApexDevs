@@ -2,23 +2,51 @@ import { Link } from 'react-router-dom';
 import './DiscussionCard.css';
 
 function DiscussionCard({ discussion }) {
-  const getTypeColor = (type) => {
+  const getTypeColor = (category) => {
     const colors = {
-      'Question': '#00be62',
-      'Discussion': '#1f6feb',
-      'Tutorial': '#d73a49',
-      'Show & Tell': '#f97316',
-      'Help Wanted': '#a371f7',
-      'Bug Report': '#e85d04'
+      'General': '#1f6feb',
+      'Questions': '#00be62',
+      'Showcase': '#f97316',
+      'Resources': '#d73a49',
+      'Collaboration': '#a371f7',
+      'Feedback': '#e85d04',
+      'Other': '#6c757d'
     };
-    return colors[type] || '#00be62';
+    return colors[category] || '#00be62';
   };
 
+  // Format time ago
+  const formatTimeAgo = (date) => {
+    const now = new Date();
+    const createdAt = new Date(date);
+    const diffInMs = now - createdAt;
+    const diffInMinutes = Math.floor(diffInMs / 60000);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInMinutes < 1) return 'just now';
+    if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+    if (diffInHours < 24) return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    if (diffInDays < 7) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    return createdAt.toLocaleDateString();
+  };
+
+  // Truncate content for excerpt
+  const getExcerpt = (content) => {
+    if (content.length <= 200) return content;
+    return content.substring(0, 200) + '...';
+  };
+
+  const commentCount = discussion.commentCount || 0;
+  const upvotes = discussion.upvotes?.length || 0;
+  const downvotes = discussion.downvotes?.length || 0;
+  const voteScore = upvotes - downvotes;
+
   return (
-    <Link to={`/thread/${discussion.id}`} className="discussion-card">
+    <Link to={`/thread/${discussion._id}`} className="discussion-card">
       <div className="discussion-votes">
         <button className="vote-btn upvote" onClick={(e) => e.preventDefault()}>▲</button>
-        <span className="vote-count">{discussion.votes}</span>
+        <span className="vote-count">{voteScore}</span>
         <button className="vote-btn downvote" onClick={(e) => e.preventDefault()}>▼</button>
       </div>
 
@@ -26,13 +54,13 @@ function DiscussionCard({ discussion }) {
         <div className="discussion-header">
           <span 
             className="discussion-type-badge" 
-            style={{ backgroundColor: getTypeColor(discussion.type) }}
+            style={{ backgroundColor: getTypeColor(discussion.category) }}
           >
-            {discussion.type}
+            {discussion.category}
           </span>
           <h3 className="discussion-title">{discussion.title}</h3>
         </div>
-        <p className="discussion-excerpt">{discussion.excerpt}</p>
+        <p className="discussion-excerpt">{getExcerpt(discussion.content)}</p>
 
         <div className="discussion-tags">
           {discussion.tags.map((tag, index) => (
@@ -43,24 +71,26 @@ function DiscussionCard({ discussion }) {
         <div className="discussion-meta">
           <div className="meta-left">
             <span className="meta-item">
-              <span className="meta-icon">👤</span>
-              {discussion.author}
+              <div className="author-avatar-small">
+                {discussion.author?.avatar ? (
+                  <img src={discussion.author.avatar} alt={discussion.author.username} />
+                ) : (
+                  <span>👤</span>
+                )}
+              </div>
+              {discussion.author?.username || 'Anonymous'}
             </span>
             <span className="meta-item">
               <span className="meta-icon">💬</span>
-              {discussion.answers} {discussion.answers === 1 ? 'answer' : 'answers'}
+              {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
             </span>
             <span className="meta-item">
               <span className="meta-icon">👁</span>
               {discussion.views} views
             </span>
           </div>
-          <span className="meta-time">{discussion.timeAgo}</span>
+          <span className="meta-time">{formatTimeAgo(discussion.createdAt)}</span>
         </div>
-
-        {discussion.hasAcceptedAnswer && (
-          <div className="accepted-badge">✓ Answered</div>
-        )}
       </div>
     </Link>
   );

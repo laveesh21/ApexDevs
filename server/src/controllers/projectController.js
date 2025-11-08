@@ -97,15 +97,22 @@ const getProjects = async (req, res) => {
     let query = {};
 
     if (search) {
-      query.$text = { $search: search };
+      // Use regex for partial matching (case-insensitive)
+      // Search in title, description, and technologies
+      const searchRegex = new RegExp(search, 'i');
+      query.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { technologies: searchRegex }
+      ];
     }
 
     if (category && category !== 'All') {
-      query.category = category;
+      query.category = { $regex: new RegExp(`^${category}$`, 'i') };
     }
 
     if (technology) {
-      query.technologies = technology;
+      query.technologies = { $regex: new RegExp(`^${technology}$`, 'i') };
     }
 
     if (author) {
@@ -155,9 +162,38 @@ const getProjectById = async (req, res) => {
       });
     }
 
-    // Increment views
-    project.views += 1;
-    await project.save();
+    // Increment views only for unique users
+    // Check if user is authenticated
+    const userId = req.user?._id;
+    
+    console.log('=== VIEW TRACKING DEBUG ===');
+    console.log('Auth header:', req.headers.authorization ? 'Present' : 'Missing');
+    console.log('User ID:', userId ? userId.toString() : 'Anonymous');
+    console.log('Current views:', project.views);
+    console.log('ViewedBy array:', project.viewedBy.map(id => id.toString()));
+    
+    if (userId) {
+      // For authenticated users: check if they haven't viewed before
+      const hasViewed = project.viewedBy.some(id => id.toString() === userId.toString());
+      console.log('Has viewed before:', hasViewed);
+      
+      if (!hasViewed) {
+        project.views += 1;
+        project.viewedBy.push(userId);
+        await project.save();
+        console.log('View incremented for authenticated user');
+      } else {
+        console.log('User already viewed - skipping increment');
+      }
+    } else {
+      // For anonymous users: always increment (or you can implement IP tracking)
+      // For now, we'll increment for anonymous to count all views
+      project.views += 1;
+      await project.save();
+      console.log('View incremented for anonymous user');
+    }
+    console.log('New view count:', project.views);
+    console.log('=========================');
 
     res.json({
       success: true,
@@ -195,16 +231,50 @@ const updateProject = async (req, res) => {
       });
     }
 
-    const { title, description, demoUrl, githubUrl, technologies, category, status } = req.body;
+    const { title, description, demoUrl, githubUrl, technologies, category, status, removedImages } = req.body;
 
     // Update fields
     if (title) project.title = title;
     if (description) project.description = description;
     if (demoUrl !== undefined) project.demoUrl = demoUrl;
     if (githubUrl !== undefined) project.githubUrl = githubUrl;
-    if (technologies) project.technologies = JSON.parse(technologies);
+    if (technologies) {
+      try {
+        project.technologies = JSON.parse(technologies);
+      } catch (e) {
+        // If it's already an array or single value
+        project.technologies = Array.isArray(technologies) ? technologies : [technologies];
+      }
+    }
     if (category) project.category = category;
     if (status) project.status = status;
+
+    // Handle removed images
+    if (removedImages) {
+      const cloudinary = require('../config/cloudinary');
+      let imagesToRemove = [];
+      
+      try {
+        imagesToRemove = JSON.parse(removedImages);
+      } catch (e) {
+        imagesToRemove = Array.isArray(removedImages) ? removedImages : [removedImages];
+      }
+
+      for (const imageUrl of imagesToRemove) {
+        if (imageUrl.includes('cloudinary.com')) {
+          const urlParts = imageUrl.split('/');
+          const publicIdWithExtension = urlParts[urlParts.length - 1];
+          const publicId = `apexdevs/projects/${publicIdWithExtension.split('.')[0]}`;
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (err) {
+            console.log('Error deleting image from Cloudinary:', err.message);
+          }
+        }
+        // Remove from project.images array
+        project.images = project.images.filter(img => img !== imageUrl);
+      }
+    }
 
     // Update images if uploaded
     if (req.files) {
@@ -231,6 +301,9 @@ const updateProject = async (req, res) => {
     }
 
     await project.save();
+
+    // Populate author info before sending response
+    await project.populate('author', 'username avatar');
 
     res.json({
       success: true,

@@ -1,30 +1,54 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import ImageCarousel from '../components/ImageCarousel';
+import EditProjectForm from '../components/EditProjectForm';
 import { projectAPI } from '../services/api';
 import './ProjectDetail.css';
 
 function ProjectDetail() {
   const { id } = useParams();
+  const { user, token } = useAuth();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const hasFetched = useRef(false); // Track if we've already fetched
 
   useEffect(() => {
-    fetchProject();
-  }, [id]);
+    // Prevent double-fetch in React StrictMode
+    if (hasFetched.current) return;
+    
+    const fetchProject = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await projectAPI.getById(id, token);
+        setProject(response.data);
+        hasFetched.current = true; // Mark as fetched
+      } catch (err) {
+        console.error('Failed to fetch project:', err);
+        setError('Project not found');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchProject = async () => {
-    setLoading(true);
-    setError(null);
+    fetchProject();
+    
+    // Cleanup function to reset on unmount
+    return () => {
+      hasFetched.current = false;
+    };
+  }, [id, token]);
+
+  // Separate refetch function for edit success (doesn't increment views again)
+  const refetchProject = async () => {
     try {
-      const response = await projectAPI.getById(id);
+      const response = await projectAPI.getById(id, token);
       setProject(response.data);
     } catch (err) {
-      console.error('Failed to fetch project:', err);
-      setError('Project not found');
-    } finally {
-      setLoading(false);
+      console.error('Failed to refetch project:', err);
     }
   };
 
@@ -58,6 +82,9 @@ function ProjectDetail() {
     ...(project.images || [])
   ].filter(Boolean);
 
+  // Check if current user is the owner
+  const isOwner = user && project.author && (user._id === project.author._id || user._id === project.author);
+
   return (
     <div className="project-detail-container">
       <div className="project-detail-content">
@@ -66,6 +93,15 @@ function ProjectDetail() {
           <Link to="/">Home</Link>
           <span className="separator">/</span>
           <span>{project.title}</span>
+          {isOwner && (
+            <button className="detail-edit-btn" onClick={() => setShowEditForm(true)} title="Edit Project">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              Edit Project
+            </button>
+          )}
         </div>
 
         {/* Main Content Grid */}
@@ -192,6 +228,14 @@ function ProjectDetail() {
           </div>
         </div>
       </div>
+
+      {showEditForm && (
+        <EditProjectForm
+          project={project}
+          onClose={() => setShowEditForm(false)}
+          onSuccess={refetchProject}
+        />
+      )}
     </div>
   );
 }

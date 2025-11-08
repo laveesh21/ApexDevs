@@ -122,8 +122,15 @@ export const projectAPI = {
     return handleResponse(response);
   },
 
-  getById: async (id) => {
-    const response = await fetch(`${API_URL}/projects/${id}`);
+  getById: async (id, token = null) => {
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${API_URL}/projects/${id}`, {
+      headers
+    });
     return handleResponse(response);
   },
 
@@ -177,6 +184,159 @@ export const projectAPI = {
 
   getUserProjects: async (userId) => {
     const response = await fetch(`${API_URL}/projects?author=${userId}`);
+    return handleResponse(response);
+  }
+};
+
+// Thread API
+export const threadAPI = {
+  create: async (token, threadData) => {
+    const response = await fetch(`${API_URL}/threads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(threadData),
+    });
+    return handleResponse(response);
+  },
+
+  getAll: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await fetch(`${API_URL}/threads?${queryString}`);
+    return handleResponse(response);
+  },
+
+  getById: async (id, token = null) => {
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${API_URL}/threads/${id}`, {
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  update: async (token, id, threadData) => {
+    const response = await fetch(`${API_URL}/threads/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(threadData),
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (token, id) => {
+    const response = await fetch(`${API_URL}/threads/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  toggleLike: async (token, id) => {
+    const response = await fetch(`${API_URL}/threads/${id}/like`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  vote: async (token, id, voteType) => {
+    const response = await fetch(`${API_URL}/threads/${id}/vote`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ voteType }),
+    });
+    return handleResponse(response);
+  },
+
+  // Comment methods
+  addComment: async (token, threadId, commentData) => {
+    const response = await fetch(`${API_URL}/threads/${threadId}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(commentData),
+    });
+    return handleResponse(response);
+  },
+
+  getComments: async (threadId, token = null, params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${API_URL}/threads/${threadId}/comments?${queryString}`, {
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  updateComment: async (token, commentId, content) => {
+    const response = await fetch(`${API_URL}/threads/comments/${commentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+    return handleResponse(response);
+  },
+
+  deleteComment: async (token, commentId) => {
+    const response = await fetch(`${API_URL}/threads/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  toggleCommentLike: async (token, commentId) => {
+    const response = await fetch(`${API_URL}/threads/comments/${commentId}/like`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  voteComment: async (token, commentId, voteType) => {
+    const response = await fetch(`${API_URL}/threads/comments/${commentId}/vote`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ voteType }),
+    });
+    return handleResponse(response);
+  },
+
+  getUserThreads: async (userId, params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await fetch(`${API_URL}/threads/user/${userId}?${queryString}`);
     return handleResponse(response);
   }
 };

@@ -8,12 +8,12 @@ const {
   deleteProject,
   toggleLike
 } = require('../controllers/projectController');
-const { protect } = require('../middleware/auth');
+const { protect, optionalAuth } = require('../middleware/auth');
 const { uploadProjectImages } = require('../middleware/upload');
 
 // Public routes
 router.get('/', getProjects);
-router.get('/:id', getProjectById);
+router.get('/:id', optionalAuth, getProjectById); // Use optional auth to track logged-in users
 
 // Protected routes
 router.post(

@@ -1,13 +1,14 @@
 .filter-container {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem;
   position: sticky;
   top: 100px;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-container.collapsed {
@@ -50,16 +51,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 2px solid var(--accent-green);
 }
 
 .filter-header h3 {
   margin: 0;
   color: var(--text-primary);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-header h3::before {
+  content: '🔍';
+  font-size: 1.3rem;
 }
 
 .collapse-btn {
@@ -130,27 +139,51 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-align: left;
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-chip::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-green);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .filter-chip:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
   border-color: var(--accent-green);
+  transform: translateX(5px);
+}
+
+.filter-chip:hover::before {
+  transform: scaleY(1);
 }
 
 .filter-chip.selected {
   background: rgba(0, 190, 98, 0.15);
-  border: 2px solid var(--accent-green);
+  border-color: var(--accent-green);
   color: var(--accent-green);
   font-weight: 600;
+  transform: translateX(5px);
+}
+
+.filter-chip.selected::before {
+  transform: scaleY(1);
 }
 
 .filter-chip.selected:hover {

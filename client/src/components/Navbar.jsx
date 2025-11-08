@@ -35,13 +35,13 @@ function Navbar() {
             </Link>
           </li>
           <li className="navbar-item">
-            <Link to="/about" className={`navbar-link ${isActive('/about') ? 'active' : ''}`}>
-              About
+            <Link to="/community" className={`navbar-link ${isActive('/community') ? 'active' : ''}`}>
+              Community
             </Link>
           </li>
           <li className="navbar-item">
-            <Link to="/community" className={`navbar-link ${isActive('/community') ? 'active' : ''}`}>
-              Community
+            <Link to="/about" className={`navbar-link ${isActive('/about') ? 'active' : ''}`}>
+              About
             </Link>
           </li>
           

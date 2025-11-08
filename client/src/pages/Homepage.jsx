@@ -38,11 +38,15 @@ function Homepage() {
 
       const response = await projectAPI.getAll(params);
       
-      // If multiple tech filters, filter on frontend
+      // If multiple tech filters, filter on frontend (case-insensitive)
       let fetchedProjects = response.data || [];
       if (selectedTech.length > 1) {
         fetchedProjects = fetchedProjects.filter(project => 
-          selectedTech.every(tech => project.technologies?.includes(tech))
+          selectedTech.every(tech => 
+            project.technologies?.some(projectTech => 
+              projectTech.toLowerCase() === tech.toLowerCase()
+            )
+          )
         );
       }
 

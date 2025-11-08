@@ -133,6 +133,8 @@ const getMe = async (req, res) => {
       .populate('projects', 'title thumbnail')
       .populate('discussions', 'title type createdAt');
 
+      console.log('GetMe user:', user);
+
     res.json({
       success: true,
       data: user
