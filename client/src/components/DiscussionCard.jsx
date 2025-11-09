@@ -78,7 +78,17 @@ function DiscussionCard({ discussion }) {
                   <span>👤</span>
                 )}
               </div>
-              {discussion.author?.username || 'Anonymous'}
+              {discussion.author?._id ? (
+                <Link 
+                  to={`/user/${discussion.author._id}`} 
+                  className="author-link-inline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {discussion.author.username}
+                </Link>
+              ) : (
+                <span>{discussion.author?.username || 'Anonymous'}</span>
+              )}
             </span>
             <span className="meta-item">
               <span className="meta-icon">💬</span>

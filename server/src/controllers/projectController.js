@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const User = require('../models/User');
+const Review = require('../models/Review');
 
 // @desc    Create a new project
 // @route   POST /api/projects
@@ -422,11 +423,166 @@ const toggleLike = async (req, res) => {
   }
 };
 
+// @desc    Add or update review for project
+// @route   POST /api/projects/:id/review
+// @access  Private
+const addReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+
+    if (!rating || !['like', 'dislike'].includes(rating)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid rating (like or dislike)'
+      });
+    }
+
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
+
+    // Check if user already reviewed this project
+    let review = await Review.findOne({
+      project: req.params.id,
+      user: req.user._id
+    });
+
+    if (review) {
+      // Update existing review
+      review.rating = rating;
+      review.comment = comment || '';
+      await review.save();
+    } else {
+      // Create new review
+      review = await Review.create({
+        project: req.params.id,
+        user: req.user._id,
+        rating,
+        comment: comment || ''
+      });
+    }
+
+    await review.populate('user', 'username avatar');
+
+    res.status(200).json({
+      success: true,
+      data: review
+    });
+  } catch (error) {
+    console.error('Add review error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get reviews for a project
+// @route   GET /api/projects/:id/reviews
+// @access  Public
+const getReviews = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+
+    // Get all reviews
+    const reviews = await Review.find({ project: req.params.id })
+      .populate('user', 'username avatar')
+      .sort('-createdAt')
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    // Only return reviews with comments
+    const reviewsWithComments = reviews.filter(review => review.comment && review.comment.trim());
+
+    // Get review counts
+    const totalReviews = await Review.countDocuments({ project: req.params.id });
+    const likes = await Review.countDocuments({ project: req.params.id, rating: 'like' });
+    const dislikes = await Review.countDocuments({ project: req.params.id, rating: 'dislike' });
+
+    // Check if current user has reviewed (if authenticated)
+    let userReview = null;
+    if (req.user) {
+      userReview = await Review.findOne({
+        project: req.params.id,
+        user: req.user._id
+      });
+    }
+
+    res.json({
+      success: true,
+      data: reviewsWithComments,
+      stats: {
+        total: totalReviews,
+        likes,
+        dislikes,
+        reviewsWithComments: reviewsWithComments.length
+      },
+      userReview: userReview ? {
+        rating: userReview.rating,
+        comment: userReview.comment
+      } : null,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(reviewsWithComments.length / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get reviews error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Delete review
+// @route   DELETE /api/projects/:id/review
+// @access  Private
+const deleteReview = async (req, res) => {
+  try {
+    const review = await Review.findOne({
+      project: req.params.id,
+      user: req.user._id
+    });
+
+    if (!review) {
+      return res.status(404).json({
+        success: false,
+        message: 'Review not found'
+      });
+    }
+
+    await review.deleteOne();
+
+    res.json({
+      success: true,
+      message: 'Review deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete review error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   createProject,
   getProjects,
   getProjectById,
   updateProject,
   deleteProject,
-  toggleLike
+  toggleLike,
+  addReview,
+  getReviews,
+  deleteReview
 };

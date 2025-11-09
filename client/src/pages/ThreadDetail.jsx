@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { threadAPI } from '../services/api';
@@ -6,6 +6,7 @@ import './ThreadDetail.css';
 
 function ThreadDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user, token } = useAuth();
   const [thread, setThread] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,13 @@ function ThreadDetail() {
   const [voteStatus, setVoteStatus] = useState(null); // null, 'upvote', or 'downvote'
   const [voteScore, setVoteScore] = useState(0);
   const [commentVotes, setCommentVotes] = useState({}); // Store vote info for each comment
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    content: '',
+    category: '',
+    tags: []
+  });
   const hasFetched = useRef(false);
   const voteTimeout = useRef(null);
   const pendingVote = useRef(null);
@@ -35,14 +43,14 @@ function ThreadDetail() {
         setVoteScore(response.data.voteScore || 0);
         
         // Fetch comments
-        const commentsResponse = await threadAPI.getComments(id, token);
+        const commentsResponse = await threadAPI.getComments(id);
         setComments(commentsResponse.data);
         
         // Initialize comment votes state
         const votesState = {};
         commentsResponse.data.forEach(comment => {
           votesState[comment._id] = {
-            voteStatus: comment.userVote || null,
+            voteStatus: comment.userVote,
             voteScore: comment.voteScore || 0
           };
         });
@@ -226,6 +234,83 @@ function ThreadDetail() {
     }
   };
 
+  // Handle thread edit
+  const handleEditClick = () => {
+    setEditFormData({
+      title: thread.title,
+      content: thread.content,
+      category: thread.category,
+      tags: thread.tags
+    });
+    setIsEditing(true);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleTagsChange = (e) => {
+    const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+    setEditFormData(prev => ({
+      ...prev,
+      tags: tagsArray
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!token) {
+      alert('Please login to edit');
+      return;
+    }
+
+    try {
+      const response = await threadAPI.update(token, id, editFormData);
+      setThread(response.data);
+      setIsEditing(false);
+      alert('Thread updated successfully!');
+    } catch (err) {
+      console.error('Failed to update thread:', err);
+      alert('Failed to update thread. Please try again.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditFormData({
+      title: '',
+      content: '',
+      category: '',
+      tags: []
+    });
+  };
+
+  // Handle thread delete
+  const handleDelete = async () => {
+    if (!token) {
+      alert('Please login to delete');
+      return;
+    }
+
+    if (!window.confirm('Are you sure you want to delete this thread? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await threadAPI.delete(token, id);
+      alert('Thread deleted successfully!');
+      navigate('/community');
+    } catch (err) {
+      console.error('Failed to delete thread:', err);
+      alert('Failed to delete thread. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="thread-detail-container">
@@ -301,44 +386,130 @@ function ThreadDetail() {
           <div className="thread-body">
             {/* Header inside main body */}
             <div className="thread-header-inline">
-              <span 
-                className="thread-type-badge" 
-                style={{ backgroundColor: getTypeColor(thread.category) }}
-              >
-                {thread.category}
-              </span>
+              <div className="thread-title-row">
+                <span 
+                  className="thread-type-badge" 
+                  style={{ backgroundColor: getTypeColor(thread.category) }}
+                >
+                  {thread.category}
+                </span>
+                {user && thread.author._id === user._id && !isEditing && (
+                  <div className="thread-actions">
+                    <button className="action-btn edit-btn" onClick={handleEditClick}>
+                      ✏️ Edit
+                    </button>
+                    <button className="action-btn delete-btn" onClick={handleDelete}>
+                      🗑️ Delete
+                    </button>
+                  </div>
+                )}
+              </div>
               <h1 className="thread-title">{thread.title}</h1>
-
             </div>
 
-            <div className="thread-content">
-              {thread.content.split('\n').map((paragraph, index) => {
-                // Handle code blocks
-                if (paragraph.startsWith('```')) {
-                  return null; // We'll handle this with a separate code block parser
-                }
-                // Handle bold text
-                const formattedParagraph = paragraph
-                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                  .replace(/- (.*?)$/gm, '<li>$1</li>');
-                
-                if (formattedParagraph.includes('<li>')) {
-                  return (
-                    <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                  );
-                }
-                
-                return paragraph.trim() && (
-                  <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                );
-              })}
-            </div>
+            {isEditing ? (
+              <form className="thread-edit-form" onSubmit={handleEditSubmit}>
+                <div className="form-group">
+                  <label htmlFor="title">Title</label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    className="form-input"
+                    value={editFormData.title}
+                    onChange={handleEditChange}
+                    required
+                    maxLength={200}
+                  />
+                </div>
 
-            <div className="thread-tags">
-              {thread.tags.map((tag, index) => (
-                <span key={index} className="thread-tag">{tag}</span>
-              ))}
-            </div>
+                <div className="form-group">
+                  <label htmlFor="content">Content</label>
+                  <textarea
+                    id="content"
+                    name="content"
+                    className="form-textarea"
+                    value={editFormData.content}
+                    onChange={handleEditChange}
+                    required
+                    rows="10"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="category">Category</label>
+                  <select
+                    id="category"
+                    name="category"
+                    className="form-select"
+                    value={editFormData.category}
+                    onChange={handleEditChange}
+                    required
+                  >
+                    <option value="General">General</option>
+                    <option value="Questions">Questions</option>
+                    <option value="Showcase">Showcase</option>
+                    <option value="Resources">Resources</option>
+                    <option value="Collaboration">Collaboration</option>
+                    <option value="Feedback">Feedback</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="tags">Tags (comma-separated)</label>
+                  <input
+                    type="text"
+                    id="tags"
+                    name="tags"
+                    className="form-input"
+                    value={editFormData.tags.join(', ')}
+                    onChange={handleTagsChange}
+                    placeholder="JavaScript, React, Node.js"
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" className="btn-cancel" onClick={handleCancelEdit}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-submit">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <div className="thread-content">
+                  {thread.content.split('\n').map((paragraph, index) => {
+                    // Handle code blocks
+                    if (paragraph.startsWith('```')) {
+                      return null; // We'll handle this with a separate code block parser
+                    }
+                    // Handle bold text
+                    const formattedParagraph = paragraph
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/- (.*?)$/gm, '<li>$1</li>');
+                    
+                    if (formattedParagraph.includes('<li>')) {
+                      return (
+                        <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                      );
+                    }
+                    
+                    return paragraph.trim() && (
+                      <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                    );
+                  })}
+                </div>
+
+                <div className="thread-tags">
+                  {thread.tags.map((tag, index) => (
+                    <span key={index} className="thread-tag">{tag}</span>
+                  ))}
+                </div>
+              </>
+            )}
 
             {/* Compact Author Info */}
             <div className="thread-author-compact">
@@ -349,7 +520,13 @@ function ThreadDetail() {
                   thread.author?.username?.charAt(0).toUpperCase() || '?'
                 )}
               </div>
-              <span className="author-username">{thread.author?.username || 'Anonymous'}</span>
+              {thread.author?._id ? (
+                <Link to={`/user/${thread.author._id}`} className="author-username">
+                  {thread.author.username}
+                </Link>
+              ) : (
+                <span className="author-username">{thread.author?.username || 'Anonymous'}</span>
+              )}
               <span className="author-time">• {formatTimeAgo(thread.createdAt)}</span>
             </div>
           </div>
@@ -393,7 +570,13 @@ function ThreadDetail() {
                         comment.author?.username?.charAt(0).toUpperCase() || '?'
                       )}
                     </div>
-                    <span className="author-username">{comment.author?.username || 'Anonymous'}</span>
+                    {comment.author?._id ? (
+                      <Link to={`/user/${comment.author._id}`} className="author-username">
+                        {comment.author.username}
+                      </Link>
+                    ) : (
+                      <span className="author-username">{comment.author?.username || 'Anonymous'}</span>
+                    )}
                     <span className="author-time">• {formatTimeAgo(comment.createdAt)}</span>
                   </div>
 
@@ -452,8 +635,8 @@ function ThreadDetail() {
             <span className="stat-value">{formatTimeAgo(thread.createdAt)}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">Viewed</span>
-            <span className="stat-value">{thread.views} times</span>
+            <span className="stat-label">Views</span>
+            <span className="stat-value">{thread.views}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Comments</span>

@@ -7,6 +7,7 @@
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  align-items: start;
 }
 
 .thread-not-found {
@@ -237,15 +238,15 @@
 
 .thread-tags {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
 .thread-tag {
   background: #1a1a1a;
-  color: var(--text-secondary);
-  padding: 0.25rem 0.6rem;
+  color: var(--accent-green);
+  padding: 0.35rem 0.7rem;
   border-radius: 3px;
   font-size: 0.75rem;
   font-weight: 400;
@@ -354,24 +355,20 @@
 }
 
 .answer-card {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 0;
-  padding: 1.5rem 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
   display: flex;
   gap: 1rem;
-  margin-bottom: 0;
+  margin-bottom: 1.2rem;
   position: relative;
   transition: all 0.2s ease;
 }
 
-.answer-card:last-child {
-  border-bottom: none;
-}
-
 .answer-card:hover {
-  background: rgba(0, 190, 98, 0.02);
+  border-color: rgba(0, 190, 98, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 190, 98, 0.1);
 }
 
 .answer-card.accepted {
@@ -540,6 +537,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin-top: 3.5rem;
 }
 
 .sidebar-card {
@@ -559,51 +557,47 @@
 
 .stat-item {
   display: flex;
-  justify-content: left;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .stat-item:last-child {
-  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .stat-label {
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .stat-value {
-  color: var(--text-secondary);
-  font-weight: 400;
-  font-style: italic;
-  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .related-tags {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .related-tag {
-  background: #1a1a1a;
-  color: var(--text-secondary);
-  padding: 0.5rem 0.8rem;
-  border-radius: 3px;
-  font-size: 0.85rem;
-  font-weight: 400;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 190, 98, 0.15);
+  color: var(--accent-green);
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--accent-green);
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .related-tag:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--accent-green);
-  color: var(--accent-green);
+  background: var(--accent-green);
+  color: white;
   transform: translateX(5px);
 }
 
@@ -656,7 +650,7 @@
   .thread-main,
   .answer-card {
     flex-direction: column;
-    padding: 1.5rem 0;
+    padding: 1.5rem;
   }
 
   .thread-voting,
@@ -717,6 +711,13 @@
   font-weight: 600;
   color: var(--text-primary);
   font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.author-username:hover {
+  color: var(--accent-green);
+  text-decoration: underline;
 }
 
 .author-time {
@@ -782,6 +783,153 @@
   font-size: 0.85rem;
 }
 
+/* Improved Answer Card Layout */
+.answer-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
 .answer-body {
   flex: 1;
+}
+
+/* Thread Actions */
+.thread-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.thread-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.edit-btn {
+  background: var(--accent-green);
+  color: white;
+}
+
+.edit-btn:hover {
+  background: var(--accent-green-dark);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  background: #f85149;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #d93025;
+  transform: translateY(-2px);
+}
+
+/* Thread Edit Form */
+.thread-edit-form {
+  background: var(--bg-tertiary);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.thread-edit-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.thread-edit-form label {
+  display: block;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.thread-edit-form .form-input,
+.thread-edit-form .form-textarea,
+.thread-edit-form .form-select {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.thread-edit-form .form-input:focus,
+.thread-edit-form .form-textarea:focus,
+.thread-edit-form .form-select:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(0, 190, 98, 0.1);
+}
+
+.thread-edit-form .form-textarea {
+  resize: vertical;
+  min-height: 200px;
+  line-height: 1.6;
+}
+
+.thread-edit-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.thread-edit-form .btn-cancel {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.thread-edit-form .btn-cancel:hover {
+  background: var(--hover-bg);
+  transform: translateY(-2px);
+}
+
+.thread-edit-form .btn-submit {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.thread-edit-form .btn-submit:hover {
+  background: var(--accent-green-dark);
+  transform: translateY(-2px);
+}
+
+.thread-edit-form .btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }

@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import ProjectDetail from './pages/ProjectDetail'
 import Profile from './pages/Profile'
+import PublicProfile from './pages/PublicProfile'
 import Community from './pages/Community'
 import ThreadDetail from './pages/ThreadDetail'
 import './App.css'
@@ -36,6 +37,7 @@ function AppContent() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/project/:id" element={<ProjectDetail />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/user/:userId" element={<PublicProfile />} />
       </Routes>
       <Footer />
     </div>

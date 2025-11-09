@@ -185,6 +185,18 @@
   font-size: 0.9rem;
 }
 
+.author-link-inline {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.author-link-inline:hover {
+  color: var(--accent-green);
+  text-decoration: underline;
+}
+
 /* Accepted Answer Badge */
 .accepted-badge {
   position: absolute;

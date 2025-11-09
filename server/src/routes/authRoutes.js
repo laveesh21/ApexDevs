@@ -6,7 +6,8 @@ const {
   getMe, 
   updateProfile,
   changePassword,
-  uploadAvatar
+  uploadAvatar,
+  getUserProfile
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { uploadAvatar: upload } = require('../middleware/upload');
@@ -14,6 +15,7 @@ const { uploadAvatar: upload } = require('../middleware/upload');
 // Public routes
 router.post('/register', register);
 router.post('/login', login);
+router.get('/users/:userId', getUserProfile);
 
 // Protected routes
 router.get('/me', protect, getMe);

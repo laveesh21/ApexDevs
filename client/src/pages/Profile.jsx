@@ -203,10 +203,13 @@ function Profile() {
         <div className="profile-header">
           <div className="profile-avatar-wrapper">
             <div className="profile-avatar">
-              <img 
-                src={user?.avatar || 'https://ui-avatars.com/api/?background=00be62&color=fff&name=' + userInfo.username} 
-                alt={userInfo.username}
-              />
+              {user?.avatar ? (
+                <img src={user.avatar} alt={userInfo.username} />
+              ) : (
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              )}
               {uploadingAvatar && (
                 <div className="avatar-uploading-overlay">
                   <div className="spinner"></div>
@@ -233,11 +236,18 @@ function Profile() {
             <h1>{userInfo.username}</h1>
             <p className="profile-email">{userInfo.email}</p>
           </div>
-          {!isEditing && (
-            <button className="edit-profile-btn" onClick={handleEdit}>
-              Edit Profile
-            </button>
-          )}
+          <div className="profile-header-actions">
+            {!isEditing && (
+              <>
+                <button className="edit-profile-btn" onClick={handleEdit}>
+                  Edit Profile
+                </button>
+                <Link to={`/user/${user._id}?preview=true`} className="view-public-profile-btn">
+                  View Public Profile
+                </Link>
+              </>
+            )}
+          </div>
         </div>
 
         {error && <div className="profile-error">{error}</div>}

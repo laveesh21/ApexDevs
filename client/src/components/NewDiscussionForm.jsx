@@ -3,7 +3,7 @@ import './NewDiscussionForm.css';
 
 function NewDiscussionForm({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
-    type: 'Question',
+    type: 'Questions',
     title: '',
     content: '',
     tags: []
@@ -11,12 +11,13 @@ function NewDiscussionForm({ onClose, onSubmit }) {
   const [tagInput, setTagInput] = useState('');
 
   const discussionTypes = [
-    'Question',
-    'Discussion',
-    'Tutorial',
-    'Show & Tell',
-    'Help Wanted',
-    'Bug Report'
+    'General',
+    'Questions',
+    'Showcase',
+    'Resources',
+    'Collaboration',
+    'Feedback',
+    'Other'
   ];
 
   const popularTags = [

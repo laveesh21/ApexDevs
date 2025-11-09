@@ -95,6 +95,18 @@
   color: var(--accent-green);
 }
 
+.author-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.author-link:hover {
+  color: var(--accent-green);
+  text-decoration: underline;
+}
+
 .project-tech {
   display: flex;
   flex-wrap: wrap;

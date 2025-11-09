@@ -304,11 +304,53 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+// @desc    Get public user profile
+// @route   GET /api/auth/users/:userId
+// @access  Public
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Return public profile data
+    res.json({
+      success: true,
+      data: {
+        _id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        github: user.github,
+        linkedin: user.linkedin,
+        twitter: user.twitter,
+        skills: user.skills,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Get user profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getMe,
   updateProfile,
   changePassword,
-  uploadAvatar
+  uploadAvatar,
+  getUserProfile
 };

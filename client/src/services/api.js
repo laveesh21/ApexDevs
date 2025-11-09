@@ -83,6 +83,16 @@ export const authAPI = {
     });
     return handleResponse(response);
   },
+
+  getUserProfile: async (userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
 };
 
 // Project API
@@ -184,6 +194,42 @@ export const projectAPI = {
 
   getUserProjects: async (userId) => {
     const response = await fetch(`${API_URL}/projects?author=${userId}`);
+    return handleResponse(response);
+  },
+
+  // Review methods
+  addReview: async (token, projectId, reviewData) => {
+    const response = await fetch(`${API_URL}/projects/${projectId}/review`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(reviewData),
+    });
+    return handleResponse(response);
+  },
+
+  getReviews: async (projectId, token = null, params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${API_URL}/projects/${projectId}/reviews?${queryString}`, {
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  deleteReview: async (token, projectId) => {
+    const response = await fetch(`${API_URL}/projects/${projectId}/review`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     return handleResponse(response);
   }
 };

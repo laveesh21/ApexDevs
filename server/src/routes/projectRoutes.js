@@ -6,7 +6,10 @@ const {
   getProjectById,
   updateProject,
   deleteProject,
-  toggleLike
+  toggleLike,
+  addReview,
+  getReviews,
+  deleteReview
 } = require('../controllers/projectController');
 const { protect, optionalAuth } = require('../middleware/auth');
 const { uploadProjectImages } = require('../middleware/upload');
@@ -38,5 +41,10 @@ router.put(
 
 router.delete('/:id', protect, deleteProject);
 router.put('/:id/like', protect, toggleLike);
+
+// Review routes
+router.post('/:id/review', protect, addReview);
+router.get('/:id/reviews', optionalAuth, getReviews);
+router.delete('/:id/review', protect, deleteReview);
 
 module.exports = router;

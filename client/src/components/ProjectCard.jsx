@@ -6,6 +6,7 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
   const thumbnail = project.thumbnail || project.image;
   const technologies = project.technologies || project.techStack || [];
   const authorName = project.author?.username || project.author || 'Unknown';
+  const authorId = project.author?._id;
   const projectId = project._id || project.id;
   
   return (
@@ -25,7 +26,14 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
         <h3 className="project-title">{project.title}</h3>
         <p className="project-description">{project.description}</p>
         <div className="project-author">
-          <span className="author-label">By:</span> {authorName}
+          <span className="author-label">By:</span> 
+          {authorId ? (
+            <Link to={`/user/${authorId}`} className="author-link">
+              {authorName}
+            </Link>
+          ) : (
+            <span>{authorName}</span>
+          )}
         </div>
         <div className="project-tech">
           {technologies.map((tech, index) => (

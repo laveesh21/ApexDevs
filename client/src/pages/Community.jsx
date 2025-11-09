@@ -68,7 +68,15 @@ function Community() {
   // Handle new discussion submission
   const handleNewDiscussion = async (formData) => {
     try {
-      await threadAPI.create(token, formData);
+      // Map form data to match backend API expectations
+      const threadData = {
+        title: formData.title,
+        content: formData.content,
+        category: formData.type, // Map 'type' to 'category'
+        tags: formData.tags
+      };
+      
+      await threadAPI.create(token, threadData);
       setShowNewDiscussionForm(false);
       
       // Refresh discussions list
