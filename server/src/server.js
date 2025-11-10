@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/threads', require('./routes/threadRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {

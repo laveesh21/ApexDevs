@@ -217,7 +217,15 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user._id);
+    // Fetch user with password field explicitly selected
+    const user = await User.findById(req.user._id).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
@@ -374,6 +382,21 @@ const followUser = async (req, res) => {
       });
     }
 
+    // Check if either user has blocked the other
+    if (userToFollow.blockedUsers && userToFollow.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
+      return res.status(403).json({
+        success: false,
+        message: 'You cannot follow this user'
+      });
+    }
+
+    if (currentUser.blockedUsers && currentUser.blockedUsers.some(id => id.toString() === req.params.userId)) {
+      return res.status(403).json({
+        success: false,
+        message: 'You cannot follow this user'
+      });
+    }
+
     // Check if already following
     if (currentUser.following.includes(req.params.userId)) {
       return res.status(400).json({
@@ -473,6 +496,27 @@ const getUserProfile = async (req, res) => {
       });
     }
 
+    // Check if current user is blocked by this user or has blocked this user
+    if (req.user && req.user._id) {
+      const currentUser = await User.findById(req.user._id);
+      
+      // Check if viewer is blocked by profile owner
+      if (user.blockedUsers && user.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
+        return res.status(403).json({
+          success: false,
+          message: 'You are blocked by this user'
+        });
+      }
+      
+      // Check if viewer has blocked the profile owner
+      if (currentUser.blockedUsers && currentUser.blockedUsers.some(id => id.toString() === req.params.userId)) {
+        return res.status(403).json({
+          success: false,
+          message: 'You have blocked this user'
+        });
+      }
+    }
+
     // Check if current user is following this user (if authenticated)
     let isFollowing = false;
     if (req.user && req.user._id) {
@@ -568,6 +612,172 @@ const getUserFollowing = async (req, res) => {
   }
 };
 
+// @desc    Update privacy settings
+// @route   PUT /api/auth/privacy
+// @access  Private
+const updatePrivacySettings = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const { profileVisibility, showEmail, messagePermission, allowMessages } = req.body;
+
+    // Update privacy settings
+    if (profileVisibility !== undefined) {
+      user.profileVisibility = profileVisibility;
+    }
+    if (showEmail !== undefined) {
+      user.showEmail = showEmail;
+    }
+    if (messagePermission !== undefined) {
+      user.messagePermission = messagePermission;
+    }
+    if (allowMessages !== undefined) {
+      user.allowMessages = allowMessages;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Privacy settings updated successfully',
+      data: {
+        profileVisibility: user.profileVisibility,
+        showEmail: user.showEmail,
+        messagePermission: user.messagePermission,
+        allowMessages: user.allowMessages
+      }
+    });
+  } catch (error) {
+    console.error('Update privacy settings error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Block a user
+// @route   POST /api/auth/users/:userId/block
+// @access  Private
+const blockUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (userId === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot block yourself'
+      });
+    }
+
+    const userToBlock = await User.findById(userId);
+    if (!userToBlock) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    // Check if already blocked
+    if (user.blockedUsers.includes(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'User is already blocked'
+      });
+    }
+
+    // Add to blocked list
+    user.blockedUsers.push(userId);
+
+    // Remove from followers/following if exists
+    user.followers = user.followers.filter(id => id.toString() !== userId);
+    user.following = user.following.filter(id => id.toString() !== userId);
+    userToBlock.followers = userToBlock.followers.filter(id => id.toString() !== req.user._id.toString());
+    userToBlock.following = userToBlock.following.filter(id => id.toString() !== req.user._id.toString());
+
+    await user.save();
+    await userToBlock.save();
+
+    res.json({
+      success: true,
+      message: 'User blocked successfully'
+    });
+  } catch (error) {
+    console.error('Block user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Unblock a user
+// @route   DELETE /api/auth/users/:userId/block
+// @access  Private
+const unblockUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(req.user._id);
+
+    // Check if user is blocked
+    if (!user.blockedUsers.includes(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'User is not blocked'
+      });
+    }
+
+    // Remove from blocked list
+    user.blockedUsers = user.blockedUsers.filter(id => id.toString() !== userId);
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'User unblocked successfully'
+    });
+  } catch (error) {
+    console.error('Unblock user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get blocked users
+// @route   GET /api/auth/blocked
+// @access  Private
+const getBlockedUsers = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('blockedUsers', 'username avatar bio');
+
+    res.json({
+      success: true,
+      data: user.blockedUsers
+    });
+  } catch (error) {
+    console.error('Get blocked users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -580,5 +790,9 @@ module.exports = {
   unfollowUser,
   getUserProfile,
   getUserFollowers,
-  getUserFollowing
+  getUserFollowing,
+  updatePrivacySettings,
+  blockUser,
+  unblockUser,
+  getBlockedUsers
 };

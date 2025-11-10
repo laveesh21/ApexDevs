@@ -94,6 +94,49 @@ export const authAPI = {
     return handleResponse(response);
   },
 
+  updatePrivacySettings: async (token, privacyData) => {
+    const response = await fetch(`${API_URL}/auth/privacy`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(privacyData),
+    });
+    return handleResponse(response);
+  },
+
+  blockUser: async (token, userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/block`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  unblockUser: async (token, userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/block`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  getBlockedUsers: async (token) => {
+    const response = await fetch(`${API_URL}/auth/blocked`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
   followUser: async (token, userId) => {
     const response = await fetch(`${API_URL}/auth/users/${userId}/follow`, {
       method: 'POST',
@@ -461,3 +504,73 @@ export const storage = {
     storage.removeUser();
   },
 };
+
+// Chat API
+export const chatAPI = {
+  // Get all conversations
+  getConversations: async (token) => {
+    const response = await fetch(`${API_URL}/chat/conversations`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  // Get or create conversation with a user
+  getOrCreateConversation: async (token, userId) => {
+    const response = await fetch(`${API_URL}/chat/conversation/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  // Get messages in a conversation
+  getMessages: async (token, conversationId, params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await fetch(`${API_URL}/chat/conversation/${conversationId}/messages?${queryString}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  // Send a message
+  sendMessage: async (token, conversationId, content) => {
+    const response = await fetch(`${API_URL}/chat/conversation/${conversationId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+    return handleResponse(response);
+  },
+
+  // Mark conversation as read
+  markAsRead: async (token, conversationId) => {
+    const response = await fetch(`${API_URL}/chat/conversation/${conversationId}/read`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  // Delete conversation
+  deleteConversation: async (token, conversationId) => {
+    const response = await fetch(`${API_URL}/chat/conversation/${conversationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+};
+

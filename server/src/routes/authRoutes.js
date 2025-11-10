@@ -12,7 +12,11 @@ const {
   unfollowUser,
   getUserProfile,
   getUserFollowers,
-  getUserFollowing
+  getUserFollowing,
+  updatePrivacySettings,
+  blockUser,
+  unblockUser,
+  getBlockedUsers
 } = require('../controllers/authController');
 const { protect, optionalAuth } = require('../middleware/auth');
 const { uploadAvatar: upload } = require('../middleware/upload');
@@ -28,9 +32,13 @@ router.get('/users/:userId/following', getUserFollowing);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);
 router.put('/password', protect, changePassword);
+router.put('/privacy', protect, updatePrivacySettings);
 router.post('/avatar', protect, upload.single('avatar'), uploadAvatar);
 router.delete('/avatar', protect, deleteAvatar);
 router.post('/users/:userId/follow', protect, followUser);
 router.delete('/users/:userId/follow', protect, unfollowUser);
+router.post('/users/:userId/block', protect, blockUser);
+router.delete('/users/:userId/block', protect, unblockUser);
+router.get('/blocked', protect, getBlockedUsers);
 
 module.exports = router;

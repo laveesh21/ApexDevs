@@ -70,6 +70,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
+  blockedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   projects: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project'
@@ -86,6 +90,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
+  },
+  profileVisibility: {
+    type: String,
+    enum: ['public', 'private', 'followers'],
+    default: 'public'
+  },
+  showEmail: {
+    type: Boolean,
+    default: false
+  },
+  messagePermission: {
+    type: String,
+    enum: ['everyone', 'followers', 'existing', 'none'],
+    default: 'everyone'
+  },
+  allowMessages: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true

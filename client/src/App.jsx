@@ -13,6 +13,8 @@ import PublicProfile from './pages/PublicProfile'
 import Connections from './pages/Connections'
 import Community from './pages/Community'
 import ThreadDetail from './pages/ThreadDetail'
+import Chat from './pages/Chat'
+import Settings from './pages/Settings'
 import './App.css'
 
 function AppContent() {
@@ -42,6 +44,9 @@ function AppContent() {
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/profile/connections" element={<Connections />} />
         <Route path="/user/:userId" element={<PublicProfile />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:userId" element={<Chat />} />
       </Routes>
       <Footer />
     </div>

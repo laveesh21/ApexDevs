@@ -19,6 +19,8 @@ function PublicProfile() {
   const [activeTab, setActiveTab] = useState('projects');
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -39,6 +41,13 @@ function PublicProfile() {
         const userResponse = await authAPI.getUserProfile(userId, token);
         setUser(userResponse.data);
         setIsFollowing(userResponse.data.isFollowing || false);
+
+        // Check if current user has blocked this user
+        if (token && currentUser) {
+          const blockedResponse = await authAPI.getBlockedUsers(token);
+          const blockedUserIds = blockedResponse.data.map(u => u._id);
+          setIsBlocked(blockedUserIds.includes(userId));
+        }
 
         // Fetch user's projects
         const projectsResponse = await projectAPI.getUserProjects(userId);
@@ -92,6 +101,41 @@ function PublicProfile() {
       alert(err.message || 'Failed to update follow status');
     } finally {
       setFollowLoading(false);
+    }
+  };
+
+  const handleBlockToggle = async () => {
+    if (!token) {
+      alert('Please login to block users');
+      return;
+    }
+
+    const confirmMessage = isBlocked 
+      ? 'Are you sure you want to unblock this user?' 
+      : 'Are you sure you want to block this user? They won\'t be able to view your profile or message you.';
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setBlockLoading(true);
+    try {
+      if (isBlocked) {
+        await authAPI.unblockUser(token, userId);
+        setIsBlocked(false);
+        alert('User unblocked successfully');
+      } else {
+        await authAPI.blockUser(token, userId);
+        setIsBlocked(true);
+        // If user was followed, update the follow status
+        setIsFollowing(false);
+        alert('User blocked successfully');
+      }
+    } catch (err) {
+      console.error('Failed to toggle block:', err);
+      alert(err.message || 'Failed to update block status');
+    } finally {
+      setBlockLoading(false);
     }
   };
 
@@ -153,33 +197,68 @@ function PublicProfile() {
             <div className="profile-header-info">
               <h1 className="profile-username">{user.username}</h1>
               {user.bio && <p className="profile-bio">{user.bio}</p>}
+              
+              <div className="profile-stats-public">
+                <div className="stat-card">
+                  <div className="stat-icon">👥</div>
+                  <div className="stat-content">
+                    <div className="stat-number">{user.followersCount || 0}</div>
+                    <div className="stat-text">Followers</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">🔗</div>
+                  <div className="stat-content">
+                    <div className="stat-number">{user.followingCount || 0}</div>
+                    <div className="stat-text">Following</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">📦</div>
+                  <div className="stat-content">
+                    <div className="stat-number">{projects.length}</div>
+                    <div className="stat-text">Projects</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">💬</div>
+                  <div className="stat-content">
+                    <div className="stat-number">{threads.length}</div>
+                    <div className="stat-text">Discussions</div>
+                  </div>
+                </div>
+              </div>
+              
               <div className="profile-meta">
                 <span className="meta-item">
-                  📅 Joined {formatDate(user.createdAt)}
-                </span>
-                <span className="meta-item">
-                  📦 {projects.length} Projects
-                </span>
-                <span className="meta-item">
-                  💬 {threads.length} Discussions
-                </span>
-                <span className="meta-item">
-                  👥 {user.followersCount || 0} Followers
-                </span>
-                <span className="meta-item">
-                  🔗 {user.followingCount || 0} Following
+                  � Joined {formatDate(user.createdAt)}
                 </span>
               </div>
               
-              {/* Follow Button - Don't show on own profile or in preview mode */}
+              {/* Follow and Message Buttons - Don't show on own profile or in preview mode */}
               {currentUser && currentUser._id !== userId && (
-                <button 
-                  onClick={handleFollowToggle}
-                  disabled={followLoading}
-                  className={`follow-btn ${isFollowing ? 'following' : ''}`}
-                >
-                  {followLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}
-                </button>
+                <div className="profile-actions">
+                  <button 
+                    onClick={handleFollowToggle}
+                    disabled={followLoading || isBlocked}
+                    className={`follow-btn ${isFollowing ? 'following' : ''}`}
+                  >
+                    {followLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}
+                  </button>
+                  <Link to={`/chat/${userId}`} className="message-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Message
+                  </Link>
+                  <button
+                    onClick={handleBlockToggle}
+                    disabled={blockLoading}
+                    className={`block-btn ${isBlocked ? 'blocked' : ''}`}
+                  >
+                    {blockLoading ? 'Loading...' : isBlocked ? 'Unblock' : 'Block'}
+                  </button>
+                </div>
               )}
             </div>
           </div>

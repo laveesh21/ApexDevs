@@ -154,10 +154,38 @@
   background: rgba(0, 190, 98, 0.1);
 }
 
+/* Navbar Actions (Chat + User Menu) */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-self: end;
+}
+
+.chat-icon-link {
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.chat-icon-link:hover {
+  background: var(--hover-bg);
+  color: var(--accent-green);
+}
+
+.chat-icon-link svg {
+  width: 24px;
+  height: 24px;
+}
+
 /* User Menu Styles */
 .user-menu {
   position: relative;
-  justify-self: end;
 }
 
 .user-menu-button {
