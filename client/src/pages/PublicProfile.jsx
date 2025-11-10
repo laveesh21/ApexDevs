@@ -10,13 +10,15 @@ function PublicProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, token } = useAuth();
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('projects');
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -33,9 +35,10 @@ function PublicProfile() {
       setLoading(true);
       setError(null);
       try {
-        // Fetch user profile
-        const userResponse = await authAPI.getUserProfile(userId);
+        // Fetch user profile with token to get follow status
+        const userResponse = await authAPI.getUserProfile(userId, token);
         setUser(userResponse.data);
+        setIsFollowing(userResponse.data.isFollowing || false);
 
         // Fetch user's projects
         const projectsResponse = await projectAPI.getUserProjects(userId);
@@ -59,7 +62,38 @@ function PublicProfile() {
     return () => {
       hasFetched.current = false;
     };
-  }, [userId, currentUser, navigate]);
+  }, [userId, currentUser, navigate, token]);
+
+  const handleFollowToggle = async () => {
+    if (!token) {
+      alert('Please login to follow users');
+      return;
+    }
+
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await authAPI.unfollowUser(token, userId);
+        setIsFollowing(false);
+        setUser(prev => ({
+          ...prev,
+          followersCount: (prev.followersCount || 0) - 1
+        }));
+      } else {
+        await authAPI.followUser(token, userId);
+        setIsFollowing(true);
+        setUser(prev => ({
+          ...prev,
+          followersCount: (prev.followersCount || 0) + 1
+        }));
+      }
+    } catch (err) {
+      console.error('Failed to toggle follow:', err);
+      alert(err.message || 'Failed to update follow status');
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -129,7 +163,24 @@ function PublicProfile() {
                 <span className="meta-item">
                   💬 {threads.length} Discussions
                 </span>
+                <span className="meta-item">
+                  👥 {user.followersCount || 0} Followers
+                </span>
+                <span className="meta-item">
+                  🔗 {user.followingCount || 0} Following
+                </span>
               </div>
+              
+              {/* Follow Button - Don't show on own profile or in preview mode */}
+              {currentUser && currentUser._id !== userId && (
+                <button 
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  className={`follow-btn ${isFollowing ? 'following' : ''}`}
+                >
+                  {followLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}
+                </button>
+              )}
             </div>
           </div>
 

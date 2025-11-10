@@ -244,6 +244,27 @@
   grid-template-columns: 1fr 1fr;
 }
 
+/* Keep status/category/likes/views on a single line without separators */
+.stats-section .stat-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: none; /* remove separator lines between items */
+}
+
+.stats-section .stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.stats-section .stat-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
 .stat-label {
   color: var(--text-secondary);
   font-size: 0.8rem;

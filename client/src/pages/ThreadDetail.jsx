@@ -42,8 +42,8 @@ function ThreadDetail() {
         setVoteStatus(response.data.userVote);
         setVoteScore(response.data.voteScore || 0);
         
-        // Fetch comments
-        const commentsResponse = await threadAPI.getComments(id);
+        // Fetch comments with token to get user vote status
+        const commentsResponse = await threadAPI.getComments(id, token);
         setComments(commentsResponse.data);
         
         // Initialize comment votes state
@@ -147,60 +147,27 @@ function ThreadDetail() {
       return;
     }
 
-    const currentVote = commentVotes[commentId] || { voteStatus: null, voteScore: 0 };
-    let newVoteScore = currentVote.voteScore;
-    let newVoteStatus = currentVote.voteStatus;
-
-    if (currentVote.voteStatus === type) {
-      // Clicking same vote - remove it
-      newVoteStatus = null;
-      newVoteScore = type === 'upvote' ? currentVote.voteScore - 1 : currentVote.voteScore + 1;
-    } else if (currentVote.voteStatus === null) {
-      // No previous vote
-      newVoteStatus = type;
-      newVoteScore = type === 'upvote' ? currentVote.voteScore + 1 : currentVote.voteScore - 1;
-    } else {
-      // Switching vote type
-      newVoteStatus = type;
-      newVoteScore = type === 'upvote' ? currentVote.voteScore + 2 : currentVote.voteScore - 2;
-    }
-
-    // Update UI immediately
-    setCommentVotes(prev => ({
-      ...prev,
-      [commentId]: {
-        voteStatus: newVoteStatus,
-        voteScore: newVoteScore
-      }
-    }));
-
     // Clear existing timeout for this comment
     if (commentVoteTimeouts.current[commentId]) {
       clearTimeout(commentVoteTimeouts.current[commentId]);
     }
 
-    // Debounce API call
-    commentVoteTimeouts.current[commentId] = setTimeout(async () => {
-      try {
-        const response = await threadAPI.voteComment(token, commentId, type);
-        // Update with server response
-        setCommentVotes(prev => ({
-          ...prev,
-          [commentId]: {
-            voteStatus: response.data.userVote,
-            voteScore: response.data.voteScore
-          }
-        }));
-      } catch (err) {
-        console.error('Failed to vote on comment:', err);
-        // Revert on error
-        setCommentVotes(prev => ({
-          ...prev,
-          [commentId]: currentVote
-        }));
-      }
-      delete commentVoteTimeouts.current[commentId];
-    }, 500);
+    // Send API call immediately without optimistic update
+    // Let backend handle all the logic and update UI with response
+    try {
+      const response = await threadAPI.voteComment(token, commentId, type);
+      // Update with server response
+      setCommentVotes(prev => ({
+        ...prev,
+        [commentId]: {
+          voteStatus: response.data.userVote,
+          voteScore: response.data.voteScore
+        }
+      }));
+    } catch (err) {
+      console.error('Failed to vote on comment:', err);
+      alert('Failed to vote. Please try again.');
+    }
   };
 
   const handleSubmitComment = async (e) => {

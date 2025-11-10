@@ -84,8 +84,64 @@ export const authAPI = {
     return handleResponse(response);
   },
 
-  getUserProfile: async (userId) => {
+  deleteAvatar: async (token) => {
+    const response = await fetch(`${API_URL}/auth/avatar`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  followUser: async (token, userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/follow`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  unfollowUser: async (token, userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/follow`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  },
+
+  getUserProfile: async (userId, token = null) => {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const response = await fetch(`${API_URL}/auth/users/${userId}`, {
+      method: 'GET',
+      headers,
+    });
+    return handleResponse(response);
+  },
+
+  getUserFollowers: async (userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/followers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
+
+  getUserFollowing: async (userId) => {
+    const response = await fetch(`${API_URL}/auth/users/${userId}/following`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

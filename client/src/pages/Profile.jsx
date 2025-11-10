@@ -22,6 +22,7 @@ function Profile() {
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' or 'threads'
   const [userThreads, setUserThreads] = useState([]);
   const [threadsLoading, setThreadsLoading] = useState(false);
+  const [freshUserData, setFreshUserData] = useState(null); // Fresh data with follow counts
   const [userInfo, setUserInfo] = useState({
     username: '',
     email: '',
@@ -36,7 +37,10 @@ function Profile() {
   const [editForm, setEditForm] = useState(userInfo);
 
   const fetchUserProjects = useCallback(async () => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      setProjectsLoading(false);
+      return;
+    }
     
     setProjectsLoading(true);
     try {
@@ -52,7 +56,10 @@ function Profile() {
   }, [user?._id]);
 
   const fetchUserThreads = useCallback(async () => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      setThreadsLoading(false);
+      return;
+    }
     
     setThreadsLoading(true);
     try {
@@ -65,6 +72,17 @@ function Profile() {
       setThreadsLoading(false);
     }
   }, [user?._id]);
+
+  const fetchFreshUserData = useCallback(async () => {
+    if (!user?._id || !token) return;
+    
+    try {
+      const response = await authAPI.getUserProfile(user._id, token);
+      setFreshUserData(response.data);
+    } catch (err) {
+      console.error('Failed to fetch fresh user data:', err);
+    }
+  }, [user?._id, token]);
 
   useEffect(() => {
     // Wait for auth to finish loading before redirecting
@@ -92,8 +110,9 @@ function Profile() {
       // Fetch user's projects and threads
       fetchUserProjects();
       fetchUserThreads();
+      fetchFreshUserData();
     }
-  }, [user, isAuthenticated, authLoading, navigate, fetchUserProjects, fetchUserThreads]);
+  }, [user, isAuthenticated, navigate, authLoading, fetchUserProjects, fetchUserThreads, fetchFreshUserData]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -235,18 +254,24 @@ function Profile() {
           <div className="profile-header-info">
             <h1>{userInfo.username}</h1>
             <p className="profile-email">{userInfo.email}</p>
+            <div className="profile-stats">
+              <Link to="/profile/connections?tab=followers" className="stat-item">
+                <span className="stat-count">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
+                <span className="stat-label">Followers</span>
+              </Link>
+              <Link to="/profile/connections?tab=following" className="stat-item">
+                <span className="stat-count">{freshUserData?.followingCount || user?.following?.length || 0}</span>
+                <span className="stat-label">Following</span>
+              </Link>
+            </div>
           </div>
           <div className="profile-header-actions">
-            {!isEditing && (
-              <>
-                <button className="edit-profile-btn" onClick={handleEdit}>
-                  Edit Profile
-                </button>
-                <Link to={`/user/${user._id}?preview=true`} className="view-public-profile-btn">
-                  View Public Profile
-                </Link>
-              </>
-            )}
+            <Link to="/profile/edit" className="edit-profile-btn">
+              Edit Profile
+            </Link>
+            <Link to={`/user/${user._id}?preview=true`} className="view-public-profile-btn">
+              View Public Profile
+            </Link>
           </div>
         </div>
 

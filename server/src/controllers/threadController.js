@@ -52,11 +52,25 @@ const getThreads = async (req, res) => {
     }
 
     if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } },
-        { tags: { $regex: search, $options: 'i' } }
-      ];
+      // Split search query into individual words and remove empty strings
+      const searchWords = search.trim().split(/\s+/).filter(word => word.length > 0);
+      
+      if (searchWords.length > 0) {
+        // Create an array of conditions for each word
+        // Each word must match in at least one of the fields
+        const wordConditions = searchWords.map(word => {
+          return {
+            $or: [
+              { title: { $regex: word, $options: 'i' } },
+              { content: { $regex: word, $options: 'i' } },
+              { tags: { $regex: word, $options: 'i' } }
+            ]
+          };
+        });
+        
+        // All words must match (AND logic across words)
+        query.$and = wordConditions;
+      }
     }
 
     // Execute query with pagination

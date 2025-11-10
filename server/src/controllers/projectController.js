@@ -98,14 +98,26 @@ const getProjects = async (req, res) => {
     let query = {};
 
     if (search) {
-      // Use regex for partial matching (case-insensitive)
-      // Search in title, description, and technologies
-      const searchRegex = new RegExp(search, 'i');
-      query.$or = [
-        { title: searchRegex },
-        { description: searchRegex },
-        { technologies: searchRegex }
-      ];
+      // Split search query into individual words and remove empty strings
+      const searchWords = search.trim().split(/\s+/).filter(word => word.length > 0);
+      
+      if (searchWords.length > 0) {
+        // Create an array of conditions for each word
+        // Each word must match in at least one of the fields
+        const wordConditions = searchWords.map(word => {
+          const wordRegex = new RegExp(word, 'i');
+          return {
+            $or: [
+              { title: wordRegex },
+              { description: wordRegex },
+              { technologies: wordRegex }
+            ]
+          };
+        });
+        
+        // All words must match (AND logic across words)
+        query.$and = wordConditions;
+      }
     }
 
     if (category && category !== 'All') {
@@ -167,34 +179,20 @@ const getProjectById = async (req, res) => {
     // Check if user is authenticated
     const userId = req.user?._id;
     
-    console.log('=== VIEW TRACKING DEBUG ===');
-    console.log('Auth header:', req.headers.authorization ? 'Present' : 'Missing');
-    console.log('User ID:', userId ? userId.toString() : 'Anonymous');
-    console.log('Current views:', project.views);
-    console.log('ViewedBy array:', project.viewedBy.map(id => id.toString()));
-    
     if (userId) {
       // For authenticated users: check if they haven't viewed before
       const hasViewed = project.viewedBy.some(id => id.toString() === userId.toString());
-      console.log('Has viewed before:', hasViewed);
       
       if (!hasViewed) {
         project.views += 1;
         project.viewedBy.push(userId);
         await project.save();
-        console.log('View incremented for authenticated user');
-      } else {
-        console.log('User already viewed - skipping increment');
       }
     } else {
-      // For anonymous users: always increment (or you can implement IP tracking)
-      // For now, we'll increment for anonymous to count all views
+      // For anonymous users: always increment
       project.views += 1;
       await project.save();
-      console.log('View incremented for anonymous user');
     }
-    console.log('New view count:', project.views);
-    console.log('=========================');
 
     res.json({
       success: true,

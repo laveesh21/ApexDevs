@@ -155,6 +155,7 @@
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  margin-bottom: 1.5rem;
 }
 
 .meta-item {
@@ -165,6 +166,43 @@
   gap: 0.5rem;
 }
 
+/* Follow Button */
+.follow-btn {
+  padding: 0.75rem 2rem;
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.follow-btn:hover:not(:disabled) {
+  background: var(--accent-green-dark);
+  transform: translateY(-2px);
+}
+
+.follow-btn.following {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.follow-btn.following:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+.follow-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Profile Details */
 .profile-details {
   display: flex;
@@ -172,7 +210,6 @@
   flex-wrap: wrap;
   padding: 1.5rem 0;
   border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
   margin: 1.5rem 0;
 }
 
@@ -306,6 +343,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
+}
+
+/* When the projects grid is empty, make the empty-state span full width like discussions */
+.projects-grid .empty-state {
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 .discussions-list {

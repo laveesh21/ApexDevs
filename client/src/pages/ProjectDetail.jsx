@@ -440,7 +440,11 @@ function ProjectDetail() {
                 </div>
                 <div className="stat-item">
                   <span className="stat-label">Likes</span>
-                  <span className="stat-value">{project.likes?.length || 0}</span>
+                  <span className="stat-value">{reviewStats.likes || 0}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Dislikes</span>
+                  <span className="stat-value">{reviewStats.dislikes || 0}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-label">Views</span>
@@ -468,6 +472,39 @@ function ProjectDetail() {
                   </a>
                 )}
               </div>
+
+              {/* Like Button */}
+              {!isOwner && (
+                <div className="like-action">
+                  <button
+                    className={`like-btn ${isLiked ? 'liked' : ''}`}
+                    onClick={async () => {
+                      if (!token) {
+                        alert('Please login to like this project');
+                        return;
+                      }
+
+                      try {
+                        const res = await projectAPI.toggleLike(token, id);
+                        // Use server-returned count and isLiked flag to avoid stale UI
+                        if (res && res.data) {
+                          setLikeCount(res.data.likes || 0);
+                          setIsLiked(!!res.data.isLiked);
+                        } else {
+                          // fallback: toggle local state
+                          setIsLiked(prev => !prev);
+                          setLikeCount(prev => prev + (isLiked ? -1 : 1));
+                        }
+                      } catch (err) {
+                        console.error('Failed to toggle like:', err);
+                        alert('Failed to update like. Please try again.');
+                      }
+                    }}
+                  >
+                    {isLiked ? 'Unlike' : 'Like'} • {likeCount || 0}
+                  </button>
+                </div>
+              )}
 
               {/* Project Meta Info */}
               <div className="meta-info">

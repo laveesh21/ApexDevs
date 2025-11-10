@@ -304,6 +304,161 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+// @desc    Delete avatar
+// @route   DELETE /api/auth/avatar
+// @access  Private
+const deleteAvatar = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Delete avatar from Cloudinary if it exists
+    if (user.avatar && user.avatar.includes('cloudinary.com')) {
+      const cloudinary = require('../config/cloudinary');
+      // Extract public_id from Cloudinary URL
+      const urlParts = user.avatar.split('/');
+      const publicIdWithExtension = urlParts[urlParts.length - 1];
+      const publicId = `apexdevs/avatars/${publicIdWithExtension.split('.')[0]}`;
+      
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.log('Error deleting avatar from Cloudinary:', err.message);
+      }
+    }
+
+    // Remove avatar from user
+    user.avatar = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Avatar deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete avatar error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Follow a user
+// @route   POST /api/auth/users/:userId/follow
+// @access  Private
+const followUser = async (req, res) => {
+  try {
+    const userToFollow = await User.findById(req.params.userId);
+    const currentUser = await User.findById(req.user._id);
+
+    if (!userToFollow) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Can't follow yourself
+    if (req.params.userId === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot follow yourself'
+      });
+    }
+
+    // Check if already following
+    if (currentUser.following.includes(req.params.userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'You are already following this user'
+      });
+    }
+
+    // Add to following and followers
+    currentUser.following.push(req.params.userId);
+    userToFollow.followers.push(req.user._id);
+
+    await currentUser.save();
+    await userToFollow.save();
+
+    res.json({
+      success: true,
+      message: 'User followed successfully',
+      data: {
+        followersCount: userToFollow.followers.length,
+        followingCount: currentUser.following.length
+      }
+    });
+  } catch (error) {
+    console.error('Follow user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Unfollow a user
+// @route   DELETE /api/auth/users/:userId/follow
+// @access  Private
+const unfollowUser = async (req, res) => {
+  try {
+    const userToUnfollow = await User.findById(req.params.userId);
+    const currentUser = await User.findById(req.user._id);
+
+    if (!userToUnfollow) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if not following
+    if (!currentUser.following.includes(req.params.userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'You are not following this user'
+      });
+    }
+
+    // Remove from following and followers
+    currentUser.following = currentUser.following.filter(
+      id => id.toString() !== req.params.userId
+    );
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      id => id.toString() !== req.user._id.toString()
+    );
+
+    await currentUser.save();
+    await userToUnfollow.save();
+
+    res.json({
+      success: true,
+      message: 'User unfollowed successfully',
+      data: {
+        followersCount: userToUnfollow.followers.length,
+        followingCount: currentUser.following.length
+      }
+    });
+  } catch (error) {
+    console.error('Unfollow user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 // @desc    Get public user profile
 // @route   GET /api/auth/users/:userId
 // @access  Public
@@ -316,6 +471,13 @@ const getUserProfile = async (req, res) => {
         success: false,
         message: 'User not found'
       });
+    }
+
+    // Check if current user is following this user (if authenticated)
+    let isFollowing = false;
+    if (req.user && req.user._id) {
+      const currentUser = await User.findById(req.user._id);
+      isFollowing = currentUser ? currentUser.following.includes(user._id) : false;
     }
 
     // Return public profile data
@@ -332,11 +494,72 @@ const getUserProfile = async (req, res) => {
         linkedin: user.linkedin,
         twitter: user.twitter,
         skills: user.skills,
+        followersCount: user.followers?.length || 0,
+        followingCount: user.following?.length || 0,
+        isFollowing: isFollowing,
         createdAt: user.createdAt
       }
     });
   } catch (error) {
     console.error('Get user profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get user's followers
+// @route   GET /api/auth/users/:userId/followers
+// @access  Public
+const getUserFollowers = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+      .populate('followers', 'username avatar bio');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user.followers
+    });
+  } catch (error) {
+    console.error('Get followers error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get user's following
+// @route   GET /api/auth/users/:userId/following
+// @access  Public
+const getUserFollowing = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId)
+      .populate('following', 'username avatar bio');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user.following
+    });
+  } catch (error) {
+    console.error('Get following error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -352,5 +575,10 @@ module.exports = {
   updateProfile,
   changePassword,
   uploadAvatar,
-  getUserProfile
+  deleteAvatar,
+  followUser,
+  unfollowUser,
+  getUserProfile,
+  getUserFollowers,
+  getUserFollowing
 };
