@@ -297,7 +297,7 @@ const sendMessage = async (req, res) => {
       const messagePermission = otherParticipantDoc.messagePermission || 'everyone';
       
       // 'none' blocks all messages including existing conversations
-      if (messagePermission === 'none' || otherParticipantDoc.allowMessages === false) {
+      if (messagePermission === 'none') {
         return res.status(403).json({
           success: false,
           message: 'The recipient has disabled messages'

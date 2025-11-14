@@ -11,6 +11,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    briefDescription: '',
     category: 'Web App',
     status: 'Completed',
     demoUrl: '',
@@ -31,6 +32,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
       setFormData({
         title: project.title || '',
         description: project.description || '',
+        briefDescription: project.briefDescription || '',
         category: project.category || 'Web App',
         status: project.status || 'Completed',
         demoUrl: project.demoUrl || '',
@@ -130,6 +132,11 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
       return;
     }
 
+    if (!formData.briefDescription.trim()) {
+      setError('Brief description is required');
+      return;
+    }
+
     if (formData.technologies.length === 0) {
       setError('At least one technology is required');
       return;
@@ -142,14 +149,12 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
       const submitData = new FormData();
       submitData.append('title', formData.title);
       submitData.append('description', formData.description);
+      submitData.append('briefDescription', formData.briefDescription);
       submitData.append('category', formData.category);
       submitData.append('status', formData.status);
       submitData.append('demoUrl', formData.demoUrl);
       submitData.append('githubUrl', formData.githubUrl);
-
-      formData.technologies.forEach(tech => {
-        submitData.append('technologies[]', tech);
-      });
+      submitData.append('technologies', JSON.stringify(formData.technologies));
 
       if (thumbnail) {
         submitData.append('thumbnail', thumbnail);
@@ -160,13 +165,11 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
       });
 
       if (removedImages.length > 0) {
-        removedImages.forEach(url => {
-          submitData.append('removedImages[]', url);
-        });
+        submitData.append('removedImages', JSON.stringify(removedImages));
       }
 
       // Pass token, project ID, and submitData
-      await projectAPI.update(token, project._id, formData);
+      await projectAPI.update(token, project._id, submitData);
 
       if (onSuccess) {
         await onSuccess();
@@ -211,10 +214,28 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Describe your project..."
-              rows="4"
+              placeholder="Describe your project in detail..."
+              rows="5"
+              minLength={10}
+              maxLength={2000}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="briefDescription">Brief Description *</label>
+            <textarea
+              id="briefDescription"
+              name="briefDescription"
+              value={formData.briefDescription}
+              onChange={handleInputChange}
+              placeholder="A short summary (max 150 characters)"
+              rows="2"
+              minLength={10}
+              maxLength={150}
+              required
+            />
+            <small className="char-count">{formData.briefDescription.length}/150</small>
           </div>
 
           <div className="form-row">

@@ -30,7 +30,12 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    maxlength: [500, 'Bio cannot exceed 500 characters'],
+    maxlength: [1500, 'Bio cannot exceed 1500 characters'],
+    default: ''
+  },
+  briefBio: {
+    type: String,
+    maxlength: [100, 'Brief bio cannot exceed 100 characters'],
     default: ''
   },
   location: {
@@ -141,6 +146,7 @@ userSchema.methods.toPublicProfile = function() {
     email: this.email,
     avatar: this.avatar,
     bio: this.bio,
+    briefBio: this.briefBio,
     location: this.location,
     website: this.website,
     github: this.github,

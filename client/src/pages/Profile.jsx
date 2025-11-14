@@ -27,6 +27,7 @@ function Profile() {
     username: '',
     email: '',
     bio: '',
+    briefBio: '',
     location: '',
     website: '',
     github: '',
@@ -37,14 +38,15 @@ function Profile() {
   const [editForm, setEditForm] = useState(userInfo);
 
   const fetchUserProjects = useCallback(async () => {
-    if (!user?._id) {
+    const userId = user?._id || user?.id;
+    if (!userId) {
       setProjectsLoading(false);
       return;
     }
     
     setProjectsLoading(true);
     try {
-      const response = await projectAPI.getUserProjects(user._id);
+      const response = await projectAPI.getUserProjects(userId);
       setUserProjects(response.data || []);
     } catch (err) {
       console.error('Failed to fetch projects:', err);
@@ -53,17 +55,18 @@ function Profile() {
     } finally {
       setProjectsLoading(false);
     }
-  }, [user?._id]);
+  }, [user?._id, user?.id]);
 
   const fetchUserThreads = useCallback(async () => {
-    if (!user?._id) {
+    const userId = user?._id || user?.id;
+    if (!userId) {
       setThreadsLoading(false);
       return;
     }
     
     setThreadsLoading(true);
     try {
-      const response = await threadAPI.getUserThreads(user._id);
+      const response = await threadAPI.getUserThreads(userId);
       setUserThreads(response.data || []);
     } catch (err) {
       console.error('Failed to fetch threads:', err);
@@ -71,18 +74,19 @@ function Profile() {
     } finally {
       setThreadsLoading(false);
     }
-  }, [user?._id]);
+  }, [user?._id, user?.id]);
 
   const fetchFreshUserData = useCallback(async () => {
-    if (!user?._id || !token) return;
+    const userId = user?._id || user?.id;
+    if (!userId || !token) return;
     
     try {
-      const response = await authAPI.getUserProfile(user._id, token);
+      const response = await authAPI.getUserProfile(userId, token);
       setFreshUserData(response.data);
     } catch (err) {
       console.error('Failed to fetch fresh user data:', err);
     }
-  }, [user?._id, token]);
+  }, [user?._id, user?.id, token]);
 
   useEffect(() => {
     // Wait for auth to finish loading before redirecting
@@ -98,6 +102,7 @@ function Profile() {
         username: user.username || '',
         email: user.email || '',
         bio: user.bio || '',
+        briefBio: user.briefBio || '',
         location: user.location || '',
         website: user.website || '',
         github: user.github || '',
@@ -254,12 +259,15 @@ function Profile() {
           <div className="profile-header-info">
             <h1>{userInfo.username}</h1>
             <p className="profile-email">{userInfo.email}</p>
+            {userInfo.briefBio && (
+              <p className="profile-brief-bio">{userInfo.briefBio}</p>
+            )}
             <div className="profile-stats">
-              <Link to="/profile/connections?tab=followers" className="stat-item">
+              <Link to="/profile/connections?tab=followers" className="stat-item-follow">
                 <span className="stat-count">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
                 <span className="stat-label">Followers</span>
               </Link>
-              <Link to="/profile/connections?tab=following" className="stat-item">
+              <Link to="/profile/connections?tab=following" className="stat-item-follow">
                 <span className="stat-count">{freshUserData?.followingCount || user?.following?.length || 0}</span>
                 <span className="stat-label">Following</span>
               </Link>
@@ -269,9 +277,11 @@ function Profile() {
             <Link to="/profile/edit" className="edit-profile-btn">
               Edit Profile
             </Link>
-            <Link to={`/user/${user._id}?preview=true`} className="view-public-profile-btn">
-              View Public Profile
-            </Link>
+            {(user?.id || user?._id) && (
+              <Link to={`/user/${user.id || user._id}?preview=true`} className="view-public-profile-btn">
+                View Public Profile
+              </Link>
+            )}
           </div>
         </div>
 
@@ -302,9 +312,22 @@ function Profile() {
                       value={editForm.bio}
                       onChange={handleChange}
                       rows="4"
-                      maxLength={500}
+                      maxLength={1500}
                       placeholder="Tell us about yourself..."
                     />
+                    <small className="char-count">{editForm.bio.length}/1500</small>
+                  </div>
+                  <div className="form-group">
+                    <label>Brief Bio</label>
+                    <textarea
+                      name="briefBio"
+                      value={editForm.briefBio}
+                      onChange={handleChange}
+                      rows="2"
+                      maxLength={100}
+                      placeholder="A short summary (max 100 characters)"
+                    />
+                    <small className="char-count">{editForm.briefBio.length}/100</small>
                   </div>
                   <div className="form-group">
                     <label>Location</label>
@@ -388,49 +411,56 @@ function Profile() {
                     </div>
                   ) : (
                     <>
-                      <p className="bio">{userInfo.bio || 'No bio added yet.'}</p>
-                      {userInfo.location && (
-                        <div className="info-item">
-                          <span className="info-icon">📍</span>
-                          <span>{userInfo.location}</span>
+                      {userInfo.bio && (
+                        <div className="bio-section">
+                          <p className="bio-text">{userInfo.bio}</p>
                         </div>
                       )}
-                      {userInfo.website && (
-                        <div className="info-item">
-                          <span className="info-icon">🌐</span>
-                          <a href={userInfo.website} target="_blank" rel="noopener noreferrer">
-                            {userInfo.website}
-                          </a>
-                        </div>
-                      )}
-                      {userInfo.github && (
-                        <div className="info-item">
-                          <span className="info-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                            </svg>
-                          </span>
-                          <a href={`https://github.com/${userInfo.github}`} target="_blank" rel="noopener noreferrer">
-                            GitHub Profile
-                          </a>
-                        </div>
-                      )}
-                      {userInfo.twitter && (
-                        <div className="info-item">
-                          <span className="info-icon">𝕏</span>
-                          <a href={`https://twitter.com/${userInfo.twitter}`} target="_blank" rel="noopener noreferrer">
-                            Twitter Profile
-                          </a>
-                        </div>
-                      )}
-                      {userInfo.linkedin && (
-                        <div className="info-item">
-                          <span className="info-icon">💼</span>
-                          <a href={`https://linkedin.com/in/${userInfo.linkedin}`} target="_blank" rel="noopener noreferrer">
-                            LinkedIn Profile
-                          </a>
-                        </div>
-                      )}
+                      
+                      <div className="info-items-grid">
+                        {userInfo.location && (
+                          <div className="info-item">
+                            <span className="info-icon">📍</span>
+                            <span>{userInfo.location}</span>
+                          </div>
+                        )}
+                        {userInfo.website && (
+                          <div className="info-item">
+                            <span className="info-icon">🌐</span>
+                            <a href={userInfo.website} target="_blank" rel="noopener noreferrer">
+                              {userInfo.website}
+                            </a>
+                          </div>
+                        )}
+                        {userInfo.github && (
+                          <div className="info-item">
+                            <span className="info-icon">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                              </svg>
+                            </span>
+                            <a href={`https://github.com/${userInfo.github}`} target="_blank" rel="noopener noreferrer">
+                              GitHub
+                            </a>
+                          </div>
+                        )}
+                        {userInfo.twitter && (
+                          <div className="info-item">
+                            <span className="info-icon">𝕏</span>
+                            <a href={`https://twitter.com/${userInfo.twitter}`} target="_blank" rel="noopener noreferrer">
+                              Twitter
+                            </a>
+                          </div>
+                        )}
+                        {userInfo.linkedin && (
+                          <div className="info-item">
+                            <span className="info-icon">💼</span>
+                            <a href={`https://linkedin.com/in/${userInfo.linkedin}`} target="_blank" rel="noopener noreferrer">
+                              LinkedIn
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>

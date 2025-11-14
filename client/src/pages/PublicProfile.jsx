@@ -196,6 +196,7 @@ function PublicProfile() {
             </div>
             <div className="profile-header-info">
               <h1 className="profile-username">{user.username}</h1>
+              {user.briefBio && <p className="profile-brief-bio-public">{user.briefBio}</p>}
               {user.bio && <p className="profile-bio">{user.bio}</p>}
               
               <div className="profile-stats-public">

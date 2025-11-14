@@ -563,7 +563,7 @@
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  font-size: small;
+  font-size: large;
   padding: 0.5rem 0;
   border-bottom: none;
 }
@@ -574,7 +574,7 @@
 
 .stat-label {
   color: var(--text-secondary);
-  font-size: 0.875rem;
+  font-size: 1 rem;
   margin-top: 0.25rem;
 }
 

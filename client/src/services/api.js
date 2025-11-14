@@ -244,21 +244,29 @@ export const projectAPI = {
   },
 
   update: async (token, id, projectData) => {
-    const formData = new FormData();
+    // Check if projectData is already a FormData object
+    let formData;
     
-    if (projectData.title) formData.append('title', projectData.title);
-    if (projectData.description) formData.append('description', projectData.description);
-    if (projectData.category) formData.append('category', projectData.category);
-    if (projectData.status) formData.append('status', projectData.status);
-    if (projectData.technologies) formData.append('technologies', JSON.stringify(projectData.technologies));
-    if (projectData.demoUrl !== undefined) formData.append('demoUrl', projectData.demoUrl);
-    if (projectData.githubUrl !== undefined) formData.append('githubUrl', projectData.githubUrl);
-    
-    if (projectData.thumbnail) formData.append('thumbnail', projectData.thumbnail);
-    if (projectData.images) {
-      projectData.images.forEach(image => {
-        formData.append('images', image);
-      });
+    if (projectData instanceof FormData) {
+      formData = projectData;
+    } else {
+      formData = new FormData();
+      
+      if (projectData.title) formData.append('title', projectData.title);
+      if (projectData.description) formData.append('description', projectData.description);
+      if (projectData.briefDescription) formData.append('briefDescription', projectData.briefDescription);
+      if (projectData.category) formData.append('category', projectData.category);
+      if (projectData.status) formData.append('status', projectData.status);
+      if (projectData.technologies) formData.append('technologies', JSON.stringify(projectData.technologies));
+      if (projectData.demoUrl !== undefined) formData.append('demoUrl', projectData.demoUrl);
+      if (projectData.githubUrl !== undefined) formData.append('githubUrl', projectData.githubUrl);
+      
+      if (projectData.thumbnail) formData.append('thumbnail', projectData.thumbnail);
+      if (projectData.images) {
+        projectData.images.forEach(image => {
+          formData.append('images', image);
+        });
+      }
     }
 
     const response = await fetch(`${API_URL}/projects/${id}`, {

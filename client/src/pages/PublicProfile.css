@@ -144,6 +144,16 @@
   font-weight: 700;
 }
 
+.profile-brief-bio-public {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-style: italic;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  margin: 0 0 1rem 0;
+  display: inline-block;
+}
+
 .profile-bio {
   color: var(--text-secondary);
   font-size: 1.1rem;

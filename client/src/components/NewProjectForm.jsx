@@ -11,6 +11,7 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    briefDescription: '',
     category: 'Web App',
     status: 'Completed',
     demoUrl: '',
@@ -163,12 +164,28 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Describe your project..."
+              placeholder="Describe your project in detail..."
               minLength={10}
               maxLength={2000}
               rows={5}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="briefDescription">Brief Description *</label>
+            <textarea
+              id="briefDescription"
+              name="briefDescription"
+              value={formData.briefDescription}
+              onChange={handleInputChange}
+              placeholder="A short summary (max 150 characters)"
+              minLength={10}
+              maxLength={150}
+              rows={2}
+              required
+            />
+            <small className="char-count">{formData.briefDescription.length}/150</small>
           </div>
 
           <div className="form-row">

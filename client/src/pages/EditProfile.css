@@ -194,6 +194,7 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group:last-child {
@@ -205,6 +206,14 @@
   color: var(--text-primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
+}
+
+.form-group .char-count {
+  display: block;
+  text-align: right;
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .form-group input,

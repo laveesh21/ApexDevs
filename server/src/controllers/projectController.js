@@ -7,13 +7,13 @@ const Review = require('../models/Review');
 // @access  Private
 const createProject = async (req, res) => {
   try {
-    const { title, description, demoUrl, githubUrl, technologies, category, status } = req.body;
+    const { title, description, briefDescription, demoUrl, githubUrl, technologies, category, status } = req.body;
 
     // Validation
-    if (!title || !description) {
+    if (!title || !description || !briefDescription) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide title and description'
+        message: 'Please provide title, description, and brief description'
       });
     }
 
@@ -55,6 +55,7 @@ const createProject = async (req, res) => {
     const project = await Project.create({
       title,
       description,
+      briefDescription,
       thumbnail,
       images,
       demoUrl: demoUrl || '',
@@ -213,6 +214,9 @@ const getProjectById = async (req, res) => {
 // @access  Private
 const updateProject = async (req, res) => {
   try {
+
+    console.log('Update project request body:', req.body);
+
     const project = await Project.findById(req.params.id);
 
     if (!project) {
@@ -230,11 +234,12 @@ const updateProject = async (req, res) => {
       });
     }
 
-    const { title, description, demoUrl, githubUrl, technologies, category, status, removedImages } = req.body;
+    const { title, description, briefDescription, demoUrl, githubUrl, technologies, category, status, removedImages } = req.body;
 
     // Update fields
     if (title) project.title = title;
     if (description) project.description = description;
+    if (briefDescription) project.briefDescription = briefDescription;
     if (demoUrl !== undefined) project.demoUrl = demoUrl;
     if (githubUrl !== undefined) project.githubUrl = githubUrl;
     if (technologies) {

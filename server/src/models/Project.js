@@ -15,6 +15,13 @@ const projectSchema = new mongoose.Schema({
     minlength: [10, 'Description must be at least 10 characters'],
     maxlength: [2000, 'Description cannot exceed 2000 characters']
   },
+  briefDescription: {
+    type: String,
+    required: [true, 'Brief description is required'],
+    trim: true,
+    minlength: [10, 'Brief description must be at least 10 characters'],
+    maxlength: [150, 'Brief description cannot exceed 150 characters']
+  },
   thumbnail: {
     type: String,
     required: [true, 'Project thumbnail is required']

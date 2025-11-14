@@ -164,7 +164,7 @@ const updateProfile = async (req, res) => {
     }
 
     // Update allowed fields
-    const allowedUpdates = ['username', 'email', 'avatar', 'bio', 'location', 'website', 'socialLinks'];
+    const allowedUpdates = ['username', 'email', 'avatar', 'bio', 'briefBio', 'location', 'website', 'socialLinks'];
     const updates = Object.keys(req.body);
     
     updates.forEach(update => {
@@ -532,6 +532,7 @@ const getUserProfile = async (req, res) => {
         username: user.username,
         avatar: user.avatar,
         bio: user.bio,
+        briefBio: user.briefBio,
         location: user.location,
         website: user.website,
         github: user.github,

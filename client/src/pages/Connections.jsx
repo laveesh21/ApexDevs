@@ -26,7 +26,8 @@ const Connections = () => {
   }, [searchParams]);
 
   const fetchConnections = async () => {
-    if (!currentUser?._id) {
+    const userId = currentUser?._id || currentUser?.id;
+    if (!userId) {
       setLoading(false);
       return;
     }
@@ -34,15 +35,18 @@ const Connections = () => {
     try {
       setLoading(true);
       const [followersResponse, followingResponse] = await Promise.all([
-        authAPI.getUserFollowers(currentUser._id),
-        authAPI.getUserFollowing(currentUser._id)
+        authAPI.getUserFollowers(userId),
+        authAPI.getUserFollowing(userId)
       ]);
 
+      console.log('Followers response:', followersResponse);
+      console.log('Following response:', followingResponse);
+
       if (followersResponse.success) {
-        setFollowers(followersResponse.data);
+        setFollowers(followersResponse.data || []);
       }
       if (followingResponse.success) {
-        setFollowing(followingResponse.data);
+        setFollowing(followingResponse.data || []);
       }
     } catch (err) {
       console.error('Error fetching connections:', err);
@@ -128,49 +132,54 @@ const Connections = () => {
         </div>
       ) : (
         <div className="connections-grid">
-          {currentList.map((user) => (
-            <div key={user._id} className="connection-card">
-              <Link to={`/user/${user._id}`} className="connection-info">
-                <div className="connection-avatar">
-                  {user.avatar ? (
-                    <img src={user.avatar} alt={user.username} />
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                  )}
-                </div>
-                <div className="connection-details">
-                  <h3 className="connection-username">{user.username}</h3>
-                  {user.bio && <p className="connection-bio">{user.bio}</p>}
-                </div>
-              </Link>
-              {currentUser && user._id !== currentUser._id && (
-                <button
-                  className={`action-btn ${
-                    activeTab === 'following' 
-                      ? 'unfollow' 
-                      : isFollowingUser(user._id) 
-                        ? 'following' 
-                        : 'follow'
-                  }`}
+          {currentList.map((user) => {
+            const userDisplayId = user._id || user.id;
+            const currentUserId = currentUser?._id || currentUser?.id;
+            
+            return (
+              <div key={userDisplayId} className="connection-card">
+                <Link to={`/user/${userDisplayId}`} className="connection-info">
+                  <div className="connection-avatar">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.username} />
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="connection-details">
+                    <h3 className="connection-username">{user.username}</h3>
+                    {user.bio && <p className="connection-bio">{user.bio}</p>}
+                  </div>
+                </Link>
+                {currentUser && userDisplayId !== currentUserId && (
+                  <button
+                    className={`action-btn ${
+                      activeTab === 'following' 
+                        ? 'unfollow' 
+                        : isFollowingUser(userDisplayId) 
+                          ? 'following' 
+                          : 'follow'
+                    }`}
                   onClick={() => {
                     if (activeTab === 'following') {
-                      handleFollowToggle(user._id, true);
+                      handleFollowToggle(userDisplayId, true);
                     } else {
-                      handleFollowToggle(user._id, isFollowingUser(user._id));
+                      handleFollowToggle(userDisplayId, isFollowingUser(userDisplayId));
                     }
                   }}
                 >
                   {activeTab === 'following'
                     ? 'Unfollow'
-                    : isFollowingUser(user._id)
+                    : isFollowingUser(userDisplayId)
                       ? 'Following'
                       : 'Follow'}
                 </button>
               )}
             </div>
-          ))}
+          );
+          })}
         </div>
       )}
     </div>

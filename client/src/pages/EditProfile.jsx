@@ -15,6 +15,7 @@ function EditProfile() {
   const [formData, setFormData] = useState({
     username: '',
     bio: '',
+    briefBio: '',
     location: '',
     website: '',
     github: '',
@@ -34,6 +35,7 @@ function EditProfile() {
     setFormData({
       username: user.username || '',
       bio: user.bio || '',
+      briefBio: user.briefBio || '',
       location: user.location || '',
       website: user.website || '',
       github: user.github || '',
@@ -241,6 +243,20 @@ function EditProfile() {
                 rows="4"
                 placeholder="Tell us about yourself..."
               />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="briefBio">Brief Bio</label>
+              <textarea
+                id="briefBio"
+                name="briefBio"
+                value={formData.briefBio}
+                onChange={handleChange}
+                rows="2"
+                maxLength={100}
+                placeholder="A short summary (max 100 characters)"
+              />
+              <small className="char-count">{formData.briefBio.length}/100</small>
             </div>
 
             <div className="form-group">
