@@ -98,6 +98,12 @@ function DiscussionCard({ discussion }) {
               <span className="meta-icon">👁</span>
               {discussion.views} views
             </span>
+            {discussion.updatedAt && new Date(discussion.updatedAt).getTime() !== new Date(discussion.createdAt).getTime() && (
+              <span className="meta-item edited-indicator">
+                <span className="meta-icon">✏️</span>
+                edited
+              </span>
+            )}
           </div>
           <span className="meta-time">{formatTimeAgo(discussion.createdAt)}</span>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
+import Modal from '../components/Modal';
 import './EditProfile.css';
 
 function EditProfile() {
@@ -24,6 +25,15 @@ function EditProfile() {
     skills: []
   });
   const [skillInput, setSkillInput] = useState('');
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null,
+    confirmText: 'OK',
+    cancelText: 'Cancel'
+  });
 
   useEffect(() => {
     if (!user) {
@@ -146,10 +156,16 @@ function EditProfile() {
       // Update user in context
       await updateUser(response.data);
       
-      setSuccess('Profile updated successfully!');
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+      // Show success modal
+      setModalState({
+        isOpen: true,
+        title: 'Success',
+        message: 'Profile updated successfully!',
+        type: 'success',
+        onConfirm: () => navigate('/profile'),
+        confirmText: 'OK',
+        cancelText: ''
+      });
     } catch (err) {
       setError(err.message || 'Failed to update profile');
     } finally {
@@ -240,7 +256,7 @@ function EditProfile() {
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
-                rows="4"
+                rows="20"
                 placeholder="Tell us about yourself..."
               />
             </div>
@@ -253,10 +269,10 @@ function EditProfile() {
                 value={formData.briefBio}
                 onChange={handleChange}
                 rows="2"
-                maxLength={100}
-                placeholder="A short summary (max 100 characters)"
+                maxLength={150}
+                placeholder="A short summary (max 150 characters)"
               />
-              <small className="char-count">{formData.briefBio.length}/100</small>
+              <small className="char-count">{formData.briefBio.length}/150</small>
             </div>
 
             <div className="form-group">
@@ -368,6 +384,17 @@ function EditProfile() {
           </div>
         </form>
       </div>
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ ...modalState, isOpen: false })}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+        onConfirm={modalState.onConfirm}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+      />
     </div>
   );
 }

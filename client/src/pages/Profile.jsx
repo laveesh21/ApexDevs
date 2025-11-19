@@ -6,6 +6,9 @@ import ProjectCard from '../components/ProjectCard';
 import DiscussionCard from '../components/DiscussionCard';
 import NewProjectForm from '../components/NewProjectForm';
 import EditProjectForm from '../components/EditProjectForm';
+import websiteIcon from '../assets/website.svg';
+import linkedinIcon from '../assets/linkedin.svg';
+import locationIcon from '../assets/location_icon.svg';
 import './Profile.css';
 
 function Profile() {
@@ -324,10 +327,10 @@ function Profile() {
                       value={editForm.briefBio}
                       onChange={handleChange}
                       rows="2"
-                      maxLength={100}
-                      placeholder="A short summary (max 100 characters)"
+                      maxLength={150}
+                      placeholder="A short summary (max 150 characters)"
                     />
-                    <small className="char-count">{editForm.briefBio.length}/100</small>
+                    <small className="char-count">{editForm.briefBio.length}/150</small>
                   </div>
                   <div className="form-group">
                     <label>Location</label>
@@ -336,7 +339,7 @@ function Profile() {
                       name="location"
                       value={editForm.location}
                       onChange={handleChange}
-                      maxLength={100}
+                      maxLength={150}
                       placeholder="e.g., San Francisco, CA"
                     />
                   </div>
@@ -420,13 +423,13 @@ function Profile() {
                       <div className="info-items-grid">
                         {userInfo.location && (
                           <div className="info-item">
-                            <span className="info-icon">📍</span>
+                            <img src={locationIcon} alt="location" className="info-icon-img" />
                             <span>{userInfo.location}</span>
                           </div>
                         )}
                         {userInfo.website && (
                           <div className="info-item">
-                            <span className="info-icon">🌐</span>
+                            <img src={websiteIcon} alt="website" className="info-icon-img" />
                             <a href={userInfo.website} target="_blank" rel="noopener noreferrer">
                               {userInfo.website}
                             </a>
@@ -454,7 +457,7 @@ function Profile() {
                         )}
                         {userInfo.linkedin && (
                           <div className="info-item">
-                            <span className="info-icon">💼</span>
+                            <img src={linkedinIcon} alt="LinkedIn" className="info-icon-img" />
                             <a href={`https://linkedin.com/in/${userInfo.linkedin}`} target="_blank" rel="noopener noreferrer">
                               LinkedIn
                             </a>

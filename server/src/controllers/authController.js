@@ -154,6 +154,9 @@ const getMe = async (req, res) => {
 // @access  Private
 const updateProfile = async (req, res) => {
   try {
+
+    console.log('UpdateProfile req.body:', req.body);
+
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -163,14 +166,25 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    // Update allowed fields
-    const allowedUpdates = ['username', 'email', 'avatar', 'bio', 'briefBio', 'location', 'website', 'socialLinks'];
+    // Update allowed fields (include flat social fields too)
+    const allowedUpdates = ['username', 'email', 'avatar', 'bio', 'briefBio', 'location', 'website', 'github', 'twitter', 'linkedin', 'socialLinks', 'skills'];
     const updates = Object.keys(req.body);
     
     updates.forEach(update => {
       if (allowedUpdates.includes(update)) {
         if (update === 'socialLinks') {
-          user.socialLinks = { ...user.socialLinks, ...req.body.socialLinks };
+          // support nested socialLinks object: map to flat fields if model uses them
+          const links = req.body.socialLinks || {};
+          if (links.github !== undefined) user.github = links.github;
+          if (links.twitter !== undefined) user.twitter = links.twitter;
+          if (links.linkedin !== undefined) user.linkedin = links.linkedin;
+          if (links.website !== undefined) user.website = links.website;
+          // also keep a socialLinks object if schema ever includes it
+          try {
+            user.socialLinks = { ...(user.socialLinks || {}), ...links };
+          } catch (e) {
+            // ignore if user.socialLinks is not defined in schema
+          }
         } else {
           user[update] = req.body[update];
         }

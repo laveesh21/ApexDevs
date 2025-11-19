@@ -59,6 +59,9 @@ const getOrCreateConversation = async (req, res) => {
 
     // Validate user exists and check message permissions
     const otherUser = await User.findById(userId).select('username avatar messagePermission allowMessages followers following blockedUsers');
+   
+    console.log("1..OTHER USER FETCH:", otherUser);
+   
     if (!otherUser) {
       return res.status(404).json({
         success: false,
@@ -75,16 +78,18 @@ const getOrCreateConversation = async (req, res) => {
     }
 
     // Check if either user has blocked the other
-    const currentUser = await User.findById(req.user._id);
+    const currentUser = await User.findById(req.user._id).select('blockedUsers');
     
-    if (otherUser.blockedUsers && otherUser.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
+    console.log("2..USER :", req.user._id);
+
+    if (otherUser.blockedUsers && otherUser.blockedUsers.length > 0 && otherUser.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
       return res.status(403).json({
         success: false,
         message: 'You are blocked by this user'
       });
     }
     
-    if (currentUser.blockedUsers && currentUser.blockedUsers.some(id => id.toString() === userId)) {
+    if (currentUser.blockedUsers && currentUser.blockedUsers.length > 0 && currentUser.blockedUsers.some(id => id.toString() === userId)) {
       return res.status(403).json({
         success: false,
         message: 'You have blocked this user'
@@ -98,12 +103,20 @@ const getOrCreateConversation = async (req, res) => {
 
     // Check message permissions
     const messagePermission = otherUser.messagePermission || 'everyone';
+    const allowMessages = otherUser.allowMessages !== false; // Default to true if undefined
     const currentUserId = req.user._id.toString();
+    
+    console.log('Message permission check:', {
+      targetUserId: userId,
+      messagePermission,
+      allowMessages,
+      existingConversation: !!existingConversation
+    });
     
     // If conversation exists, always allow (existing conversations)
     if (!existingConversation) {
-      // Check for new conversation permissions
-      if (messagePermission === 'none' || otherUser.allowMessages === false) {
+      // Check for new conversation permissions - only block if explicitly disabled
+      if (messagePermission === 'none' || allowMessages === false) {
         return res.status(403).json({
           success: false,
           message: 'This user has disabled messages'
@@ -118,8 +131,8 @@ const getOrCreateConversation = async (req, res) => {
       }
       
       if (messagePermission === 'followers') {
-        const isFollower = otherUser.followers.some(f => f.toString() === currentUserId);
-        const isFollowing = otherUser.following.some(f => f.toString() === currentUserId);
+        const isFollower = otherUser.followers && otherUser.followers.length > 0 && otherUser.followers.some(f => f.toString() === currentUserId);
+        const isFollowing = otherUser.following && otherUser.following.length > 0 && otherUser.following.some(f => f.toString() === currentUserId);
         
         if (!isFollower && !isFollowing) {
           return res.status(403).json({
@@ -128,6 +141,8 @@ const getOrCreateConversation = async (req, res) => {
           });
         }
       }
+      
+      // If messagePermission is 'everyone' (or undefined/default), allow the conversation
     }
 
     // Find or create conversation
@@ -142,15 +157,49 @@ const getOrCreateConversation = async (req, res) => {
 
     // Create new conversation if doesn't exist
     if (!conversation) {
-      conversation = await Conversation.create({
-        participants: [req.user._id, userId],
-        unreadCount: new Map([
-          [req.user._id.toString(), 0],
-          [userId, 0]
-        ])
-      });
+      try {
+        // Convert to ObjectIds and sort to ensure consistent order for unique index
+        const mongoose = require('mongoose');
+        const participantIds = [req.user._id, mongoose.Types.ObjectId(userId)].sort((a, b) => 
+          a.toString().localeCompare(b.toString())
+        );
+        
+        console.log('Creating conversation with participants:', {
+          currentUser: req.user._id.toString(),
+          otherUser: userId,
+          sortedIds: participantIds.map(id => id.toString())
+        });
+        
+        conversation = await Conversation.create({
+          participants: participantIds,
+          unreadCount: new Map([
+            [req.user._id.toString(), 0],
+            [userId, 0]
+          ])
+        });
 
-      await conversation.populate('participants', 'username avatar');
+        console.log('Conversation created successfully:', conversation._id);
+        await conversation.populate('participants', 'username avatar');
+      } catch (createError) {
+        // If duplicate key error (race condition), try to find it again
+        if (createError.code === 11000) {
+          console.log('Duplicate conversation detected, fetching existing one');
+          conversation = await Conversation.findOne({
+            participants: { $all: [req.user._id, userId] }
+          })
+            .populate('participants', 'username avatar')
+            .populate({
+              path: 'lastMessage',
+              select: 'content sender createdAt'
+            });
+          
+          if (!conversation) {
+            throw new Error('Failed to create or find conversation');
+          }
+        } else {
+          throw createError;
+        }
+      }
     }
 
     const unreadCount = conversation.unreadCount.get(req.user._id.toString()) || 0;
@@ -169,9 +218,10 @@ const getOrCreateConversation = async (req, res) => {
     });
   } catch (error) {
     console.error('Get/create conversation error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: 'Server error while creating conversation',
       error: error.message
     });
   }
@@ -262,7 +312,13 @@ const sendMessage = async (req, res) => {
       });
     }
 
-    if (!conversation.hasParticipant(req.user._id)) {
+    // Check if user is participant (handle populated participants)
+    const isParticipant = conversation.participants.some(p => {
+      const participantId = p._id || p;
+      return participantId.toString() === req.user._id.toString();
+    });
+    
+    if (!isParticipant) {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to send messages in this conversation'
@@ -279,15 +335,15 @@ const sendMessage = async (req, res) => {
       const otherUser = await User.findById(otherParticipantDoc._id);
       const currentUser = await User.findById(req.user._id);
       
-      // Check if either user has blocked the other
-      if (otherUser.blockedUsers && otherUser.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
+      // Check if either user has blocked the other (safely handle undefined arrays)
+      if (otherUser.blockedUsers && otherUser.blockedUsers.length > 0 && otherUser.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
         return res.status(403).json({
           success: false,
           message: 'You are blocked by this user'
         });
       }
       
-      if (currentUser.blockedUsers && currentUser.blockedUsers.some(id => id.toString() === otherParticipantDoc._id.toString())) {
+      if (currentUser.blockedUsers && currentUser.blockedUsers.length > 0 && currentUser.blockedUsers.some(id => id.toString() === otherParticipantDoc._id.toString())) {
         return res.status(403).json({
           success: false,
           message: 'You have blocked this user'

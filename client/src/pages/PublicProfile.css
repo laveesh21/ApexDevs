@@ -376,19 +376,32 @@
   gap: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.95rem;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .detail-icon {
   font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .detail-item a {
   color: var(--accent-green);
   text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .detail-item a:hover {
   text-decoration: underline;
+}
+
+.detail-item span:not(.detail-icon) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Social Links */
@@ -412,6 +425,8 @@
   font-weight: 600;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .social-link:hover {
@@ -422,6 +437,21 @@
 
 .social-link svg {
   fill: currentColor;
+  flex-shrink: 0;
+}
+
+.social-link img,
+.detail-icon-img {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.social-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
 }
 
 /* Skills Section */

@@ -108,6 +108,8 @@ function Chat() {
       fetchConversations();
     } catch (error) {
       console.error('Error opening conversation:', error);
+      console.error('Error details:', error.message);
+      
       // Show user-friendly error message
       const errorMsg = error.message || '';
       if (errorMsg.includes('disabled messages')) {
@@ -118,8 +120,10 @@ function Chat() {
         alert('This user only accepts messages from people they follow or who follow them.');
       } else if (errorMsg.includes('blocked')) {
         alert('Cannot message this user due to blocking.');
+      } else if (errorMsg.includes('User not found')) {
+        alert('User not found. They may have deleted their account.');
       } else {
-        alert('Unable to start conversation. Please try again.');
+        alert(`Unable to start conversation: ${errorMsg || 'Please try again.'}`);
       }
     }
   };
@@ -456,7 +460,11 @@ function Chat() {
                 messages.map((message) => (
                   <div
                     key={message._id}
-                    className={`message ${message.sender._id === user._id ? 'message-sent' : 'message-received'}`}
+                    className={`message ${
+                      (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
+                        ? 'message-sent' 
+                        : 'message-received'
+                    }`}
                   >
                     <div className="message-bubble">
                       <p className="message-content">{message.content}</p>

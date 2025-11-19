@@ -732,6 +732,12 @@
   font-size: 0.8rem;
 }
 
+.updated-time {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
 /* Comment Voting */
 .comment-voting {
   display: flex;
@@ -933,6 +939,117 @@
 .thread-edit-form .btn-submit:hover {
   background: var(--accent-green-dark);
   transform: translateY(-2px);
+}
+
+/* Comment Actions (Edit/Delete) */
+.comment-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.comment-action-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.comment-action-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-green);
+}
+
+.comment-action-btn.delete:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.comment-author-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Comment Edit Form */
+.comment-edit-form {
+  margin-top: 1rem;
+}
+
+.comment-edit-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+.comment-edit-textarea:focus {
+  outline: none;
+  border-color: var(--accent-green);
+}
+
+.comment-edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.btn-cancel-small,
+.btn-submit-small {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel-small {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-cancel-small:hover {
+  background: var(--hover-bg);
+}
+
+.btn-submit-small {
+  background: var(--accent-green);
+  color: white;
+  border: none;
+}
+
+.btn-submit-small:hover {
+  background: var(--accent-green-dark);
+}
+
+/* See more / See less button */
+.see-more-btn {
+  margin-top: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--accent-green);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+}
+
+.see-more-btn:hover {
+  text-decoration: underline;
 }
 
 .thread-edit-form .btn-submit:disabled {

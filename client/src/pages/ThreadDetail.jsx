@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { threadAPI } from '../services/api';
+import Modal from '../components/Modal';
 import './ThreadDetail.css';
 
 function ThreadDetail() {
@@ -22,6 +23,18 @@ function ThreadDetail() {
     content: '',
     category: '',
     tags: []
+  });
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editCommentContent, setEditCommentContent] = useState('');
+  const [showFullContent, setShowFullContent] = useState(false);
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null,
+    confirmText: '',
+    cancelText: ''
   });
   const hasFetched = useRef(false);
   const voteTimeout = useRef(null);
@@ -99,7 +112,12 @@ function ThreadDetail() {
 
   const handleVote = (type) => {
     if (!token) {
-      alert('Please login to vote');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to vote on threads.',
+        type: 'info'
+      });
       return;
     }
 
@@ -143,7 +161,12 @@ function ThreadDetail() {
   // Comment voting handler
   const handleCommentVote = async (commentId, type) => {
     if (!token) {
-      alert('Please login to vote');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to vote on comments.',
+        type: 'info'
+      });
       return;
     }
 
@@ -166,7 +189,12 @@ function ThreadDetail() {
       }));
     } catch (err) {
       console.error('Failed to vote on comment:', err);
-      alert('Failed to vote. Please try again.');
+      setModalState({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to vote. Please try again.',
+        type: 'error'
+      });
     }
   };
 
@@ -174,7 +202,12 @@ function ThreadDetail() {
     e.preventDefault();
     
     if (!token) {
-      alert('Please login to comment');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to comment on threads.',
+        type: 'info'
+      });
       return;
     }
 
@@ -197,7 +230,12 @@ function ThreadDetail() {
       setNewComment('');
     } catch (err) {
       console.error('Failed to add comment:', err);
-      alert('Failed to add comment. Please try again.');
+      setModalState({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to add comment. Please try again.',
+        type: 'error'
+      });
     }
   };
 
@@ -232,7 +270,12 @@ function ThreadDetail() {
     e.preventDefault();
     
     if (!token) {
-      alert('Please login to edit');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to edit threads.',
+        type: 'info'
+      });
       return;
     }
 
@@ -240,10 +283,20 @@ function ThreadDetail() {
       const response = await threadAPI.update(token, id, editFormData);
       setThread(response.data);
       setIsEditing(false);
-      alert('Thread updated successfully!');
+      setModalState({
+        isOpen: true,
+        title: 'Success',
+        message: 'Thread updated successfully!',
+        type: 'success'
+      });
     } catch (err) {
       console.error('Failed to update thread:', err);
-      alert('Failed to update thread. Please try again.');
+      setModalState({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to update thread. Please try again.',
+        type: 'error'
+      });
     }
   };
 
@@ -257,25 +310,135 @@ function ThreadDetail() {
     });
   };
 
-  // Handle thread delete
-  const handleDelete = async () => {
+  // Handle comment edit
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment._id);
+    setEditCommentContent(comment.content);
+  };
+
+  const handleUpdateComment = async (commentId) => {
     if (!token) {
-      alert('Please login to delete');
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to edit comments.',
+        type: 'info'
+      });
       return;
     }
 
-    if (!window.confirm('Are you sure you want to delete this thread? This action cannot be undone.')) {
+    if (!editCommentContent.trim()) {
+      setModalState({
+        isOpen: true,
+        title: 'Validation Error',
+        message: 'Comment content cannot be empty.',
+        type: 'warning'
+      });
       return;
     }
 
     try {
-      await threadAPI.delete(token, id);
-      alert('Thread deleted successfully!');
-      navigate('/community');
+      const response = await threadAPI.updateComment(token, commentId, { content: editCommentContent });
+      // Update the comment in the list
+      setComments(comments.map(c => 
+        c._id === commentId ? response.data : c
+      ));
+      setEditingCommentId(null);
+      setEditCommentContent('');
     } catch (err) {
-      console.error('Failed to delete thread:', err);
-      alert('Failed to delete thread. Please try again.');
+      console.error('Failed to update comment:', err);
+      setModalState({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to update comment. Please try again.',
+        type: 'error'
+      });
     }
+  };
+
+  const handleCancelCommentEdit = () => {
+    setEditingCommentId(null);
+    setEditCommentContent('');
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!token) {
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to delete comments.',
+        type: 'info'
+      });
+      return;
+    }
+
+    setModalState({
+      isOpen: true,
+      title: 'Delete Comment',
+      message: 'Are you sure you want to delete this comment?',
+      type: 'warning',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        try {
+          await threadAPI.deleteComment(token, id, commentId);
+          setComments(comments.filter(c => c._id !== commentId));
+          const newCommentVotes = { ...commentVotes };
+          delete newCommentVotes[commentId];
+          setCommentVotes(newCommentVotes);
+        } catch (err) {
+          console.error('Failed to delete comment:', err);
+          setModalState({
+            isOpen: true,
+            title: 'Error',
+            message: 'Failed to delete comment. Please try again.',
+            type: 'error'
+          });
+        }
+      }
+    });
+  };
+
+  // Handle thread delete
+  const handleDelete = async () => {
+    if (!token) {
+      setModalState({
+        isOpen: true,
+        title: 'Login Required',
+        message: 'Please login to delete threads.',
+        type: 'info'
+      });
+      return;
+    }
+
+    setModalState({
+      isOpen: true,
+      title: 'Delete Thread',
+      message: 'Are you sure you want to delete this thread? This action cannot be undone.',
+      type: 'error',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        try {
+          await threadAPI.delete(token, id);
+          setModalState({
+            isOpen: true,
+            title: 'Success',
+            message: 'Thread deleted successfully!',
+            type: 'success',
+            onConfirm: () => navigate('/community')
+          });
+        } catch (err) {
+          console.error('Failed to delete thread:', err);
+          setModalState({
+            isOpen: true,
+            title: 'Error',
+            message: 'Failed to delete thread. Please try again.',
+            type: 'error'
+          });
+        }
+      }
+    });
   };
 
   if (loading) {
@@ -360,7 +523,7 @@ function ThreadDetail() {
                 >
                   {thread.category}
                 </span>
-                {user && thread.author._id === user._id && !isEditing && (
+                {user && (thread.author._id === user._id || thread.author._id === user.id || thread.author.id === user._id || thread.author.id === user.id) && !isEditing && (
                   <div className="thread-actions">
                     <button className="action-btn edit-btn" onClick={handleEditClick}>
                       ✏️ Edit
@@ -448,26 +611,43 @@ function ThreadDetail() {
             ) : (
               <>
                 <div className="thread-content">
-                  {thread.content.split('\n').map((paragraph, index) => {
-                    // Handle code blocks
-                    if (paragraph.startsWith('```')) {
-                      return null; // We'll handle this with a separate code block parser
-                    }
-                    // Handle bold text
-                    const formattedParagraph = paragraph
-                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/- (.*?)$/gm, '<li>$1</li>');
-                    
-                    if (formattedParagraph.includes('<li>')) {
-                      return (
-                        <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                  {(() => {
+                    const raw = thread.content || '';
+                    const isLong = raw.length > 1500;
+                    const contentToUse = showFullContent || !isLong ? raw : raw.slice(0, 1500);
+
+                    return contentToUse.split('\n').map((paragraph, index) => {
+                      // Handle code blocks
+                      if (paragraph.startsWith('```')) {
+                        return null; // leave advanced parsing for later
+                      }
+
+                      const formattedParagraph = paragraph
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/- (.*?)$/gm, '<li>$1</li>');
+
+                      if (formattedParagraph.includes('<li>')) {
+                        return (
+                          <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                        );
+                      }
+
+                      return paragraph.trim() && (
+                        <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
                       );
-                    }
-                    
-                    return paragraph.trim() && (
-                      <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                    );
-                  })}
+                    });
+                  })()}
+
+                  {/* See more / See less */}
+                  {(thread.content || '').length > 1500 && (
+                    <button
+                      type="button"
+                      className="see-more-btn"
+                      onClick={() => setShowFullContent(s => !s)}
+                    >
+                      {showFullContent ? 'See less' : 'See more'}
+                    </button>
+                  )}
                 </div>
 
                 <div className="thread-tags">
@@ -495,6 +675,9 @@ function ThreadDetail() {
                 <span className="author-username">{thread.author?.username || 'Anonymous'}</span>
               )}
               <span className="author-time">• {formatTimeAgo(thread.createdAt)}</span>
+              {thread.updatedAt && new Date(thread.updatedAt).getTime() !== new Date(thread.createdAt).getTime() && (
+                <span className="updated-time">• edited {formatTimeAgo(thread.updatedAt)}</span>
+              )}
             </div>
           </div>
         </div>
@@ -545,25 +728,71 @@ function ThreadDetail() {
                       <span className="author-username">{comment.author?.username || 'Anonymous'}</span>
                     )}
                     <span className="author-time">• {formatTimeAgo(comment.createdAt)}</span>
+                    {comment.updatedAt && new Date(comment.updatedAt).getTime() !== new Date(comment.createdAt).getTime() && (
+                      <span className="updated-time">• edited {formatTimeAgo(comment.updatedAt)}</span>
+                    )}
+                    {user && (comment.author._id === user._id || comment.author._id === user.id || comment.author.id === user._id || comment.author.id === user.id) && editingCommentId !== comment._id && (
+                      <div className="comment-actions">
+                        <button 
+                          className="comment-action-btn edit" 
+                          onClick={() => handleEditComment(comment)}
+                          title="Edit comment"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          className="comment-action-btn delete" 
+                          onClick={() => handleDeleteComment(comment._id)}
+                          title="Delete comment"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="answer-content">
-                    {comment.content.split('\n').map((paragraph, index) => {
-                      const formattedParagraph = paragraph
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/- (.*?)$/gm, '<li>$1</li>');
-                      
-                      if (formattedParagraph.includes('<li>')) {
-                        return (
-                          <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                  {editingCommentId === comment._id ? (
+                    <div className="comment-edit-form">
+                      <textarea
+                        className="comment-edit-textarea"
+                        value={editCommentContent}
+                        onChange={(e) => setEditCommentContent(e.target.value)}
+                        rows="4"
+                      />
+                      <div className="comment-edit-actions">
+                        <button 
+                          className="btn-cancel-small" 
+                          onClick={handleCancelCommentEdit}
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          className="btn-submit-small" 
+                          onClick={() => handleUpdateComment(comment._id)}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="answer-content">
+                      {comment.content.split('\n').map((paragraph, index) => {
+                        const formattedParagraph = paragraph
+                          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                          .replace(/- (.*?)$/gm, '<li>$1</li>');
+                        
+                        if (formattedParagraph.includes('<li>')) {
+                          return (
+                            <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                          );
+                        }
+                        
+                        return paragraph.trim() && (
+                          <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
                         );
-                      }
-                      
-                      return paragraph.trim() && (
-                        <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                      );
-                    })}
-                  </div>
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -636,6 +865,17 @@ function ThreadDetail() {
           </ul>
         </div>
       </aside>
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ ...modalState, isOpen: false })}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+        onConfirm={modalState.onConfirm}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+      />
     </div>
   );
 }
