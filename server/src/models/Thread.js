@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const threadSchema = new mongoose.Schema({
   title: {
@@ -78,4 +78,4 @@ threadSchema.index({ author: 1, createdAt: -1 });
 threadSchema.index({ category: 1, createdAt: -1 });
 threadSchema.index({ isPinned: -1, createdAt: -1 });
 
-module.exports = mongoose.model('Thread', threadSchema);
+export default mongoose.model('Thread', threadSchema);

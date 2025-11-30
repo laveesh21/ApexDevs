@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { 
+import { 
   register, 
   login, 
   getMe, 
@@ -17,9 +17,9 @@ const {
   blockUser,
   unblockUser,
   getBlockedUsers
-} = require('../controllers/authController');
-const { protect, optionalAuth } = require('../middleware/auth');
-const { uploadAvatar: upload } = require('../middleware/upload');
+} from '../controllers/authController.js';
+import { protect, optionalAuth } from '../middleware/auth.js';
+import { uploadAvatar as upload } from '../middleware/upload.js';
 
 // Public routes
 router.post('/register', register);
@@ -41,4 +41,4 @@ router.post('/users/:userId/block', protect, blockUser);
 router.delete('/users/:userId/block', protect, unblockUser);
 router.get('/blocked', protect, getBlockedUsers);
 
-module.exports = router;
+export default router;

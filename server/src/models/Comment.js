@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const commentSchema = new mongoose.Schema({
   content: {
@@ -60,4 +60,4 @@ commentSchema.virtual('voteScore').get(function() {
 commentSchema.index({ thread: 1, createdAt: 1 });
 commentSchema.index({ parentComment: 1 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+export default mongoose.model('Comment', commentSchema);

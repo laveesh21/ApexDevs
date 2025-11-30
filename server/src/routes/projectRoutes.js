@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {
+import {
   createProject,
   getProjects,
   getProjectById,
@@ -10,9 +10,9 @@ const {
   addReview,
   getReviews,
   deleteReview
-} = require('../controllers/projectController');
-const { protect, optionalAuth } = require('../middleware/auth');
-const { uploadProjectImages } = require('../middleware/upload');
+} from '../controllers/projectController.js';
+import { protect, optionalAuth } from '../middleware/auth.js';
+import { uploadProjectImages } from '../middleware/upload.js';
 
 // Public routes
 router.get('/', getProjects);
@@ -47,4 +47,4 @@ router.post('/:id/review', protect, addReview);
 router.get('/:id/reviews', optionalAuth, getReviews);
 router.delete('/:id/review', protect, deleteReview);
 
-module.exports = router;
+export default router;

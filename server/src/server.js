@@ -1,7 +1,11 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/db');
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
+import threadRoutes from './routes/threadRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -20,10 +24,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/projects', require('./routes/projectRoutes'));
-app.use('/api/threads', require('./routes/threadRoutes'));
-app.use('/api/chat', require('./routes/chatRoutes'));
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/threads', threadRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

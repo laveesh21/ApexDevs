@@ -1,5 +1,5 @@
-const Thread = require('../models/Thread');
-const Comment = require('../models/Comment');
+import Thread from '../models/Thread.js';
+import Comment from '../models/Comment.js';
 
 // @desc    Create new thread
 // @route   POST /api/threads
@@ -718,7 +718,7 @@ const getUserThreads = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createThread,
   getThreads,
   getThreadById,

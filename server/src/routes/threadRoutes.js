@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {
+import {
   createThread,
   getThreads,
   getThreadById,
@@ -15,8 +15,8 @@ const {
   toggleCommentLike,
   toggleCommentVote,
   getUserThreads
-} = require('../controllers/threadController');
-const { protect, optionalAuth } = require('../middleware/auth');
+} from '../controllers/threadController.js';
+import { protect, optionalAuth } from '../middleware/auth.js';
 
 // Thread routes
 router.post('/', protect, createThread);
@@ -36,4 +36,4 @@ router.delete('/comments/:commentId', protect, deleteComment);
 router.put('/comments/:commentId/like', protect, toggleCommentLike);
 router.put('/comments/:commentId/vote', protect, toggleCommentVote);
 
-module.exports = router;
+export default router;

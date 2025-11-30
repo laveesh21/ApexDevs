@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const conversationSchema = new mongoose.Schema({
   participants: [{
@@ -28,10 +28,8 @@ conversationSchema.path('participants').validate(function(value) {
   return value.length === 2;
 }, 'A conversation must have exactly 2 participants');
 
-// Prevent duplicate conversations between same users
-conversationSchema.index({ participants: 1 }, { unique: true });
-
-// Index for faster queries
+// Index for faster queries (non-unique, just for performance)
+conversationSchema.index({ participants: 1 });
 conversationSchema.index({ lastMessageAt: -1 });
 
 // Method to check if user is participant
@@ -46,4 +44,4 @@ conversationSchema.methods.getOtherParticipant = function(userId) {
 
 const Conversation = mongoose.model('Conversation', conversationSchema);
 
-module.exports = Conversation;
+export default Conversation;

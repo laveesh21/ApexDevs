@@ -1,6 +1,6 @@
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('../config/cloudinary');
+import multer from 'multer';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
 // Configure Cloudinary storage for avatars
 const avatarStorage = new CloudinaryStorage({
@@ -64,7 +64,7 @@ const uploadProjectImages = multer({
   fileFilter: fileFilter
 });
 
-module.exports = {
+export {
   uploadAvatar,
   uploadProjectImages
 };

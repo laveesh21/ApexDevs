@@ -1,14 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { protect } = require('../middleware/auth');
-const {
+import { protect } from '../middleware/auth.js';
+import {
   getConversations,
   getOrCreateConversation,
   getMessages,
   sendMessage,
   markAsRead,
   deleteConversation
-} = require('../controllers/chatController');
+} from '../controllers/chatController.js';
 
 // All chat routes require authentication
 router.use(protect);
@@ -31,4 +31,4 @@ router.put('/conversation/:conversationId/read', markAsRead);
 // Delete conversation
 router.delete('/conversation/:conversationId', deleteConversation);
 
-module.exports = router;
+export default router;

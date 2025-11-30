@@ -1,6 +1,7 @@
-const Project = require('../models/Project');
-const User = require('../models/User');
-const Review = require('../models/Review');
+import Project from '../models/Project.js';
+import User from '../models/User.js';
+import Review from '../models/Review.js';
+import cloudinary from '../config/cloudinary.js';
 
 // @desc    Create a new project
 // @route   POST /api/projects
@@ -255,7 +256,6 @@ const updateProject = async (req, res) => {
 
     // Handle removed images
     if (removedImages) {
-      const cloudinary = require('../config/cloudinary');
       let imagesToRemove = [];
       
       try {
@@ -284,7 +284,6 @@ const updateProject = async (req, res) => {
     if (req.files) {
       if (req.files.thumbnail && req.files.thumbnail[0]) {
         // Delete old thumbnail from Cloudinary
-        const cloudinary = require('../config/cloudinary');
         if (project.thumbnail.includes('cloudinary.com')) {
           const urlParts = project.thumbnail.split('/');
           const publicIdWithExtension = urlParts[urlParts.length - 1];
@@ -346,7 +345,6 @@ const deleteProject = async (req, res) => {
     }
 
     // Delete images from Cloudinary
-    const cloudinary = require('../config/cloudinary');
     const imagesToDelete = [project.thumbnail, ...project.images];
 
     for (const imageUrl of imagesToDelete) {
@@ -578,7 +576,7 @@ const deleteReview = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   createProject,
   getProjects,
   getProjectById,

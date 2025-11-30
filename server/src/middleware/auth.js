@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const protect = async (req, res, next) => {
   let token;
@@ -7,14 +7,9 @@ const protect = async (req, res, next) => {
   // Check for token in Authorization header
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Get user from token (excluding password)
-      req.user = await User.findById(decoded.id).select('-password');
+      req.user = await User.findById(decoded.id).select('-password'); // Exclude password field
 
       if (!req.user) {
         return res.status(401).json({
@@ -41,7 +36,8 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Admin middleware
+
+// ADMIN MIDDLEWARE
 const admin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     next();
@@ -53,23 +49,18 @@ const admin = (req, res, next) => {
   }
 };
 
-// Optional auth middleware - attaches user if token exists, but doesn't require it
+
+// OPTIONAL AUTH MIDDLEWARE - attaches user if token exists, but doesn't require it
 const optionalAuth = async (req, res, next) => {
   let token;
 
   // Check for token in Authorization header
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Get user from token (excluding password)
       req.user = await User.findById(decoded.id).select('-password');
     } catch (error) {
-      // If token is invalid, just continue without user
       console.log('Optional auth: Invalid token, continuing as anonymous');
     }
   }
@@ -78,4 +69,4 @@ const optionalAuth = async (req, res, next) => {
   next();
 };
 
-module.exports = { protect, admin, optionalAuth };
+export { protect, admin, optionalAuth };

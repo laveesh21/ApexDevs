@@ -1,6 +1,7 @@
-const Conversation = require('../models/Conversation');
-const Message = require('../models/Message');
-const User = require('../models/User');
+import Conversation from '../models/Conversation.js';
+import Message from '../models/Message.js';
+import User from '../models/User.js';
+import mongoose from 'mongoose';
 
 // @desc    Get all conversations for logged-in user
 // @route   GET /api/chat/conversations
@@ -60,8 +61,6 @@ const getOrCreateConversation = async (req, res) => {
     // Validate user exists and check message permissions
     const otherUser = await User.findById(userId).select('username avatar messagePermission allowMessages followers following blockedUsers');
    
-    console.log("1..OTHER USER FETCH:", otherUser);
-   
     if (!otherUser) {
       return res.status(404).json({
         success: false,
@@ -79,8 +78,6 @@ const getOrCreateConversation = async (req, res) => {
 
     // Check if either user has blocked the other
     const currentUser = await User.findById(req.user._id).select('blockedUsers');
-    
-    console.log("2..USER :", req.user._id);
 
     if (otherUser.blockedUsers && otherUser.blockedUsers.length > 0 && otherUser.blockedUsers.some(id => id.toString() === req.user._id.toString())) {
       return res.status(403).json({
@@ -96,25 +93,24 @@ const getOrCreateConversation = async (req, res) => {
       });
     }
 
-    // Check if conversation already exists
-    const existingConversation = await Conversation.findOne({
-      participants: { $all: [req.user._id, userId] }
-    });
+    // Convert userId to ObjectId for queries
+    const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // Check message permissions
-    const messagePermission = otherUser.messagePermission || 'everyone';
-    const allowMessages = otherUser.allowMessages !== false; // Default to true if undefined
-    const currentUserId = req.user._id.toString();
-    
-    console.log('Message permission check:', {
-      targetUserId: userId,
-      messagePermission,
-      allowMessages,
-      existingConversation: !!existingConversation
-    });
-    
-    // If conversation exists, always allow (existing conversations)
-    if (!existingConversation) {
+    // Check if conversation already exists (check BEFORE permission checks to allow existing conversations)
+    let conversation = await Conversation.findOne({
+      participants: { $all: [req.user._id, userObjectId] }
+    })
+      .populate('participants', 'username avatar')
+      .populate({
+        path: 'lastMessage',
+        select: 'content sender createdAt'
+      });
+
+    // Check message permissions only if conversation doesn't exist
+    if (!conversation) {
+      const messagePermission = otherUser.messagePermission || 'everyone';
+      const allowMessages = otherUser.allowMessages !== false;
+      const currentUserId = req.user._id.toString();
       // Check for new conversation permissions - only block if explicitly disabled
       if (messagePermission === 'none' || allowMessages === false) {
         return res.status(403).json({
@@ -145,31 +141,14 @@ const getOrCreateConversation = async (req, res) => {
       // If messagePermission is 'everyone' (or undefined/default), allow the conversation
     }
 
-    // Find or create conversation
-    let conversation = await Conversation.findOne({
-      participants: { $all: [req.user._id, userId] }
-    })
-      .populate('participants', 'username avatar')
-      .populate({
-        path: 'lastMessage',
-        select: 'content sender createdAt'
-      });
-
     // Create new conversation if doesn't exist
     if (!conversation) {
       try {
-        // Convert to ObjectIds and sort to ensure consistent order for unique index
-        const mongoose = require('mongoose');
-        const participantIds = [req.user._id, mongoose.Types.ObjectId(userId)].sort((a, b) => 
+        // Convert to ObjectIds and sort to ensure consistent order
+        const participantIds = [req.user._id, userObjectId].sort((a, b) => 
           a.toString().localeCompare(b.toString())
         );
-        
-        console.log('Creating conversation with participants:', {
-          currentUser: req.user._id.toString(),
-          otherUser: userId,
-          sortedIds: participantIds.map(id => id.toString())
-        });
-        
+
         conversation = await Conversation.create({
           participants: participantIds,
           unreadCount: new Map([
@@ -178,14 +157,13 @@ const getOrCreateConversation = async (req, res) => {
           ])
         });
 
-        console.log('Conversation created successfully:', conversation._id);
         await conversation.populate('participants', 'username avatar');
       } catch (createError) {
-        // If duplicate key error (race condition), try to find it again
+        // Handle race condition: another request created the conversation
         if (createError.code === 11000) {
-          console.log('Duplicate conversation detected, fetching existing one');
+          // Try to find it one more time
           conversation = await Conversation.findOne({
-            participants: { $all: [req.user._id, userId] }
+            participants: { $all: [req.user._id, userObjectId] }
           })
             .populate('participants', 'username avatar')
             .populate({
@@ -500,7 +478,7 @@ const deleteConversation = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getConversations,
   getOrCreateConversation,
   getMessages,

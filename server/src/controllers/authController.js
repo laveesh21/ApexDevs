@@ -1,5 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import cloudinary from '../config/cloudinary.js';
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -292,7 +293,6 @@ const uploadAvatar = async (req, res) => {
 
     // Delete old avatar from Cloudinary if it exists
     if (user.avatar && user.avatar.includes('cloudinary.com')) {
-      const cloudinary = require('../config/cloudinary');
       // Extract public_id from Cloudinary URL
       const urlParts = user.avatar.split('/');
       const publicIdWithExtension = urlParts[urlParts.length - 1];
@@ -342,7 +342,6 @@ const deleteAvatar = async (req, res) => {
 
     // Delete avatar from Cloudinary if it exists
     if (user.avatar && user.avatar.includes('cloudinary.com')) {
-      const cloudinary = require('../config/cloudinary');
       // Extract public_id from Cloudinary URL
       const urlParts = user.avatar.split('/');
       const publicIdWithExtension = urlParts[urlParts.length - 1];
@@ -793,7 +792,7 @@ const getBlockedUsers = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   register,
   login,
   getMe,

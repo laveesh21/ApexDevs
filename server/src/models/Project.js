@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const projectSchema = new mongoose.Schema({
   title: {
@@ -83,4 +83,4 @@ projectSchema.index({ title: 'text', description: 'text', technologies: 'text' }
 
 const Project = mongoose.model('Project', projectSchema);
 
-module.exports = Project;
+export default Project;
