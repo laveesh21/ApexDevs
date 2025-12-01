@@ -16,7 +16,7 @@ const createThread = async (req, res) => {
       author: req.user._id
     });
 
-    await thread.populate('author', 'username avatar');
+    await thread.populate('author', 'username avatar identicon avatarPreference');
 
     res.status(201).json({
       success: true,
@@ -75,7 +75,7 @@ const getThreads = async (req, res) => {
 
     // Execute query with pagination
     const threads = await Thread.find(query)
-      .populate('author', 'username avatar')
+      .populate('author', 'username avatar identicon avatarPreference')
       .populate('commentCount')
       .sort(sort)
       .limit(limit * 1)
@@ -114,7 +114,7 @@ const getThreads = async (req, res) => {
 const getThreadById = async (req, res) => {
   try {
     const thread = await Thread.findById(req.params.id)
-      .populate('author', 'username avatar')
+      .populate('author', 'username avatar identicon avatarPreference')
       .populate('commentCount');
 
     if (!thread) {
@@ -188,7 +188,7 @@ const updateThread = async (req, res) => {
       req.params.id,
       { title, content, category, tags },
       { new: true, runValidators: true }
-    ).populate('author', 'username avatar');
+    ).populate('author', 'username avatar identicon avatarPreference');
 
     res.status(200).json({
       success: true,
@@ -385,7 +385,7 @@ const addComment = async (req, res) => {
       parentComment: parentComment || null
     });
 
-    await comment.populate('author', 'username avatar');
+    await comment.populate('author', 'username avatar identicon avatarPreference');
 
     res.status(201).json({
       success: true,
@@ -411,10 +411,10 @@ const getComments = async (req, res) => {
       thread: req.params.id,
       parentComment: null // Only get top-level comments
     })
-      .populate('author', 'username avatar')
+      .populate('author', 'username avatar identicon avatarPreference')
       .populate({
         path: 'replies',
-        populate: { path: 'author', select: 'username avatar' }
+        populate: { path: 'author', select: 'username avatar identicon avatarPreference' }
       })
       .sort('-createdAt')
       .limit(limit * 1)
@@ -503,7 +503,7 @@ const updateComment = async (req, res) => {
     comment.isEdited = true;
     await comment.save();
 
-    await comment.populate('author', 'username avatar');
+    await comment.populate('author', 'username avatar identicon avatarPreference');
 
     res.status(200).json({
       success: true,
@@ -685,7 +685,7 @@ const getUserThreads = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
     const threads = await Thread.find({ author: req.params.userId })
-      .populate('author', 'username avatar')
+      .populate('author', 'username avatar identicon avatarPreference')
       .populate('commentCount')
       .sort('-createdAt')
       .limit(limit * 1)

@@ -135,7 +135,7 @@ const getProjects = async (req, res) => {
     }
 
     const projects = await Project.find(query)
-      .populate('author', 'username avatar')
+      .populate('author', 'username avatar identicon avatarPreference')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -168,7 +168,7 @@ const getProjects = async (req, res) => {
 const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('author', 'username avatar email bio location website github twitter linkedin');
+      .populate('author', 'username avatar identicon avatarPreference email bio location website github twitter linkedin');
 
     if (!project) {
       return res.status(404).json({
@@ -306,7 +306,7 @@ const updateProject = async (req, res) => {
     await project.save();
 
     // Populate author info before sending response
-    await project.populate('author', 'username avatar');
+    await project.populate('author', 'username avatar identicon avatarPreference');
 
     res.json({
       success: true,
@@ -468,7 +468,7 @@ const addReview = async (req, res) => {
       });
     }
 
-    await review.populate('user', 'username avatar');
+    await review.populate('user', 'username avatar identicon avatarPreference');
 
     res.status(200).json({
       success: true,
@@ -493,7 +493,7 @@ const getReviews = async (req, res) => {
 
     // Get all reviews
     const reviews = await Review.find({ project: req.params.id })
-      .populate('user', 'username avatar')
+      .populate('user', 'username avatar identicon avatarPreference')
       .sort('-createdAt')
       .limit(limit * 1)
       .skip((page - 1) * limit);

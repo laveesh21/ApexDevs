@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import { chatAPI, authAPI } from '../services/api';
 import './Chat.css';
 
@@ -325,13 +326,7 @@ function Chat() {
                 onClick={() => handleSelectConversation(conversation)}
               >
                 <div className="conversation-avatar">
-                  {conversation.participant?.avatar ? (
-                    <img src={conversation.participant.avatar} alt={conversation.participant.username} />
-                  ) : (
-                    <div className="avatar-placeholder">
-                      {conversation.participant?.username?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  <img src={getSelectedAvatar(conversation.participant)} alt={conversation.participant?.username} />
                 </div>
                 
                 <div className="conversation-info">
@@ -365,13 +360,7 @@ function Chat() {
             <div className="chat-header">
               <div className="chat-header-user">
                 <div className="chat-header-avatar">
-                  {selectedConversation.participant?.avatar ? (
-                    <img src={selectedConversation.participant.avatar} alt={selectedConversation.participant.username} />
-                  ) : (
-                    <div className="avatar-placeholder">
-                      {selectedConversation.participant?.username?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  <img src={getSelectedAvatar(selectedConversation.participant)} alt={selectedConversation.participant?.username} />
                 </div>
                 <Link 
                   to={`/user/${selectedConversation.participant?._id}`}

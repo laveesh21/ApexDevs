@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import ImageCarousel from '../components/ImageCarousel';
 import EditProjectForm from '../components/EditProjectForm';
 import { projectAPI } from '../services/api';
@@ -377,11 +378,7 @@ function ProjectDetail() {
                     <div key={review._id} className="review-item">
                       <div className="review-user">
                         <div className="review-avatar">
-                          {review.user?.avatar ? (
-                            <img src={review.user.avatar} alt={review.user.username} />
-                          ) : (
-                            review.user?.username?.charAt(0).toUpperCase() || '?'
-                          )}
+                          <img src={getSelectedAvatar(review.user)} alt={review.user?.username} />
                         </div>
                         <div className="review-user-info">
                           {review.user?._id ? (
@@ -423,7 +420,7 @@ function ProjectDetail() {
                 <h4>Created By</h4>
                 <div className="author-info">
                   <img 
-                    src={project.author?.avatar || 'https://ui-avatars.com/api/?background=00be62&color=fff&name=' + project.author?.username} 
+                    src={getSelectedAvatar(project.author)} 
                     alt={project.author?.username}
                     className="author-avatar"
                   />

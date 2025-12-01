@@ -25,8 +25,10 @@ const userSchema = new mongoose.Schema({
     select: false // Don't return password by default in queries
   },
   avatar: {
-    type: String,
-    default: 'https://ui-avatars.com/api/?background=00be62&color=fff&name='
+    type: String
+  },
+  identicon: {
+    type: String
   },
   bio: {
     type: String,
@@ -118,6 +120,27 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Avatar preference: which avatar to show by default
+userSchema.add({
+  avatarPreference: {
+    type: String,
+    enum: ['identicon', 'custom'],
+    default: 'identicon'
+  }
+});
+
+// Set default identicon if not provided and ensure avatarPreference default
+userSchema.pre('save', function(next) {
+  if (!this.identicon) {
+    // Using dicebear with consistent dark gray background
+    this.identicon = `https://api.dicebear.com/7.x/identicon/svg?seed=${this.username || this._id}&backgroundColor=374151`;
+  }
+  if (!this.avatarPreference) {
+    this.avatarPreference = 'identicon';
+  }
+  next();
+});
+
 // Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
@@ -145,6 +168,8 @@ userSchema.methods.toPublicProfile = function() {
     username: this.username,
     email: this.email,
     avatar: this.avatar,
+    identicon: this.identicon,
+    avatarPreference: this.avatarPreference,
     bio: this.bio,
     briefBio: this.briefBio,
     location: this.location,

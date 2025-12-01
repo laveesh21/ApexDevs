@@ -11,7 +11,7 @@ const getConversations = async (req, res) => {
     const conversations = await Conversation.find({
       participants: req.user._id
     })
-      .populate('participants', 'username avatar')
+      .populate('participants', 'username avatar identicon avatarPreference')
       .populate({
         path: 'lastMessage',
         select: 'content sender createdAt'
@@ -100,7 +100,7 @@ const getOrCreateConversation = async (req, res) => {
     let conversation = await Conversation.findOne({
       participants: { $all: [req.user._id, userObjectId] }
     })
-      .populate('participants', 'username avatar')
+      .populate('participants', 'username avatar identicon avatarPreference')
       .populate({
         path: 'lastMessage',
         select: 'content sender createdAt'
@@ -157,7 +157,7 @@ const getOrCreateConversation = async (req, res) => {
           ])
         });
 
-        await conversation.populate('participants', 'username avatar');
+        await conversation.populate('participants', 'username avatar identicon avatarPreference');
       } catch (createError) {
         // Handle race condition: another request created the conversation
         if (createError.code === 11000) {
@@ -165,7 +165,7 @@ const getOrCreateConversation = async (req, res) => {
           conversation = await Conversation.findOne({
             participants: { $all: [req.user._id, userObjectId] }
           })
-            .populate('participants', 'username avatar')
+            .populate('participants', 'username avatar identicon avatarPreference')
             .populate({
               path: 'lastMessage',
               select: 'content sender createdAt'
@@ -236,7 +236,7 @@ const getMessages = async (req, res) => {
       conversation: conversationId,
       deleted: false
     })
-      .populate('sender', 'username avatar')
+      .populate('sender', 'username avatar identicon avatarPreference')
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip);
@@ -350,7 +350,7 @@ const sendMessage = async (req, res) => {
       }]
     });
 
-    await message.populate('sender', 'username avatar');
+    await message.populate('sender', 'username avatar identicon avatarPreference');
 
     // Update conversation
     conversation.lastMessage = message._id;

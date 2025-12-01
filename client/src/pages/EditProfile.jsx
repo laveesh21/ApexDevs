@@ -81,6 +81,7 @@ function EditProfile() {
   };
 
   const handleAvatarChange = async (e) => {
+    
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -102,10 +103,12 @@ function EditProfile() {
     try {
       const response = await authAPI.uploadAvatar(token, file);
       
-      // Update user avatar in context
+      // Update user with new avatar data including identicon and preference
       await updateUser({
         ...user,
-        avatar: response.data.avatar
+        avatar: response.data.avatar,
+        identicon: response.data.identicon,
+        avatarPreference: response.data.avatarPreference
       });
 
       setSuccess('Profile picture updated successfully!');
@@ -127,12 +130,14 @@ function EditProfile() {
     setError('');
 
     try {
-      await authAPI.deleteAvatar(token);
+      const response = await authAPI.deleteAvatar(token);
       
-      // Update user in context to remove avatar
+      // Update user in context with identicon preference
       await updateUser({
         ...user,
-        avatar: null
+        avatar: response.data.avatar,
+        identicon: response.data.identicon,
+        avatarPreference: response.data.avatarPreference
       });
 
       setSuccess('Profile picture deleted successfully!');
@@ -195,8 +200,15 @@ function EditProfile() {
           <h2>Profile Picture</h2>
           <div className="avatar-edit-wrapper">
             <div className="avatar-preview">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user.username} />
+              {user?.identicon || user?.avatar ? (
+                <img 
+                  src={
+                    user.avatarPreference === 'custom' && user.avatar 
+                      ? user.avatar 
+                      : user.identicon
+                  } 
+                  alt={user.username} 
+                />
               ) : (
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -229,6 +241,78 @@ function EditProfile() {
                 </button>
               )}
             </div>
+            
+            {/* Avatar Preference Selector */}
+            {user?.identicon && (
+              <div className="avatar-preference-section">
+                <h3>Display Preference</h3>
+                <div className="avatar-options">
+                  <div 
+                    className={`avatar-option ${user.avatarPreference === 'identicon' ? 'active' : ''}`}
+                    onClick={async () => {
+                      try {
+                        const response = await authAPI.updateProfile(token, { avatarPreference: 'identicon' });
+                        await updateUser({
+                          ...user,
+                          avatarPreference: 'identicon'
+                        });
+                        setSuccess('Avatar preference updated!');
+                        setTimeout(() => setSuccess(''), 2000);
+                      } catch (err) {
+                        setError('Failed to update preference');
+                      }
+                    }}
+                  >
+                    <div className="option-preview">
+                      <img src={user.identicon} alt="Identicon" />
+                    </div>
+                    <label>
+                      <input
+                        type="radio"
+                        name="avatarPreference"
+                        value="identicon"
+                        checked={user.avatarPreference === 'identicon'}
+                        readOnly
+                      />
+                      Identicon
+                    </label>
+                  </div>
+                  
+                  {user?.avatar && (
+                    <div 
+                      className={`avatar-option ${user.avatarPreference === 'custom' ? 'active' : ''}`}
+                      onClick={async () => {
+                        try {
+                          const response = await authAPI.updateProfile(token, { avatarPreference: 'custom' });
+                          await updateUser({
+                            ...user,
+                            avatarPreference: 'custom'
+                          });
+                          setSuccess('Avatar preference updated!');
+                          setTimeout(() => setSuccess(''), 2000);
+                        } catch (err) {
+                          setError('Failed to update preference');
+                        }
+                      }}
+                    >
+                      <div className="option-preview">
+                        <img src={user.avatar} alt="Custom Avatar" />
+                      </div>
+                      <label>
+                        <input
+                          type="radio"
+                          name="avatarPreference"
+                          value="custom"
+                          checked={user.avatarPreference === 'custom'}
+                          readOnly
+                        />
+                        Custom Picture
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

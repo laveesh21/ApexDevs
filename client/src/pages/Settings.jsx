@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import { authAPI } from '../services/api';
 import './Settings.css';
 
@@ -421,7 +422,7 @@ function Settings() {
                       <div key={blockedUser._id} className="blocked-user-item">
                         <div className="blocked-user-info">
                           <img 
-                            src={blockedUser.avatar || '/default-avatar.png'} 
+                            src={getSelectedAvatar(blockedUser)} 
                             alt={blockedUser.username}
                             className="blocked-user-avatar"
                           />

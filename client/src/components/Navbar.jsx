@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import logo from '../assets/ApexDevsLogo.png';
 import './Navbar.css';
 
@@ -74,8 +75,11 @@ function Navbar() {
               className="user-menu-button"
               onClick={() => setShowDropdown(!showDropdown)}
             >
+
+
+              {console.log("USER IN NAVBAR", user)}
               <img 
-                src={user?.avatar || 'https://ui-avatars.com/api/?background=00be62&color=fff&name=' + user?.username} 
+                src={getSelectedAvatar(user)} 
                 alt={user?.username}
                 className="user-avatar"
               />

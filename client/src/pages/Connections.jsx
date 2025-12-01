@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import { authAPI } from '../services/api';
 import './Connections.css';
 
@@ -140,13 +141,7 @@ const Connections = () => {
               <div key={userDisplayId} className="connection-card">
                 <Link to={`/user/${userDisplayId}`} className="connection-info">
                   <div className="connection-avatar">
-                    {user.avatar ? (
-                      <img src={user.avatar} alt={user.username} />
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                      </svg>
-                    )}
+                    <img src={getSelectedAvatar(user)} alt={user.username} />
                   </div>
                   <div className="connection-details">
                     <h3 className="connection-username">{user.username}</h3>

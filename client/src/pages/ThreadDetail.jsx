@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import { threadAPI } from '../services/api';
 import Modal from '../components/Modal';
 import './ThreadDetail.css';
@@ -661,11 +662,7 @@ function ThreadDetail() {
             {/* Compact Author Info */}
             <div className="thread-author-compact">
               <div className="author-avatar-tiny">
-                {thread.author?.avatar ? (
-                  <img src={thread.author.avatar} alt={thread.author.username} />
-                ) : (
-                  thread.author?.username?.charAt(0).toUpperCase() || '?'
-                )}
+                <img src={getSelectedAvatar(thread.author)} alt={thread.author?.username} />
               </div>
               {thread.author?._id ? (
                 <Link to={`/user/${thread.author._id}`} className="author-username">
@@ -714,11 +711,7 @@ function ThreadDetail() {
                   {/* Compact Comment Author */}
                   <div className="comment-author-compact">
                     <div className="author-avatar-tiny">
-                      {comment.author?.avatar ? (
-                        <img src={comment.author.avatar} alt={comment.author.username} />
-                      ) : (
-                        comment.author?.username?.charAt(0).toUpperCase() || '?'
-                      )}
+                      <img src={getSelectedAvatar(comment.author)} alt={comment.author?.username} />
                     </div>
                     {comment.author?._id ? (
                       <Link to={`/user/${comment.author._id}`} className="author-username">

@@ -53,6 +53,9 @@ const register = async (req, res) => {
           username: user.username,
           email: user.email,
           avatar: user.avatar,
+          identicon: user.identicon,
+          avatarPreference: user.avatarPreference,
+          selectedAvatar: (user.avatarPreference === 'custom' && user.avatar) ? user.avatar : user.identicon,
           token: generateToken(user._id)
         }
       });
@@ -111,6 +114,9 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+        identicon: user.identicon,
+        avatarPreference: user.avatarPreference,
+        selectedAvatar: (user.avatarPreference === 'custom' && user.avatar) ? user.avatar : user.identicon,
         token: generateToken(user._id)
       }
     });
@@ -168,7 +174,7 @@ const updateProfile = async (req, res) => {
     }
 
     // Update allowed fields (include flat social fields too)
-    const allowedUpdates = ['username', 'email', 'avatar', 'bio', 'briefBio', 'location', 'website', 'github', 'twitter', 'linkedin', 'socialLinks', 'skills'];
+    const allowedUpdates = ['username', 'email', 'avatar', 'avatarPreference', 'bio', 'briefBio', 'location', 'website', 'github', 'twitter', 'linkedin', 'socialLinks', 'skills'];
     const updates = Object.keys(req.body);
     
     updates.forEach(update => {
@@ -275,7 +281,13 @@ const changePassword = async (req, res) => {
 // @access  Private
 const uploadAvatar = async (req, res) => {
   try {
+    console.log('\n📸 UploadAvatar controller called');
+    console.log('   req.file:', req.file);
+    console.log('   req.body:', req.body);
+    console.log('   User:', req.user?._id);
+
     if (!req.file) {
+      console.log('❌ No file in request');
       return res.status(400).json({
         success: false,
         message: 'Please upload an image file'
@@ -305,14 +317,21 @@ const uploadAvatar = async (req, res) => {
       }
     }
 
-    // Update user avatar with Cloudinary URL
+    // Update user avatar with Cloudinary URL and mark preference as custom
+    console.log('💾 Saving new avatar URL:', req.file.path);
     user.avatar = req.file.path; // Cloudinary provides the full URL in req.file.path
+    user.avatarPreference = 'custom';
+    // ensure identicon exists (pre-save will set it if missing)
     await user.save();
+    console.log('✅ Avatar saved successfully');
 
     res.json({
       success: true,
       data: {
         avatar: user.avatar,
+        identicon: user.identicon,
+        avatarPreference: user.avatarPreference,
+        selectedAvatar: user.avatar,
         message: 'Avatar uploaded successfully'
       }
     });
@@ -354,12 +373,23 @@ const deleteAvatar = async (req, res) => {
       }
     }
 
-    // Remove avatar from user
+    // Remove custom avatar and switch preference to identicon
+    if (user.avatar && user.avatar.includes('cloudinary.com')) {
+      // already deleted from cloudinary above
+    }
     user.avatar = null;
+    user.avatarPreference = 'identicon';
+    // ensure identicon exists (pre-save hook)
     await user.save();
 
     res.json({
       success: true,
+      data: {
+        avatar: user.avatar,
+        identicon: user.identicon,
+        avatarPreference: user.avatarPreference,
+        selectedAvatar: user.identicon
+      },
       message: 'Avatar deleted successfully'
     });
   } catch (error) {
@@ -544,6 +574,9 @@ const getUserProfile = async (req, res) => {
         _id: user._id,
         username: user.username,
         avatar: user.avatar,
+        identicon: user.identicon,
+        avatarPreference: user.avatarPreference,
+        selectedAvatar: (user.avatarPreference === 'custom' && user.avatar) ? user.avatar : user.identicon,
         bio: user.bio,
         briefBio: user.briefBio,
         location: user.location,
@@ -574,7 +607,7 @@ const getUserProfile = async (req, res) => {
 const getUserFollowers = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
-      .populate('followers', 'username avatar bio');
+      .populate('followers', 'username avatar identicon avatarPreference bio');
 
     if (!user) {
       return res.status(404).json({
@@ -603,7 +636,7 @@ const getUserFollowers = async (req, res) => {
 const getUserFollowing = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId)
-      .populate('following', 'username avatar bio');
+      .populate('following', 'username avatar identicon avatarPreference bio');
 
     if (!user) {
       return res.status(404).json({

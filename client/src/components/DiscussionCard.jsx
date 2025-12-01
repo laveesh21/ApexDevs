@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import './DiscussionCard.css';
 
 function DiscussionCard({ discussion }) {
@@ -72,11 +73,8 @@ function DiscussionCard({ discussion }) {
           <div className="meta-left">
             <span className="meta-item">
               <div className="author-avatar-small">
-                {discussion.author?.avatar ? (
-                  <img src={discussion.author.avatar} alt={discussion.author.username} />
-                ) : (
-                  <span>👤</span>
-                )}
+                {console.log("HELLLLLL", discussion.author)}
+                <img src={getSelectedAvatar(discussion.author)} alt={discussion.author?.username} />
               </div>
               {discussion.author?._id ? (
                 <Link 

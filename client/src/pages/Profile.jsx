@@ -6,6 +6,7 @@ import ProjectCard from '../components/ProjectCard';
 import DiscussionCard from '../components/DiscussionCard';
 import NewProjectForm from '../components/NewProjectForm';
 import EditProjectForm from '../components/EditProjectForm';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import websiteIcon from '../assets/website.svg';
 import linkedinIcon from '../assets/linkedin.svg';
 import locationIcon from '../assets/location_icon.svg';
@@ -223,6 +224,11 @@ function Profile() {
     return null;
   }
 
+
+  {console.log("Avatar URL:", user.avatar)}
+
+  const selectedAvatar = getSelectedAvatar(user);
+
   return (
     <div className="profile-container">
       <div className="profile-content">
@@ -230,8 +236,8 @@ function Profile() {
         <div className="profile-header">
           <div className="profile-avatar-wrapper">
             <div className="profile-avatar">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={userInfo.username} />
+              {selectedAvatar ? (
+                <img src={selectedAvatar} alt={userInfo.username} />
               ) : (
                 <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>

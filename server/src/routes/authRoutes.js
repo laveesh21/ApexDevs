@@ -33,7 +33,7 @@ router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);
 router.put('/password', protect, changePassword);
 router.put('/privacy', protect, updatePrivacySettings);
-router.post('/avatar', protect, upload.single('avatar'), uploadAvatar);
+router.post('/avatar', protect, upload, uploadAvatar);
 router.delete('/avatar', protect, deleteAvatar);
 router.post('/users/:userId/follow', protect, followUser);
 router.delete('/users/:userId/follow', protect, unfollowUser);

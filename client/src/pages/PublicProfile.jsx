@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authAPI, projectAPI, threadAPI } from '../services/api';
 import ProjectCard from '../components/ProjectCard';
 import DiscussionCard from '../components/DiscussionCard';
+import { getSelectedAvatar } from '../utils/avatarHelper';
 import linkedinIcon from '../assets/linkedin.svg';
 import websiteIcon from '../assets/website.svg';
 import locationIcon from '../assets/location_icon.svg';
@@ -189,8 +190,8 @@ function PublicProfile() {
         <div className="profile-header-public">
           <div className="profile-header-top">
             <div className="profile-avatar-large">
-              {user.avatar ? (
-                <img src={user.avatar} alt={user.username} />
+              {getSelectedAvatar(user) ? (
+                <img src={getSelectedAvatar(user)} alt={user.username} />
               ) : (
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
