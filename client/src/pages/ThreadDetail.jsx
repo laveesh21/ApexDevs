@@ -42,6 +42,21 @@ function ThreadDetail() {
   const pendingVote = useRef(null);
   const commentVoteTimeouts = useRef({}); // Store timeouts for each comment
 
+  // Helper function to check if current user is the author
+  const isThreadAuthor = (author) => {
+    if (!user || !author) return false;
+    const userId = user._id || user.id;
+    const authorId = author._id || author.id;
+    return userId === authorId;
+  };
+
+  const isCommentAuthor = (author) => {
+    if (!user || !author) return false;
+    const userId = user._id || user.id;
+    const authorId = author._id || author.id;
+    return userId === authorId;
+  };
+
   useEffect(() => {
     // Prevent double-fetch in React StrictMode
     if (hasFetched.current) return;
@@ -524,7 +539,7 @@ function ThreadDetail() {
                 >
                   {thread.category}
                 </span>
-                {user && (thread.author._id === user._id || thread.author._id === user.id || thread.author.id === user._id || thread.author.id === user.id) && !isEditing && (
+                {isThreadAuthor(thread.author) && !isEditing && (
                   <div className="thread-actions">
                     <button className="action-btn edit-btn" onClick={handleEditClick}>
                       ✏️ Edit
@@ -724,7 +739,7 @@ function ThreadDetail() {
                     {comment.updatedAt && new Date(comment.updatedAt).getTime() !== new Date(comment.createdAt).getTime() && (
                       <span className="updated-time">• edited {formatTimeAgo(comment.updatedAt)}</span>
                     )}
-                    {user && (comment.author._id === user._id || comment.author._id === user.id || comment.author.id === user._id || comment.author.id === user.id) && editingCommentId !== comment._id && (
+                    {isCommentAuthor(comment.author) && editingCommentId !== comment._id && (
                       <div className="comment-actions">
                         <button 
                           className="comment-action-btn edit" 
