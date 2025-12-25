@@ -44,7 +44,6 @@ const createProject = async (req, res) => {
       try {
         techArray = JSON.parse(technologies);
       } catch (parseError) {
-        console.error('Technologies parse error:', parseError);
         return res.status(400).json({
           success: false,
           message: 'Invalid technologies format'
@@ -355,7 +354,7 @@ const deleteProject = async (req, res) => {
         try {
           await cloudinary.uploader.destroy(publicId);
         } catch (err) {
-          console.log('Error deleting image:', err.message);
+          // Failed to delete image from Cloudinary
         }
       }
     }

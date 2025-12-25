@@ -108,9 +108,6 @@ function Chat() {
       // Refresh conversations list to update unread count
       fetchConversations();
     } catch (error) {
-      console.error('Error opening conversation:', error);
-      console.error('Error details:', error.message);
-      
       // Show user-friendly error message
       const errorMsg = error.message || '';
       if (errorMsg.includes('disabled messages')) {

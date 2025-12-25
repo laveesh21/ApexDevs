@@ -40,7 +40,7 @@ app.get('/api/health', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Error:', err.stack);
+  console.error('Error:', err.message);
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal server error',
@@ -59,7 +59,5 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📡 API available at http://localhost:${PORT}/api`);
-  console.log(`🌐 CORS enabled for ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -40,9 +40,6 @@ const Connections = () => {
         authAPI.getUserFollowing(userId)
       ]);
 
-      console.log('Followers response:', followersResponse);
-      console.log('Following response:', followingResponse);
-
       if (followersResponse.success) {
         setFollowers(followersResponse.data || []);
       }

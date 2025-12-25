@@ -140,8 +140,6 @@ const getMe = async (req, res) => {
       .populate('projects', 'title thumbnail')
       .populate('discussions', 'title type createdAt');
 
-      console.log('GetMe user:', user);
-
     res.json({
       success: true,
       data: user
@@ -161,9 +159,6 @@ const getMe = async (req, res) => {
 // @access  Private
 const updateProfile = async (req, res) => {
   try {
-
-    console.log('UpdateProfile req.body:', req.body);
-
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -281,13 +276,7 @@ const changePassword = async (req, res) => {
 // @access  Private
 const uploadAvatar = async (req, res) => {
   try {
-    console.log('\n📸 UploadAvatar controller called');
-    console.log('   req.file:', req.file);
-    console.log('   req.body:', req.body);
-    console.log('   User:', req.user?._id);
-
     if (!req.file) {
-      console.log('❌ No file in request');
       return res.status(400).json({
         success: false,
         message: 'Please upload an image file'
@@ -313,17 +302,13 @@ const uploadAvatar = async (req, res) => {
       try {
         await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.log('Error deleting old avatar:', err.message);
+        // Failed to delete old avatar
       }
     }
 
-    // Update user avatar with Cloudinary URL and mark preference as custom
-    console.log('💾 Saving new avatar URL:', req.file.path);
-    user.avatar = req.file.path; // Cloudinary provides the full URL in req.file.path
+    user.avatar = req.file.path;
     user.avatarPreference = 'custom';
-    // ensure identicon exists (pre-save will set it if missing)
     await user.save();
-    console.log('✅ Avatar saved successfully');
 
     res.json({
       success: true,
@@ -369,17 +354,12 @@ const deleteAvatar = async (req, res) => {
       try {
         await cloudinary.uploader.destroy(publicId);
       } catch (err) {
-        console.log('Error deleting avatar from Cloudinary:', err.message);
+        // Failed to delete old avatar from Cloudinary
       }
     }
 
-    // Remove custom avatar and switch preference to identicon
-    if (user.avatar && user.avatar.includes('cloudinary.com')) {
-      // already deleted from cloudinary above
-    }
     user.avatar = null;
     user.avatarPreference = 'identicon';
-    // ensure identicon exists (pre-save hook)
     await user.save();
 
     res.json({

@@ -75,9 +75,6 @@ function Navbar() {
               className="user-menu-button"
               onClick={() => setShowDropdown(!showDropdown)}
             >
-
-
-              {console.log("USER IN NAVBAR", user)}
               <img 
                 src={getSelectedAvatar(user)} 
                 alt={user?.username}

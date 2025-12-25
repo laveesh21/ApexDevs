@@ -224,9 +224,6 @@ function Profile() {
     return null;
   }
 
-
-  {console.log("Avatar URL:", user.avatar)}
-
   const selectedAvatar = getSelectedAvatar(user);
 
   return (

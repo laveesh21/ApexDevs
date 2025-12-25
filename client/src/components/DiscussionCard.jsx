@@ -73,7 +73,6 @@ function DiscussionCard({ discussion }) {
           <div className="meta-left">
             <span className="meta-item">
               <div className="author-avatar-small">
-                {console.log("HELLLLLL", discussion.author)}
                 <img src={getSelectedAvatar(discussion.author)} alt={discussion.author?.username} />
               </div>
               {discussion.author?._id ? (

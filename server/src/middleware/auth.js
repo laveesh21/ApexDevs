@@ -20,7 +20,6 @@ const protect = async (req, res, next) => {
 
       next();
     } catch (error) {
-      console.error('Auth middleware error:', error);
       return res.status(401).json({
         success: false,
         message: 'Not authorized, token failed'
@@ -61,11 +60,10 @@ const optionalAuth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
     } catch (error) {
-      console.log('Optional auth: Invalid token, continuing as anonymous');
+      // Invalid token, continue as anonymous
     }
   }
 
-  // Always continue, even without token
   next();
 };
 
