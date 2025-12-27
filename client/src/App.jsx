@@ -15,7 +15,7 @@ import Community from './pages/Community'
 import ThreadDetail from './pages/ThreadDetail'
 import Chat from './pages/Chat'
 import Settings from './pages/Settings'
-import './App.css'
+// import './App.css'
 
 function AppContent() {
   const { loading } = useAuth();
