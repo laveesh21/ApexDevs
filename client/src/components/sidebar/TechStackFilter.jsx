@@ -1,40 +1,19 @@
+import PropTypes from 'prop-types';
 
-function Filter({ selectedTech, onTechChange }) {
-  const techStacks = [
-    'Angular',
-    'Bootstrap',
-    'CSS',
-    'Django',
-    'Docker',
-    'Express',
-    'Firebase',
-    'Flask',
-    'GraphQL',
-    'HTML',
-    'Java',
-    'JavaScript',
-    'Kotlin',
-    'MongoDB',
-    'MySQL',
-    'Next.js',
-    'Node.js',
-    'PHP',
-    'PostgreSQL',
-    'Python',
-    'React',
-    'React Native',
-    'Redux',
-    'Ruby',
-    'Rust',
-    'Spring Boot',
-    'SQL',
-    'Svelte',
-    'Swift',
-    'Tailwind CSS',
-    'TypeScript',
-    'Vue.js'
-  ];
+const DEFAULT_TECH_STACKS = [
+  'Angular', 'Bootstrap', 'CSS', 'Django', 'Docker', 'Express',
+  'Firebase', 'Flask', 'GraphQL', 'HTML', 'Java', 'JavaScript',
+  'Kotlin', 'MongoDB', 'MySQL', 'Next.js', 'Node.js', 'PHP',
+  'PostgreSQL', 'Python', 'React', 'React Native', 'Redux',
+  'Ruby', 'Rust', 'Spring Boot', 'SQL', 'Svelte', 'Swift',
+  'Tailwind CSS', 'TypeScript', 'Vue.js'
+];
 
+/**
+ * TechStackFilter - Component for filtering by technology stack
+ * Displays tech options as toggleable tags
+ */
+function TechStackFilter({ selectedTech, onTechChange, techStacks = DEFAULT_TECH_STACKS }) {
   const handleTechToggle = (tech) => {
     if (selectedTech.includes(tech)) {
       onTechChange(selectedTech.filter(t => t !== tech));
@@ -80,4 +59,10 @@ function Filter({ selectedTech, onTechChange }) {
   );
 }
 
-export default Filter;
+TechStackFilter.propTypes = {
+  selectedTech: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onTechChange: PropTypes.func.isRequired,
+  techStacks: PropTypes.arrayOf(PropTypes.string)
+};
+
+export default TechStackFilter;

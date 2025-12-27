@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import ProjectCard from '../components/ProjectCard';
-import Filter from '../components/Filter';
+import { Sidebar, SidebarSection, SortFilter, TechStackFilter } from '../components/sidebar';
+import SearchBar from '../components/SearchBar';
 import { projectAPI } from '../services/api';
 
 function Homepage() {
   const [selectedTech, setSelectedTech] = useState([]);
+  const [sortBy, setSortBy] = useState('newest');
   const [isFilterCollapsed, setIsFilterCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [projects, setProjects] = useState([]);
@@ -16,7 +18,7 @@ function Homepage() {
 
   useEffect(() => {
     fetchProjects();
-  }, [currentPage, searchQuery, selectedTech]);
+  }, [currentPage, searchQuery, selectedTech, sortBy]);
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -49,6 +51,9 @@ function Homepage() {
         );
       }
 
+      // Apply sorting
+      fetchedProjects = sortProjects(fetchedProjects, sortBy);
+
       setProjects(fetchedProjects);
       setTotalPages(response.pagination?.pages || 1);
       setTotalProjects(response.pagination?.total || 0);
@@ -60,55 +65,77 @@ function Homepage() {
     }
   };
 
+  const sortProjects = (projectsList, sortType) => {
+    const sorted = [...projectsList];
+    
+    switch (sortType) {
+      case 'newest':
+        return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      case 'popular':
+        return sorted.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+      case 'views':
+        return sorted.sort((a, b) => (b.views || 0) - (a.views || 0));
+      default:
+        return sorted;
+    }
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900">
-      <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Discover Amazing Projects</h1>
-          <p className="text-gray-400 text-lg mb-8">Browse through developer projects and get inspired</p>
-          <div className="relative max-w-2xl mx-auto">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="M21 21l-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              className="w-full bg-neutral-700 border border-neutral-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              placeholder="Search projects by title, description, or author..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button 
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                onClick={() => setSearchQuery('')}
-              >
-                ✕
-              </button>
-            )}
+    <div className="min-h-screen bg-neutral-900 flex">
+      {/* Left Sidebar with Filters */}
+      <Sidebar
+        isCollapsed={isFilterCollapsed}
+        onToggleCollapse={() => setIsFilterCollapsed(!isFilterCollapsed)}
+        title="Filters & Sort"
+      >
+        <SidebarSection title="Sort By">
+          <SortFilter 
+            sortBy={sortBy} 
+            onSortChange={setSortBy}
+            options={[
+              { value: 'newest', label: 'Newest First' },
+              { value: 'oldest', label: 'Oldest First' },
+              { value: 'popular', label: 'Most Popular' },
+              { value: 'views', label: 'Most Viewed' }
+            ]}
+          />
+        </SidebarSection>
+        
+        <SidebarSection title="Tech Stack" showDivider>
+          <TechStackFilter 
+            selectedTech={selectedTech} 
+            onTechChange={setSelectedTech}
+          />
+        </SidebarSection>
+      </Sidebar>
+
+      {/* Main Content - Adjusted with left margin */}
+      <div className={`flex-1 transition-all duration-300 ${
+        isFilterCollapsed ? 'ml-16' : 'ml-72'
+      }`}>
+        <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
+          <div className="max-w-6xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Discover Amazing Projects</h1>
+            <p className="text-gray-400 text-lg mb-8">Browse through developer projects and get inspired</p>
+            <div className="max-w-2xl mx-auto">
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search projects by title, description, or author..."
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto py-8 px-4">
-        <div className="flex gap-6">
-          <aside className={`transition-all duration-300 ${
-            isFilterCollapsed ? 'w-16' : 'w-80'
-          } flex-shrink-0`}>
-            <Filter 
-              selectedTech={selectedTech} 
-              onTechChange={setSelectedTech}
-              isCollapsed={isFilterCollapsed}
-              onToggleCollapse={() => setIsFilterCollapsed(!isFilterCollapsed)}
-            />
-          </aside>
-
-          <main className="flex-1 min-w-0">
+        <div className="max-w-6xl mx-auto py-8 px-4">
+          <main className="w-full">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -180,7 +207,7 @@ function Homepage() {
                 )}
             </>
           )}
-        </main>
+          </main>
         </div>
       </div>
     </div>

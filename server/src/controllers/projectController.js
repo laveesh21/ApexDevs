@@ -185,14 +185,25 @@ const getProjectById = async (req, res) => {
       const hasViewed = project.viewedBy.some(id => id.toString() === userId.toString());
       
       if (!hasViewed) {
+        await Project.updateOne(
+          { _id: project._id },
+          { 
+            $inc: { views: 1 },
+            $push: { viewedBy: userId }
+          }
+        );
+        // Update local object for response
         project.views += 1;
         project.viewedBy.push(userId);
-        await project.save();
       }
     } else {
       // For anonymous users: always increment
+      await Project.updateOne(
+        { _id: project._id },
+        { $inc: { views: 1 } }
+      );
+      // Update local object for response
       project.views += 1;
-      await project.save();
     }
 
     res.json({

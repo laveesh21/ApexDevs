@@ -390,19 +390,12 @@ function ProjectDetail() {
                       <div key={review._id} className="bg-neutral-700 border border-neutral-600 rounded-lg p-4">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-neutral-600">
-                              <img src={getSelectedAvatar(review.user)} alt={review.user?.username} className="w-full h-full object-cover" />
-                            </div>
-                            <div>
-                              {review.user?._id ? (
-                                <Link to={`/user/${review.user._id}`} className="text-gray-100 font-medium hover:text-primary transition-colors">
-                                  {review.user.username}
-                                </Link>
-                              ) : (
-                                <span className="text-gray-100 font-medium">{review.user?.username || 'Anonymous'}</span>
-                              )}
-                              <span className="ml-2 text-xl">{review.rating === 'like' ? '👍' : '👎'}</span>
-                            </div>
+                            <AuthorAvatar
+                              author={review.user}
+                              size="md"
+                              clickable={!!review.user?._id}
+                            />
+                            <span className="text-xl">{review.rating === 'like' ? '👍' : '👎'}</span>
                           </div>
                           <span className="text-xs text-gray-500">
                             {new Date(review.createdAt).toLocaleDateString()}

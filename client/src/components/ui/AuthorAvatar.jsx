@@ -75,7 +75,7 @@ function AuthorAvatar({
     const nameContent = (
       <span className={`font-medium ${textSizes[size]} ${
         clickable && authorId 
-          ? 'text-primary hover:text-primary-light transition-colors' 
+          ? 'text-white hover:text-white/70 transition-colors' 
           : 'text-gray-300'
       }`}>
         {authorName}
@@ -96,7 +96,7 @@ function AuthorAvatar({
     return nameContent;
   };
   
-  const containerClasses = `flex items-center gap-2 ${className}`;
+  const containerClasses = `flex items-center gap-2 bg-neutral-700 px-2 py-1 rounded-lg ${className}`;
   
   // If clickable and has authorId, wrap in Link
   if (clickable && authorId) {

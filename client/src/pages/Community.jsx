@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import DiscussionCard from '../components/DiscussionCard';
-import CommunityFilter from '../components/CommunityFilter';
+import { Sidebar, SidebarSection, SortFilter, CategoryFilter, TagFilter } from '../components/sidebar';
 import NewDiscussionForm from '../components/NewDiscussionForm';
+import SearchBar from '../components/SearchBar';
 import { threadAPI } from '../services/api';
 import { Tag, Button } from '../components/ui';
 
@@ -19,6 +20,18 @@ function Community() {
     tags: [],
     sort: 'newest'
   });
+
+  const handleCategoryChange = (category) => {
+    setFilters({ ...filters, category });
+  };
+
+  const handleTagChange = (tags) => {
+    setFilters({ ...filters, tags });
+  };
+
+  const handleSortChange = (sort) => {
+    setFilters({ ...filters, sort });
+  };
   const hasFetched = useRef(false);
 
   // Fetch discussions from API
@@ -112,91 +125,111 @@ function Community() {
   });
 
   return (
-    <div className="min-h-screen bg-neutral-900">
-      <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Community Discussions</h1>
-          <p className="text-gray-400 text-lg mb-8">Ask questions, share knowledge, and help fellow developers</p>
-          <div className="relative max-w-2xl mx-auto">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="M21 21l-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              className="w-full bg-neutral-700 border border-neutral-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              placeholder="Search discussions by title, content, or author..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button 
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                onClick={() => setSearchQuery('')}
-              >
-                ✕
-              </button>
-            )}
+    <div className="min-h-screen bg-neutral-900 flex">
+      {/* Left Sidebar with Filters */}
+      <Sidebar
+        isCollapsed={isFilterCollapsed}
+        onToggleCollapse={() => setIsFilterCollapsed(!isFilterCollapsed)}
+        title="Filters & Sort"
+      >
+        <SidebarSection title="Sort By">
+          <SortFilter 
+            sortBy={filters.sort} 
+            onSortChange={handleSortChange}
+            options={[
+              { value: 'newest', label: 'Newest First' },
+              { value: 'popular', label: 'Most Popular' },
+              { value: 'trending', label: 'Trending' }
+            ]}
+          />
+        </SidebarSection>
+        
+        <SidebarSection title="Category" showDivider>
+          <CategoryFilter 
+            selectedCategory={filters.category} 
+            onCategoryChange={handleCategoryChange}
+            categories={[
+              { value: 'All', label: 'All Categories' },
+              { value: 'General', label: 'General Discussion' },
+              { value: 'Help', label: 'Help & Support' },
+              { value: 'Showcase', label: 'Project Showcase' },
+              { value: 'Feedback', label: 'Feedback' }
+            ]}
+          />
+        </SidebarSection>
+
+        <SidebarSection title="Tags" showDivider>
+          <TagFilter 
+            selectedTags={filters.tags} 
+            onTagChange={handleTagChange}
+            tags={['React', 'JavaScript', 'Python', 'TypeScript', 'Node.js', 'Tutorial', 'Question', 'Discussion', 'Bug', 'Feature']}
+          />
+        </SidebarSection>
+      </Sidebar>
+
+      {/* Main Content */}
+      <div className={`flex-1 transition-all duration-300 ${
+        isFilterCollapsed ? 'ml-16' : 'ml-72'
+      }`}>
+        <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
+          <div className="max-w-6xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Community Discussions</h1>
+            <p className="text-gray-400 text-lg mb-8">Ask questions, share knowledge, and help fellow developers</p>
+            <div className="max-w-2xl mx-auto">
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search discussions by title, content, or author..."
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto py-8 px-4">
-        <div className="flex gap-6">
-          <aside className={`transition-all duration-300 ${
-            isFilterCollapsed ? 'w-16' : 'w-80'
-          } flex-shrink-0`}>
-            <CommunityFilter
-              filters={filters}
-              onFilterChange={setFilters}
-              isCollapsed={isFilterCollapsed}
-              onToggleCollapse={() => setIsFilterCollapsed(!isFilterCollapsed)}
-            />
-          </aside>
+        <div className="max-w-6xl mx-auto py-8 px-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-white">
+                {filters.category === 'All' ? 'All Discussions' : filters.category}
+              </h2>
+              <span className="px-3 py-1 bg-neutral-700 text-gray-400 rounded-full text-sm">({filteredDiscussions.length})</span>
+            </div>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setShowNewDiscussionForm(true)}
+              icon={
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              }
+            >
+              New Discussion
+            </Button>
+          </div>
 
-          <main className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-white">
-                  {filters.category === 'All' ? 'All Discussions' : filters.category}
-                </h2>
-                <span className="px-3 py-1 bg-neutral-700 text-gray-400 rounded-full text-sm text-gray-400">({filteredDiscussions.length})</span>
-              </div>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => setShowNewDiscussionForm(true)}
-                icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                }
-              >
-                New Discussion
-              </Button>
-            </div>            {filters.tags.length > 0 && (
-              <div className="mb-6 flex items-center gap-2 flex-wrap">
-                <span className="text-gray-400 text-sm font-medium">Filtered by:</span>
-                {filters.tags.map(tag => (
-                  <Tag
-                    key={tag}
-                    variant="primary"
-                    size="sm"
-                    onRemove={() => {
-                      setFilters({
-                        ...filters,
-                        tags: filters.tags.filter(t => t !== tag)
-                      });
-                    }}
-                  >
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
-            )}
+          {filters.tags.length > 0 && (
+            <div className="mb-6 flex items-center gap-2 flex-wrap">
+              <span className="text-gray-400 text-sm font-medium">Filtered by:</span>
+              {filters.tags.map(tag => (
+                <Tag
+                  key={tag}
+                  variant="primary"
+                  size="sm"
+                  onRemove={() => {
+                    setFilters({
+                      ...filters,
+                      tags: filters.tags.filter(t => t !== tag)
+                    });
+                  }}
+                >
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          )}
 
-            {loading ? (
+          {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
                 <p className="text-gray-400">Loading discussions...</p>
@@ -223,7 +256,6 @@ function Community() {
                 ))}
               </div>
             )}
-          </main>
         </div>
       </div>
 
