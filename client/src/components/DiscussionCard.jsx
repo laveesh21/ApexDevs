@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { getSelectedAvatar } from '../utils/avatarHelper';
+import { Tag, AuthorAvatar } from './ui';
 
 function DiscussionCard({ discussion }) {
   const getTypeColor = (category) => {
@@ -45,7 +45,7 @@ function DiscussionCard({ discussion }) {
   return (
     <Link 
       to={`/thread/${discussion._id}`} 
-      className="flex gap-4 bg-dark-800 border border-dark-600 rounded-xl p-5 hover:border-primary/50 transition-all group"
+      className="flex gap-4 bg-neutral-800 border border-neutral-600 rounded-xl p-5 hover:border-primary/50 transition-all group"
     >
       <div className="flex flex-col items-center gap-2 pt-1">
         <button 
@@ -79,37 +79,20 @@ function DiscussionCard({ discussion }) {
 
         <div className="flex flex-wrap gap-2 mb-4">
           {discussion.tags.map((tag, index) => (
-            <span 
-              key={index} 
-              className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded text-xs font-medium"
-            >
+            <Tag key={index} variant="primary" size="sm">
               {tag}
-            </span>
+            </Tag>
           ))}
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-dark-600">
-                <img 
-                  src={getSelectedAvatar(discussion.author)} 
-                  alt={discussion.author?.username} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {discussion.author?._id ? (
-                <Link 
-                  to={`/user/${discussion.author._id}`} 
-                  className="text-primary hover:text-primary-light transition-colors font-medium"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {discussion.author.username}
-                </Link>
-              ) : (
-                <span className="text-gray-400">{discussion.author?.username || 'Anonymous'}</span>
-              )}
-            </span>
+            <AuthorAvatar 
+              author={discussion.author}
+              size="sm"
+              clickable={!!discussion.author?._id}
+              onClick={(e) => e.stopPropagation()}
+            />
             <span className="flex items-center gap-1 text-gray-400">
               <span>💬</span>
               {commentCount} {commentCount === 1 ? 'comment' : 'comments'}

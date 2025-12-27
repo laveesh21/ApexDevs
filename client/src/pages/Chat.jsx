@@ -291,7 +291,7 @@ function Chat() {
 
   if (loading && !selectedConversation) {
     return (
-      <div className="min-h-screen bg-dark-900 py-8 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-900 py-8 px-4 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-400">Loading chats...</p>
@@ -301,11 +301,11 @@ function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-900">
+    <div className="min-h-screen bg-neutral-900">
       <div className="h-screen flex">
         {/* Conversations List */}
-        <div className="w-80 bg-dark-800 border-r border-dark-600 flex flex-col">
-          <div className="p-6 border-b border-dark-600">
+        <div className="w-80 bg-neutral-800 border-r border-neutral-600 flex flex-col">
+          <div className="p-6 border-b border-neutral-600">
             <h2 className="text-2xl font-bold text-white">Messages</h2>
           </div>
           
@@ -320,8 +320,8 @@ function Chat() {
                 {conversations.map((conversation) => (
                   <div
                     key={conversation._id}
-                    className={`p-4 border-b border-dark-600 cursor-pointer hover:bg-dark-700 transition-colors ${
-                      selectedConversation?._id === conversation._id ? 'bg-dark-700' : ''
+                    className={`p-4 border-b border-neutral-600 cursor-pointer hover:bg-neutral-700 transition-colors ${
+                      selectedConversation?._id === conversation._id ? 'bg-neutral-700' : ''
                     }`}
                     onClick={() => handleSelectConversation(conversation)}
                   >
@@ -329,7 +329,7 @@ function Chat() {
                       <img 
                         src={getSelectedAvatar(conversation.participant)} 
                         alt={conversation.participant?.username} 
-                        className="w-12 h-12 rounded-full border-2 border-dark-600 object-cover"
+                        className="w-12 h-12 rounded-full border-2 border-neutral-600 object-cover"
                       />
                       
                       <div className="flex-1 min-w-0">
@@ -344,7 +344,7 @@ function Chat() {
                               {conversation.lastMessage.content}
                             </span>
                             {conversation.unreadCount > 0 && (
-                              <span className="px-2 py-0.5 bg-primary text-dark-900 text-xs font-bold rounded-full">
+                              <span className="px-2 py-0.5 bg-primary text-neutral-900 text-xs font-bold rounded-full">
                                 {conversation.unreadCount}
                               </span>
                             )}
@@ -360,16 +360,16 @@ function Chat() {
         </div>
 
       {/* Chat Window */}
-      <div className="flex-1 flex flex-col bg-dark-900">
+      <div className="flex-1 flex flex-col bg-neutral-900">
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 bg-dark-800 border-b border-dark-600 flex justify-between items-center">
+            <div className="p-4 bg-neutral-800 border-b border-neutral-600 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <img 
                   src={getSelectedAvatar(selectedConversation.participant)} 
                   alt={selectedConversation.participant?.username} 
-                  className="w-10 h-10 rounded-full border-2 border-dark-600 object-cover"
+                  className="w-10 h-10 rounded-full border-2 border-neutral-600 object-cover"
                 />
                 <Link 
                   to={`/user/${selectedConversation.participant?._id}`}
@@ -381,7 +381,7 @@ function Chat() {
 
               <div className="relative">
                 <button
-                  className="p-2 text-gray-400 hover:text-white hover:bg-dark-700 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-neutral-700 rounded-lg transition-colors"
                   onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((s) => !s); }}
                   aria-label="Open chat menu"
                 >
@@ -401,10 +401,10 @@ function Chat() {
                       onClick={() => setHeaderMenuOpen(false)}
                     />
                     
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-dark-800 border border-dark-600 rounded-xl shadow-xl z-50" onClick={(e) => e.stopPropagation()}>
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-neutral-800 border border-neutral-600 rounded-xl shadow-xl z-50" onClick={(e) => e.stopPropagation()}>
                       <Link
                         to={`/user/${selectedConversation.participant?._id}`}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-dark-700 hover:text-white transition-colors rounded-t-xl"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors rounded-t-xl"
                         onClick={() => setHeaderMenuOpen(false)}
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -415,7 +415,7 @@ function Chat() {
                       </Link>
                       
                       <button
-                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-dark-700 hover:text-white transition-colors disabled:opacity-50"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors disabled:opacity-50"
                         onClick={handleBlockToggle}
                         disabled={blockLoading}
                       >
@@ -466,13 +466,13 @@ function Chat() {
                   >
                     <div className={`max-w-md rounded-xl px-4 py-2 ${
                       (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                        ? 'bg-primary text-dark-900'
-                        : 'bg-dark-800 border border-dark-600 text-white'
+                        ? 'bg-primary text-neutral-900'
+                        : 'bg-neutral-800 border border-neutral-600 text-white'
                     }`}>
-                      <p className="break-words">{message.content}</p>
+                      <p className="break-words text-inherit">{message.content}</p>
                       <span className={`block text-xs mt-1 ${
                         (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                          ? 'text-dark-900/70'
+                          ? 'text-neutral-900/70'
                           : 'text-gray-500'
                       }`}>{formatTime(message.createdAt)}</span>
                     </div>
@@ -483,10 +483,10 @@ function Chat() {
             </div>
 
             {/* Message Input */}
-            <form className="p-4 bg-dark-800 border-t border-dark-600 flex gap-3" onSubmit={handleSendMessage}>
+            <form className="p-4 bg-neutral-800 border-t border-neutral-600 flex gap-3" onSubmit={handleSendMessage}>
               <textarea
                 rows="1"
-                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -498,8 +498,8 @@ function Chat() {
                 type="submit"
                 className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                   sending || !newMessage.trim()
-                    ? 'bg-dark-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-primary text-dark-900 hover:bg-primary-light'
+                    ? 'bg-neutral-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-primary text-neutral-900 hover:bg-primary-light'
                 }`}
                 disabled={sending || !newMessage.trim()}
               >

@@ -184,8 +184,8 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-dark-800 border border-dark-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={e => e.stopPropagation()}>
-        <div className="sticky top-0 bg-dark-800 border-b border-dark-600 px-6 py-4 flex justify-between items-center">
+      <div className="bg-neutral-800 border border-neutral-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={e => e.stopPropagation()}>
+        <div className="sticky top-0 bg-neutral-800 border-b border-neutral-600 px-6 py-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-100">Edit Project</h2>
           <button className="text-gray-400 hover:text-gray-100 text-3xl leading-none transition-colors" onClick={onClose}>&times;</button>
         </div>
@@ -203,7 +203,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               onChange={handleInputChange}
               placeholder="Enter project title"
               required
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -219,7 +219,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               minLength={10}
               maxLength={2000}
               required
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -235,7 +235,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               minLength={10}
               maxLength={150}
               required
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
             <small className="text-xs text-gray-500">{formData.briefDescription.length}/150</small>
           </div>
@@ -248,7 +248,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -263,7 +263,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               >
                 {STATUSES.map(stat => (
                   <option key={stat} value={stat}>{stat}</option>
@@ -279,10 +279,10 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               id="thumbnail"
               accept="image/*"
               onChange={handleThumbnailChange}
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-dark-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-neutral-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
             />
             {thumbnailPreview && (
-              <div className="mt-3 rounded-lg overflow-hidden border border-dark-600">
+              <div className="mt-3 rounded-lg overflow-hidden border border-neutral-600">
                 <img src={thumbnailPreview} alt="Thumbnail preview" className="w-full h-48 object-cover" />
               </div>
             )}
@@ -296,14 +296,14 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               accept="image/*"
               multiple
               onChange={handleImagesChange}
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-dark-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-neutral-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
             />
             {imagePreviews.length > 0 && (
               <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3">
                 {imagePreviews.map((preview, index) => {
                   const isExisting = project?.images?.includes(preview) && !removedImages.includes(preview);
                   return (
-                    <div key={index} className="relative group rounded-lg overflow-hidden border border-dark-600">
+                    <div key={index} className="relative group rounded-lg overflow-hidden border border-neutral-600">
                       <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover" />
                       <button 
                         type="button" 
@@ -329,9 +329,9 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 onChange={(e) => setTechInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
                 placeholder="Add a technology (e.g., React, Node.js)"
-                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <button type="button" onClick={addTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors">
+              <button type="button" onClick={addTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
@@ -362,7 +362,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               value={formData.demoUrl}
               onChange={handleInputChange}
               placeholder="https://your-demo.com"
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -375,15 +375,15 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               value={formData.githubUrl}
               onChange={handleInputChange}
               placeholder="https://github.com/username/repo"
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-dark-600">
-            <button type="button" onClick={onClose} className="px-6 py-2 bg-dark-700 hover:bg-dark-600 border border-dark-600 text-gray-300 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
+          <div className="flex justify-end gap-3 pt-4 border-t border-neutral-600">
+            <button type="button" onClick={onClose} className="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
+            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? 'Updating...' : 'Update Project'}
             </button>
           </div>

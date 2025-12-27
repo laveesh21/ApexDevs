@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Tag, Button, AuthorAvatar } from './ui';
 
 function ProjectCard({ project, showEditButton = false, onEdit }) {
   const { user: currentUser } = useAuth();
@@ -20,10 +21,10 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
   );
   
   return (
-    <div className="relative bg-dark-800 border border-dark-600 rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
+    <div className="relative bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
       {showEditButton && isAuthor && (
         <button 
-          className="absolute top-3 right-3 z-10 p-2 bg-dark-900/80 text-primary rounded-lg hover:bg-dark-900 hover:text-primary-light transition-colors" 
+          className="absolute top-3 right-3 z-10 p-2 bg-neutral-900/80 text-primary rounded-lg hover:bg-neutral-900 hover:text-primary-light transition-colors" 
           onClick={() => onEdit(project)} 
           title="Edit Project"
         >
@@ -33,7 +34,7 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
           </svg>
         </button>
       )}
-      <div className="aspect-video overflow-hidden bg-dark-700">
+      <div className="aspect-video overflow-hidden bg-neutral-700">
         <img 
           src={thumbnail} 
           alt={project.title} 
@@ -43,36 +44,31 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
       <div className="p-5">
         <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{project.title}</h3>
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
-        <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-          <span>By:</span> 
-          {authorId ? (
-            <Link 
-              to={`/user/${authorId}`} 
-              className="text-primary hover:text-primary-light transition-colors font-medium"
-            >
-              {authorName}
-            </Link>
-          ) : (
-            <span className="font-medium">{authorName}</span>
-          )}
+        <div className="mb-4">
+          <span className="text-sm text-gray-400 mr-2">By:</span>
+          <AuthorAvatar 
+            author={{ ...project.author, username: authorName, _id: authorId || project.author?._id, id: authorId || project.author?.id }}
+            size="sm"
+            clickable={!!authorId}
+            className="inline-flex"
+          />
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {technologies.map((tech, index) => (
-            <span 
-              key={index} 
-              className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded text-xs font-medium"
-            >
+            <Tag key={index} variant="primary" size="sm">
               {tech}
-            </span>
+            </Tag>
           ))}
         </div>
-        <div className="pt-4 border-t border-dark-600">
-          <Link 
-            to={`/project/${projectId}`} 
-            className="block w-full text-center px-4 py-2 bg-primary text-dark-900 rounded-lg font-medium hover:bg-primary-light transition-colors"
+        <div className="pt-4 border-t border-neutral-600">
+          <Button 
+            to={`/project/${projectId}`}
+            variant="primary"
+            size="md"
+            fullWidth
           >
             View Project
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

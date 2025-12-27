@@ -22,7 +22,7 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-dark-900">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-900">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         <p className="text-gray-400 mt-4">Loading...</p>
       </div>
@@ -30,7 +30,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-900 flex flex-col">
+    <div className="min-h-screen bg-stone-800 flex flex-col">
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />

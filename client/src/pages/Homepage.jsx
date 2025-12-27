@@ -66,8 +66,8 @@ function Homepage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-900">
-      <div className="bg-dark-800 border-b border-dark-600 py-12 px-4">
+    <div className="min-h-screen bg-neutral-900">
+      <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Discover Amazing Projects</h1>
           <p className="text-gray-400 text-lg mb-8">Browse through developer projects and get inspired</p>
@@ -78,7 +78,7 @@ function Homepage() {
             </svg>
             <input
               type="text"
-              className="w-full bg-dark-700 border border-dark-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+              className="w-full bg-neutral-700 border border-neutral-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               placeholder="Search projects by title, description, or author..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -134,7 +134,7 @@ function Homepage() {
                 {totalPages > 1 && (
                   <div className="mt-8 flex items-center justify-center gap-2">
                     <button 
-                      className="px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white hover:bg-dark-600 hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white hover:bg-neutral-600 hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
@@ -154,8 +154,8 @@ function Homepage() {
                               key={page}
                               className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                                 page === currentPage 
-                                  ? 'bg-primary text-dark-900' 
-                                  : 'bg-dark-700 text-white border border-dark-600 hover:bg-dark-600 hover:border-primary'
+                                  ? 'bg-primary text-neutral-900' 
+                                  : 'bg-neutral-700 text-white border border-neutral-600 hover:bg-neutral-600 hover:border-primary'
                               }`}
                               onClick={() => handlePageChange(page)}
                             >
@@ -170,7 +170,7 @@ function Homepage() {
                     </div>
 
                     <button 
-                      className="px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white hover:bg-dark-600 hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white hover:bg-neutral-600 hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >

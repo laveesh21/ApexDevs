@@ -184,7 +184,7 @@ function EditProfile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-dark-900 py-8 px-4">
+    <div className="min-h-screen bg-neutral-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-100">Edit Profile</h1>
@@ -197,11 +197,11 @@ function EditProfile() {
         {success && <div className="mb-4 p-4 bg-primary/10 border border-primary/50 rounded-lg text-primary">{success}</div>}
 
         {/* Avatar Section */}
-        <div className="bg-dark-800 border border-dark-600 rounded-lg p-6 mb-6">
+        <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-100 mb-4">Profile Picture</h2>
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="relative">
-              <div className="w-32 h-32 rounded-full overflow-hidden bg-dark-700 border-2 border-dark-600">
+              <div className="w-32 h-32 rounded-full overflow-hidden bg-neutral-700 border-2 border-neutral-600">
                 {user?.identicon || user?.avatar ? (
                   <img 
                     src={
@@ -226,7 +226,7 @@ function EditProfile() {
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap gap-3 mb-4">
-                <label htmlFor="avatar-upload" className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg cursor-pointer transition-colors">
+                <label htmlFor="avatar-upload" className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg cursor-pointer transition-colors">
                   {user?.avatar ? 'Change Picture' : 'Upload Picture'}
                 </label>
                 <input
@@ -256,7 +256,7 @@ function EditProfile() {
                       className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                         user.avatarPreference === 'identicon' 
                           ? 'border-primary bg-primary/10' 
-                          : 'border-dark-600 hover:border-dark-500'
+                          : 'border-neutral-600 hover:border-neutral-500'
                       }`}
                       onClick={async () => {
                         try {
@@ -272,7 +272,7 @@ function EditProfile() {
                         }
                       }}
                     >
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-dark-700 mx-auto mb-2">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-2">
                         <img src={user.identicon} alt="Identicon" className="w-full h-full object-cover" />
                       </div>
                       <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
@@ -293,7 +293,7 @@ function EditProfile() {
                         className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                           user.avatarPreference === 'custom' 
                             ? 'border-primary bg-primary/10' 
-                            : 'border-dark-600 hover:border-dark-500'
+                            : 'border-neutral-600 hover:border-neutral-500'
                         }`}
                         onClick={async () => {
                           try {
@@ -309,7 +309,7 @@ function EditProfile() {
                           }
                         }}
                       >
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-dark-700 mx-auto mb-2">
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-2">
                           <img src={user.avatar} alt="Custom Avatar" className="w-full h-full object-cover" />
                         </div>
                         <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
@@ -334,7 +334,7 @@ function EditProfile() {
 
         {/* Profile Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-100 mb-4">Basic Information</h2>
             
             <div className="space-y-4">
@@ -347,7 +347,7 @@ function EditProfile() {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
 
@@ -360,7 +360,7 @@ function EditProfile() {
                   onChange={handleChange}
                   rows="20"
                   placeholder="Tell us about yourself..."
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
                 />
               </div>
 
@@ -374,7 +374,7 @@ function EditProfile() {
                   rows="2"
                   maxLength={150}
                   placeholder="A short summary (max 150 characters)"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
                 />
                 <small className="text-xs text-gray-500 mt-1 block">{formData.briefBio.length}/150</small>
               </div>
@@ -388,7 +388,7 @@ function EditProfile() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="City, Country"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
 
@@ -401,13 +401,13 @@ function EditProfile() {
                   value={formData.website}
                   onChange={handleChange}
                   placeholder="https://yourwebsite.com"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-100 mb-4">Social Links</h2>
             
             <div className="space-y-4">
@@ -420,7 +420,7 @@ function EditProfile() {
                   value={formData.github}
                   onChange={handleChange}
                   placeholder="username"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
 
@@ -433,7 +433,7 @@ function EditProfile() {
                   value={formData.twitter}
                   onChange={handleChange}
                   placeholder="username"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
 
@@ -446,13 +446,13 @@ function EditProfile() {
                   value={formData.linkedin}
                   onChange={handleChange}
                   placeholder="username"
-                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-100 mb-4">Skills</h2>
             <div className="flex gap-2 mb-4">
               <input
@@ -465,15 +465,15 @@ function EditProfile() {
                     handleAddSkill(e);
                   }
                 }}
-                className="flex-1 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                className="flex-1 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
-              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors">
+              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
               {formData.skills.map((skill, index) => (
-                <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-dark-700 text-gray-300 rounded-md border border-dark-600">
+                <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-neutral-700 text-gray-300 rounded-md border border-neutral-600">
                   {skill}
                   <button
                     type="button"
@@ -488,10 +488,10 @@ function EditProfile() {
           </div>
 
           <div className="flex items-center justify-end gap-3">
-            <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg transition-colors">
+            <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-dark-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-neutral-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>

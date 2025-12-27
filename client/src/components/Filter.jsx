@@ -48,7 +48,7 @@ function Filter({ selectedTech, onTechChange, isCollapsed, onToggleCollapse }) {
   };
 
   return (
-    <div className={`bg-dark-800 border border-dark-600 rounded-xl transition-all duration-300 ${
+    <div className={`bg-neutral-800 border border-neutral-600 rounded-xl transition-all duration-300 ${
       isCollapsed ? 'p-2' : 'p-6'
     }`}>
       {isCollapsed ? (
@@ -98,8 +98,8 @@ function Filter({ selectedTech, onTechChange, isCollapsed, onToggleCollapse }) {
                 key={tech}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   selectedTech.includes(tech) 
-                    ? 'bg-primary text-dark-900' 
-                    : 'bg-dark-700 text-gray-300 border border-dark-600 hover:border-primary hover:text-white'
+                    ? 'bg-primary text-neutral-900' 
+                    : 'bg-neutral-700 text-gray-300 border border-neutral-600 hover:border-primary hover:text-white'
                 }`}
                 onClick={() => handleTechToggle(tech)}
               >

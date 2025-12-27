@@ -151,7 +151,7 @@ function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-900 py-8 px-4">
+    <div className="min-h-screen bg-neutral-900 py-8 px-4">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-6">Settings</h1>
 
@@ -168,12 +168,12 @@ function Settings() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Tabs */}
           <div className="lg:col-span-1">
-            <div className="bg-dark-800 border border-dark-600 rounded-xl p-2 space-y-1">
+            <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-2 space-y-1">
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'profile' 
-                    ? 'bg-primary text-dark-900 font-medium' 
-                    : 'text-gray-300 hover:bg-dark-700'
+                    ? 'bg-primary text-neutral-900 font-medium' 
+                    : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('profile')}
               >
@@ -187,8 +187,8 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'password' 
-                    ? 'bg-primary text-dark-900 font-medium' 
-                    : 'text-gray-300 hover:bg-dark-700'
+                    ? 'bg-primary text-neutral-900 font-medium' 
+                    : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('password')}
               >
@@ -202,8 +202,8 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'privacy' 
-                    ? 'bg-primary text-dark-900 font-medium' 
-                    : 'text-gray-300 hover:bg-dark-700'
+                    ? 'bg-primary text-neutral-900 font-medium' 
+                    : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('privacy')}
               >
@@ -216,8 +216,8 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'blocked' 
-                    ? 'bg-primary text-dark-900 font-medium' 
-                    : 'text-gray-300 hover:bg-dark-700'
+                    ? 'bg-primary text-neutral-900 font-medium' 
+                    : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('blocked')}
               >
@@ -232,7 +232,7 @@ function Settings() {
 
           {/* Tab Content */}
           <div className="lg:col-span-3">
-            <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+            <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
               {/* Profile Tab */}
               {activeTab === 'profile' && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
@@ -242,7 +242,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Username</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.username}
                     onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
                     placeholder="Your username"
@@ -254,7 +254,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.email}
                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                     placeholder="your.email@example.com"
@@ -265,7 +265,7 @@ function Settings() {
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
                   <textarea
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                     value={profileData.bio}
                     onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                     placeholder="Tell us about yourself..."
@@ -277,7 +277,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Location</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.location}
                     onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
                     placeholder="City, Country"
@@ -290,7 +290,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Website</label>
                   <input
                     type="url"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.website}
                     onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
                     placeholder="https://yourwebsite.com"
@@ -301,7 +301,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">GitHub</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.github}
                     onChange={(e) => setProfileData({ ...profileData, github: e.target.value })}
                     placeholder="github.com/username"
@@ -312,7 +312,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">LinkedIn</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.linkedin}
                     onChange={(e) => setProfileData({ ...profileData, linkedin: e.target.value })}
                     placeholder="linkedin.com/in/username"
@@ -323,7 +323,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Twitter</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={profileData.twitter}
                     onChange={(e) => setProfileData({ ...profileData, twitter: e.target.value })}
                     placeholder="@username"
@@ -334,8 +334,8 @@ function Settings() {
                   type="submit" 
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
-                      ? 'bg-dark-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-dark-900 hover:bg-primary-light'
+                      ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
+                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -353,7 +353,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Current Password</label>
                   <input
                     type="password"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={passwordData.currentPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                     placeholder="Enter current password"
@@ -365,7 +365,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">New Password</label>
                   <input
                     type="password"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                     placeholder="Enter new password"
@@ -377,7 +377,7 @@ function Settings() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Confirm New Password</label>
                   <input
                     type="password"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                     placeholder="Confirm new password"
@@ -389,8 +389,8 @@ function Settings() {
                   type="submit" 
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
-                      ? 'bg-dark-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-dark-900 hover:bg-primary-light'
+                      ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
+                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -407,7 +407,7 @@ function Settings() {
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Profile Visibility</label>
                   <select
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={privacySettings.profileVisibility}
                     onChange={(e) => setPrivacySettings({ ...privacySettings, profileVisibility: e.target.value })}
                   >
@@ -421,7 +421,7 @@ function Settings() {
                   <input
                     type="checkbox"
                     id="showEmail"
-                    className="w-4 h-4 bg-dark-700 border-dark-600 rounded focus:ring-primary text-primary"
+                    className="w-4 h-4 bg-neutral-700 border-neutral-600 rounded focus:ring-primary text-primary"
                     checked={privacySettings.showEmail}
                     onChange={(e) => setPrivacySettings({ ...privacySettings, showEmail: e.target.checked })}
                   />
@@ -433,7 +433,7 @@ function Settings() {
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Who Can Message Me</label>
                   <select
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={privacySettings.messagePermission}
                     onChange={(e) => setPrivacySettings({ ...privacySettings, messagePermission: e.target.value })}
                   >
@@ -451,8 +451,8 @@ function Settings() {
                   type="submit" 
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
-                      ? 'bg-dark-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-dark-900 hover:bg-primary-light'
+                      ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
+                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -480,12 +480,12 @@ function Settings() {
                 ) : (
                   <div className="space-y-3">
                     {blockedUsers.map(blockedUser => (
-                      <div key={blockedUser._id} className="flex items-center justify-between p-4 bg-dark-700 border border-dark-600 rounded-lg">
+                      <div key={blockedUser._id} className="flex items-center justify-between p-4 bg-neutral-700 border border-neutral-600 rounded-lg">
                         <div className="flex items-center gap-4">
                           <img 
                             src={getSelectedAvatar(blockedUser)} 
                             alt={blockedUser.username}
-                            className="w-12 h-12 rounded-full border-2 border-dark-600 object-cover"
+                            className="w-12 h-12 rounded-full border-2 border-neutral-600 object-cover"
                           />
                           <div>
                             <h4 className="text-white font-medium">{blockedUser.username}</h4>
@@ -494,7 +494,7 @@ function Settings() {
                         </div>
                         <button
                           onClick={() => handleUnblock(blockedUser._id)}
-                          className="px-4 py-2 bg-primary text-dark-900 rounded-lg hover:bg-primary-light transition-colors font-medium"
+                          className="px-4 py-2 bg-primary text-neutral-900 rounded-lg hover:bg-primary-light transition-colors font-medium"
                         >
                           Unblock
                         </button>

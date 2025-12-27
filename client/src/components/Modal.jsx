@@ -35,8 +35,8 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-dark-800 border border-dark-600 rounded-lg shadow-2xl max-w-md w-full animate-scale-up" onClick={(e) => e.stopPropagation()}>
-        <div className={`flex items-center justify-between p-6 border-b border-dark-600 ${
+      <div className="bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl max-w-md w-full animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className={`flex items-center justify-between p-6 border-b border-neutral-600 ${
           type === 'error' ? 'bg-red-500/10' : 
           type === 'warning' ? 'bg-yellow-500/10' : 
           type === 'success' ? 'bg-primary/10' : ''
@@ -54,11 +54,11 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
           <p className="text-gray-300 leading-relaxed">{message}</p>
         </div>
         
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-dark-600 bg-dark-700/30">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-600 bg-neutral-700/30">
           {onConfirm ? (
             <>
               <button 
-                className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg transition-colors"
+                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg transition-colors"
                 onClick={onClose}
               >
                 {cancelText || 'Cancel'}
@@ -66,8 +66,8 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
               <button 
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   type === 'error' ? 'bg-red-500 hover:bg-red-600 text-white' :
-                  type === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 text-dark-900' :
-                  'bg-primary hover:bg-primary-light text-dark-900'
+                  type === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 text-neutral-900' :
+                  'bg-primary hover:bg-primary-light text-neutral-900'
                 }`}
                 onClick={handleConfirm}
               >
@@ -76,7 +76,7 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
             </>
           ) : (
             <button 
-              className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors"
+              className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors"
               onClick={onClose}
             >
               OK

@@ -46,8 +46,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-900 px-4 py-12">
-      <div className="w-full max-w-md bg-dark-800 border border-dark-600 rounded-lg shadow-2xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4 py-12">
+      <div className="w-full max-w-md bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl p-8">
         <h2 className="text-3xl font-bold text-gray-100 mb-2">Welcome Back!</h2>
         <p className="text-gray-400 mb-6">Login to ApexDevs</p>
         
@@ -71,7 +71,7 @@ function Login() {
               placeholder="Enter your email or username"
               required
               disabled={loading}
-              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -88,14 +88,14 @@ function Login() {
               placeholder="Enter your password"
               required
               disabled={loading}
-              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary-light text-dark-900 font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+            className="w-full bg-primary hover:bg-primary-light text-neutral-900 font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>

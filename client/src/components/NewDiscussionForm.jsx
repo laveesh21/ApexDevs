@@ -82,8 +82,8 @@ function NewDiscussionForm({ onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-dark-800 border border-dark-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={(e) => e.stopPropagation()}>
-        <div className="sticky top-0 bg-dark-800 border-b border-dark-600 px-6 py-4 flex justify-between items-center">
+      <div className="bg-neutral-800 border border-neutral-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 bg-neutral-800 border-b border-neutral-600 px-6 py-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-100">Start a New Discussion</h2>
           <button className="text-gray-400 hover:text-gray-100 text-3xl leading-none transition-colors" onClick={onClose}>✕</button>
         </div>
@@ -99,8 +99,8 @@ function NewDiscussionForm({ onClose, onSubmit }) {
                   type="button"
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     formData.type === type
-                      ? 'bg-primary text-dark-900'
-                      : 'bg-dark-700 border border-dark-600 text-gray-300 hover:bg-dark-600 hover:border-primary/50'
+                      ? 'bg-primary text-neutral-900'
+                      : 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-neutral-600 hover:border-primary/50'
                   }`}
                   onClick={() => setFormData({ ...formData, type })}
                 >
@@ -117,7 +117,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               type="text"
               id="title"
               name="title"
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="What's your question or topic?"
               value={formData.title}
               onChange={handleChange}
@@ -133,7 +133,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
             <textarea
               id="content"
               name="content"
-              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="Provide details about your discussion. You can use Markdown for formatting."
               value={formData.content}
               onChange={handleChange}
@@ -177,7 +177,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
                     className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                       formData.tags.includes(tag)
                         ? 'bg-primary/30 border border-primary text-primary'
-                        : 'bg-dark-700 border border-dark-600 text-gray-400 hover:bg-dark-600 hover:border-primary/50'
+                        : 'bg-neutral-700 border border-neutral-600 text-gray-400 hover:bg-neutral-600 hover:border-primary/50'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={() => handleAddTag(tag)}
                     disabled={formData.tags.includes(tag) || formData.tags.length >= 5}
@@ -191,7 +191,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
                 placeholder="Or add a custom tag..."
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -205,7 +205,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               />
               <button
                 type="button"
-                className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
                 onClick={handleAddCustomTag}
                 disabled={!tagInput.trim() || formData.tags.length >= 5}
               >
@@ -215,13 +215,13 @@ function NewDiscussionForm({ onClose, onSubmit }) {
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-dark-600">
-            <button type="button" className="px-6 py-2 bg-dark-700 hover:bg-dark-600 border border-dark-600 text-gray-300 font-medium rounded-lg transition-colors" onClick={onClose}>
+          <div className="flex justify-end gap-3 pt-4 border-t border-neutral-600">
+            <button type="button" className="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 font-medium rounded-lg transition-colors" onClick={onClose}>
               Cancel
             </button>
             <button 
               type="submit" 
-              className="px-6 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+              className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
               disabled={!formData.title.trim() || !formData.content.trim()}
             >
               Post Discussion

@@ -4,6 +4,7 @@ import DiscussionCard from '../components/DiscussionCard';
 import CommunityFilter from '../components/CommunityFilter';
 import NewDiscussionForm from '../components/NewDiscussionForm';
 import { threadAPI } from '../services/api';
+import { Tag, Button } from '../components/ui';
 
 function Community() {
   const { token } = useAuth();
@@ -111,8 +112,8 @@ function Community() {
   });
 
   return (
-    <div className="min-h-screen bg-dark-900">
-      <div className="bg-dark-800 border-b border-dark-600 py-12 px-4">
+    <div className="min-h-screen bg-neutral-900">
+      <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Community Discussions</h1>
           <p className="text-gray-400 text-lg mb-8">Ask questions, share knowledge, and help fellow developers</p>
@@ -123,7 +124,7 @@ function Community() {
             </svg>
             <input
               type="text"
-              className="w-full bg-dark-700 border border-dark-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+              className="w-full bg-neutral-700 border border-neutral-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               placeholder="Search discussions by title, content, or author..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -159,36 +160,38 @@ function Community() {
                 <h2 className="text-2xl font-bold text-white">
                   {filters.category === 'All' ? 'All Discussions' : filters.category}
                 </h2>
-                <span className="px-3 py-1 bg-dark-700 text-gray-400 rounded-full text-sm">({filteredDiscussions.length})</span>
+                <span className="px-3 py-1 bg-neutral-700 text-gray-400 rounded-full text-sm text-gray-400">({filteredDiscussions.length})</span>
               </div>
-              <button 
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-dark-900 rounded-lg font-medium hover:bg-primary-light transition-colors"
+              <Button
+                variant="primary"
+                size="md"
                 onClick={() => setShowNewDiscussionForm(true)}
+                icon={
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                }
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
                 New Discussion
-              </button>
+              </Button>
             </div>            {filters.tags.length > 0 && (
               <div className="mb-6 flex items-center gap-2 flex-wrap">
                 <span className="text-gray-400 text-sm font-medium">Filtered by:</span>
                 {filters.tags.map(tag => (
-                  <span key={tag} className="flex items-center gap-1 px-3 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-sm">
+                  <Tag
+                    key={tag}
+                    variant="primary"
+                    size="sm"
+                    onRemove={() => {
+                      setFilters({
+                        ...filters,
+                        tags: filters.tags.filter(t => t !== tag)
+                      });
+                    }}
+                  >
                     {tag}
-                    <button
-                      className="ml-1 hover:text-primary-light transition-colors"
-                      onClick={() => {
-                        setFilters({
-                          ...filters,
-                          tags: filters.tags.filter(t => t !== tag)
-                        });
-                      }}
-                    >
-                      ×
-                    </button>
-                  </span>
+                  </Tag>
                 ))}
               </div>
             )}
@@ -202,7 +205,7 @@ function Community() {
               <div className="text-center py-20">
                 <p className="text-red-400 mb-4">{error}</p>
                 <button 
-                  className="px-4 py-2 bg-primary text-dark-900 rounded-lg font-medium hover:bg-primary-light transition-colors"
+                  className="px-4 py-2 bg-primary text-neutral-900 rounded-lg font-medium hover:bg-primary-light transition-colors"
                   onClick={() => window.location.reload()}
                 >
                   Try Again

@@ -1,9 +1,9 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getSelectedAvatar } from '../utils/avatarHelper';
 import { threadAPI } from '../services/api';
 import Modal from '../components/Modal';
+import { Tag, Button, AuthorAvatar } from '../components/ui';
 
 function ThreadDetail() {
   const { id } = useParams();
@@ -458,7 +458,7 @@ function ThreadDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-900 py-8 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-900 py-8 px-4 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-400">Loading thread...</p>
@@ -469,8 +469,8 @@ function ThreadDetail() {
 
   if (error || !thread) {
     return (
-      <div className="min-h-screen bg-dark-900 py-8 px-4 flex flex-col items-center justify-center">
-        <div className="bg-dark-800 border border-dark-600 rounded-xl p-12 text-center max-w-md">
+      <div className="min-h-screen bg-neutral-900 py-8 px-4 flex flex-col items-center justify-center">
+        <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-12 text-center max-w-md">
           <h2 className="text-2xl font-bold text-white mb-4">{error || 'Thread not found'}</h2>
           <Link to="/community" className="text-primary hover:text-primary-light inline-flex items-center gap-2">
             ← Back to Community
@@ -510,7 +510,7 @@ function ThreadDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-900 py-8 px-4">
+    <div className="min-h-screen bg-neutral-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -519,15 +519,15 @@ function ThreadDetail() {
             </Link>
 
             {/* Main Question/Thread - Combined Header and Content */}
-            <div className="bg-dark-800 border border-dark-600 rounded-xl overflow-hidden">
+            <div className="bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden">
               <div className="flex gap-4 p-6">
                 {/* Voting Column */}
                 <div className="flex flex-col items-center gap-2">
                   <button 
                     className={`p-2 rounded-lg transition-all ${
                       voteStatus === 'upvote' 
-                        ? 'bg-primary text-dark-900' 
-                        : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-primary'
+                        ? 'bg-primary text-neutral-900' 
+                        : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
                     }`}
                     onClick={() => handleVote('upvote')}
                   >
@@ -538,7 +538,7 @@ function ThreadDetail() {
                     className={`p-2 rounded-lg transition-all ${
                       voteStatus === 'downvote' 
                         ? 'bg-red-500 text-white' 
-                        : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-red-500'
+                        : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-red-500'
                     }`}
                     onClick={() => handleVote('downvote')}
                   >
@@ -559,18 +559,20 @@ function ThreadDetail() {
                       </span>
                       {isThreadAuthor(thread.author) && !isEditing && (
                         <div className="flex gap-2">
-                          <button 
-                            className="px-3 py-1 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors text-sm"
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={handleEditClick}
                           >
-                            ✏️ Edit
-                          </button>
-                          <button 
-                            className="px-3 py-1 bg-red-500/10 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm"
+                            Edit
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
                             onClick={handleDelete}
                           >
-                            🗑️ Delete
-                          </button>
+                           Delete
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -585,7 +587,7 @@ function ThreadDetail() {
                     type="text"
                     id="title"
                     name="title"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.title}
                     onChange={handleEditChange}
                     required
@@ -598,7 +600,7 @@ function ThreadDetail() {
                   <textarea
                     id="content"
                     name="content"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                     value={editFormData.content}
                     onChange={handleEditChange}
                     required
@@ -611,7 +613,7 @@ function ThreadDetail() {
                   <select
                     id="category"
                     name="category"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.category}
                     onChange={handleEditChange}
                     required
@@ -632,7 +634,7 @@ function ThreadDetail() {
                     type="text"
                     id="tags"
                     name="tags"
-                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.tags.join(', ')}
                     onChange={handleTagsChange}
                     placeholder="JavaScript, React, Node.js"
@@ -640,19 +642,21 @@ function ThreadDetail() {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button 
-                    type="button" 
-                    className="px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors"
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
                     onClick={handleCancelEdit}
                   >
                     Cancel
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="px-4 py-2 bg-primary text-dark-900 rounded-lg hover:bg-primary-light transition-colors font-medium"
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
                   >
                     Save Changes
-                  </button>
+                  </Button>
                 </div>
               </form>
             ) : (
@@ -687,40 +691,34 @@ function ThreadDetail() {
 
                   {/* See more / See less */}
                   {(thread.content || '').length > 1500 && (
-                    <button
+                    <Button
                       type="button"
-                      className="text-primary hover:text-primary-light text-sm font-medium"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setShowFullContent(s => !s)}
                     >
                       {showFullContent ? 'See less' : 'See more'}
-                    </button>
+                    </Button>
                   )}
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-4">
                   {thread.tags.map((tag, index) => (
-                    <span key={index} className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-sm rounded-lg">
+                    <Tag key={index} variant="primary" size="md">
                       {tag}
-                    </span>
+                    </Tag>
                   ))}
                 </div>
               </>
             )}
 
             {/* Compact Author Info */}
-            <div className="flex items-center gap-2 mt-6 pt-6 border-t border-dark-600">
-              <img 
-                src={getSelectedAvatar(thread.author)} 
-                alt={thread.author?.username} 
-                className="w-8 h-8 rounded-full border-2 border-dark-600 object-cover"
+            <div className="flex items-center gap-2 mt-6 pt-6 border-t border-neutral-600">
+              <AuthorAvatar
+                author={thread.author}
+                size="md"
+                clickable={!!thread.author?._id}
               />
-              {thread.author?._id ? (
-                <Link to={`/user/${thread.author._id}`} className="text-primary hover:text-primary-light font-medium">
-                  {thread.author.username}
-                </Link>
-              ) : (
-                <span className="text-white font-medium">{thread.author?.username || 'Anonymous'}</span>
-              )}
               <span className="text-gray-500">•</span>
               <span className="text-gray-400 text-sm">{formatTimeAgo(thread.createdAt)}</span>
               {thread.updatedAt && new Date(thread.updatedAt).getTime() !== new Date(thread.createdAt).getTime() && (
@@ -745,15 +743,15 @@ function ThreadDetail() {
               const commentVote = commentVotes[comment._id] || { voteStatus: null, voteScore: 0 };
               
               return (
-                <div key={comment._id} className="bg-dark-800 border border-dark-600 rounded-xl overflow-hidden">
+                <div key={comment._id} className="bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden">
                   <div className="flex gap-4 p-6">
                     {/* Comment Voting */}
                     <div className="flex flex-col items-center gap-1">
                       <button 
                         className={`p-1 rounded transition-all text-sm ${
                           commentVote.voteStatus === 'upvote' 
-                            ? 'bg-primary text-dark-900' 
-                            : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-primary'
+                            ? 'bg-primary text-neutral-900' 
+                            : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
                         }`}
                         onClick={() => handleCommentVote(comment._id, 'upvote')}
                       >
@@ -764,7 +762,7 @@ function ThreadDetail() {
                         className={`p-1 rounded transition-all text-sm ${
                           commentVote.voteStatus === 'downvote' 
                             ? 'bg-red-500 text-white' 
-                            : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-red-500'
+                            : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-red-500'
                         }`}
                         onClick={() => handleCommentVote(comment._id, 'downvote')}
                       >
@@ -775,18 +773,11 @@ function ThreadDetail() {
                     <div className="flex-1 min-w-0">
                       {/* Compact Comment Author */}
                       <div className="flex items-center gap-2 mb-3">
-                        <img 
-                          src={getSelectedAvatar(comment.author)} 
-                          alt={comment.author?.username} 
-                          className="w-8 h-8 rounded-full border-2 border-dark-600 object-cover"
+                        <AuthorAvatar
+                          author={comment.author}
+                          size="md"
+                          clickable={!!comment.author?._id}
                         />
-                        {comment.author?._id ? (
-                          <Link to={`/user/${comment.author._id}`} className="text-primary hover:text-primary-light font-medium">
-                            {comment.author.username}
-                          </Link>
-                        ) : (
-                          <span className="text-white font-medium">{comment.author?.username || 'Anonymous'}</span>
-                        )}
                         <span className="text-gray-500">•</span>
                         <span className="text-gray-400 text-sm">{formatTimeAgo(comment.createdAt)}</span>
                         {comment.updatedAt && new Date(comment.updatedAt).getTime() !== new Date(comment.createdAt).getTime() && (
@@ -802,14 +793,12 @@ function ThreadDetail() {
                               onClick={() => handleEditComment(comment)}
                               title="Edit comment"
                             >
-                              ✏️
                             </button>
                                 <button 
                               className="p-1 text-gray-400 hover:text-red-500 transition-colors" 
                               onClick={() => handleDeleteComment(comment._id)}
                               title="Delete comment"
                             >
-                              🗑️
                             </button>
                           </div>
                         )}
@@ -818,24 +807,26 @@ function ThreadDetail() {
                       {editingCommentId === comment._id ? (
                         <div className="space-y-3">
                           <textarea
-                            className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                            className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                             value={editCommentContent}
                             onChange={(e) => setEditCommentContent(e.target.value)}
                             rows="4"
                           />
                           <div className="flex gap-2">
-                            <button 
-                              className="px-3 py-1 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors text-sm" 
+                            <Button
+                              variant="secondary"
+                              size="sm"
                               onClick={handleCancelCommentEdit}
                             >
                               Cancel
-                            </button>
-                            <button 
-                              className="px-3 py-1 bg-primary text-dark-900 rounded-lg hover:bg-primary-light transition-colors font-medium text-sm" 
+                            </Button>
+                            <Button
+                              variant="primary"
+                              size="sm"
                               onClick={() => handleUpdateComment(comment._id)}
                             >
                               Save
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       ) : (
@@ -866,28 +857,26 @@ function ThreadDetail() {
         </div>
 
         {/* Add Comment Section */}
-        <div className="mt-6 bg-dark-800 border border-dark-600 rounded-xl p-6">
+        <div className="mt-6 bg-neutral-800 border border-neutral-600 rounded-xl p-6">
           <h3 className="text-xl font-bold text-white mb-4">Your Comment</h3>
           <form onSubmit={handleSubmitComment}>
             <textarea 
-              className="w-full px-4 py-3 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none" 
+              className="w-full px-4 py-3 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none" 
               placeholder="Write your comment here..."
               rows="6"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={!token}
             ></textarea>
-            <button 
-              type="submit" 
-              className={`mt-3 px-6 py-2 rounded-lg font-medium transition-colors ${
-                token && newComment.trim() 
-                  ? 'bg-primary text-dark-900 hover:bg-primary-light' 
-                  : 'bg-dark-700 text-gray-500 cursor-not-allowed'
-              }`}
+            <Button
+              type="submit"
+              variant={token && newComment.trim() ? 'primary' : 'secondary'}
+              size="lg"
               disabled={!token || !newComment.trim()}
+              className="mt-3"
             >
               {token ? 'Post Comment' : 'Login to Comment'}
-            </button>
+            </Button>
           </form>
         </div>
       </div>
@@ -895,7 +884,7 @@ function ThreadDetail() {
       {/* Sidebar */}
       <aside className="lg:col-span-1">
         <div className="space-y-6 lg:sticky lg:top-8">
-          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Thread Stats</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -917,22 +906,20 @@ function ThreadDetail() {
             </div>
           </div>
 
-          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Related Tags</h3>
             <div className="flex flex-wrap gap-2">
               {thread.tags.map((tag, index) => (
-                <Link 
-                  key={index} 
-                  to="/community" 
-                  className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-sm rounded-lg hover:bg-primary/30 transition-colors"
-                >
-                  {tag}
-                </Link>
+                <Tag key={index} variant="primary" size="md">
+                  <Link to="/community" className="hover:opacity-80">
+                    {tag}
+                  </Link>
+                </Tag>
               ))}
             </div>
           </div>
 
-          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Community Guidelines</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">

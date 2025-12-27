@@ -83,7 +83,7 @@ const Connections = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
         <div className="text-gray-400">Loading connections...</div>
       </div>
     );
@@ -92,7 +92,7 @@ const Connections = () => {
   const currentList = activeTab === 'followers' ? followers : following;
 
   return (
-    <div className="min-h-screen bg-dark-900 py-8">
+    <div className="min-h-screen bg-neutral-900 py-8">
       <div className="max-w-5xl mx-auto px-6">
         <div className="mb-6">
           <button className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-4" onClick={() => navigate('/profile')}>
@@ -105,31 +105,31 @@ const Connections = () => {
           <button
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'followers'
-                ? 'bg-primary text-dark-900'
-                : 'bg-dark-800 border border-dark-600 text-gray-300 hover:bg-dark-700 hover:border-primary/50'
+                ? 'bg-primary text-neutral-900'
+                : 'bg-neutral-800 border border-neutral-600 text-gray-300 hover:bg-neutral-700 hover:border-primary/50'
             }`}
             onClick={() => handleTabChange('followers')}
           >
             Followers
-            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-dark-900/30">{followers.length}</span>
+            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-900/30">{followers.length}</span>
           </button>
           <button
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'following'
-                ? 'bg-primary text-dark-900'
-                : 'bg-dark-800 border border-dark-600 text-gray-300 hover:bg-dark-700 hover:border-primary/50'
+                ? 'bg-primary text-neutral-900'
+                : 'bg-neutral-800 border border-neutral-600 text-gray-300 hover:bg-neutral-700 hover:border-primary/50'
             }`}
             onClick={() => handleTabChange('following')}
           >
             Following
-            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-dark-900/30">{following.length}</span>
+            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-neutral-900/30">{following.length}</span>
           </button>
         </div>
 
         {error && <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-6">{error}</div>}
 
         {currentList.length === 0 ? (
-          <div className="bg-dark-800 border border-dark-600 rounded-xl p-12 text-center">
+          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-12 text-center">
             <p className="text-gray-400">
               {activeTab === 'followers'
                 ? 'No followers yet'
@@ -143,10 +143,10 @@ const Connections = () => {
               const currentUserId = currentUser?._id || currentUser?.id;
               
               return (
-                <div key={userDisplayId} className="bg-dark-800 border border-dark-600 rounded-xl p-6 hover:border-primary/50 transition-all">
+                <div key={userDisplayId} className="bg-neutral-800 border border-neutral-600 rounded-xl p-6 hover:border-primary/50 transition-all">
                   <Link to={`/user/${userDisplayId}`} className="block">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-dark-600">
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-neutral-600">
                         <img src={getSelectedAvatar(user)} alt={user.username} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -159,8 +159,8 @@ const Connections = () => {
                     <button
                       className={`w-full py-2 rounded-lg font-medium transition-colors ${
                         activeTab === 'following' || isFollowingUser(userDisplayId)
-                          ? 'bg-dark-700 border border-dark-600 text-gray-300 hover:bg-red-500/10 hover:border-red-500 hover:text-red-400'
-                          : 'bg-primary hover:bg-primary-light text-dark-900'
+                          ? 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-red-500/10 hover:border-red-500 hover:text-red-400'
+                          : 'bg-primary hover:bg-primary-light text-neutral-900'
                       }`}
                       onClick={() => {
                         if (activeTab === 'following') {
