@@ -181,7 +181,7 @@ function PublicProfile() {
         {currentUser && currentUser._id === userId && searchParams.get('preview') === 'true' && (
           <div className="mb-6 p-4 bg-primary/10 border border-primary/50 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="text-primary font-medium">👁️ Preview Mode - This is how your profile appears to others</span>
-            <Link to="/profile" className="px-4 py-2 bg-primary text-neutral-900 rounded-lg hover:bg-primary-light transition-colors font-medium">
+            <Link to="/profile" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-medium">
               Back to My Profile
             </Link>
           </div>
@@ -249,7 +249,7 @@ function PublicProfile() {
                     className={`px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                       isFollowing 
                         ? 'bg-neutral-700 text-white border border-neutral-600 hover:bg-neutral-600' 
-                        : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                        : 'bg-primary text-white hover:bg-primary-light'
                     }`}
                   >
                     {followLoading ? 'Loading...' : isFollowing ? 'Unfollow' : 'Follow'}

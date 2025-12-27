@@ -331,7 +331,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 placeholder="Add a technology (e.g., React, Node.js)"
                 className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <button type="button" onClick={addTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
+              <button type="button" onClick={addTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
@@ -383,7 +383,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
             <button type="button" onClick={onClose} className="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
+            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? 'Updating...' : 'Update Project'}
             </button>
           </div>

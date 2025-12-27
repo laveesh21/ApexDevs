@@ -90,8 +90,7 @@ function DiscussionCard({ discussion }) {
             <AuthorAvatar 
               author={discussion.author}
               size="sm"
-              clickable={!!discussion.author?._id}
-              onClick={(e) => e.stopPropagation()}
+              clickable={false}
             />
             <span className="flex items-center gap-1 text-gray-400">
               <span>💬</span>

@@ -30,7 +30,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-800 flex flex-col">
+    <div className="min-h-screen bg-neutral-900 flex flex-col">
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />

@@ -467,7 +467,7 @@ function EditProfile() {
                 }}
                 className="flex-1 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
-              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
+              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
@@ -491,7 +491,7 @@ function EditProfile() {
             <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-neutral-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>

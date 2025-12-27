@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Button } from '../ui';
 
 const DEFAULT_CATEGORIES = [
   { value: 'all', label: 'All Categories' },
@@ -17,22 +18,21 @@ function CategoryFilter({ selectedCategory, onCategoryChange, categories = DEFAU
   return (
     <div className="space-y-2">
       {categories.map((category) => (
-        <button
+        <Button
           key={category.value}
           onClick={() => onCategoryChange(category.value)}
-          className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            selectedCategory === category.value
-              ? 'bg-primary text-neutral-900'
-              : 'bg-neutral-700 text-gray-300 border border-neutral-600 hover:border-primary hover:text-white'
-          }`}
+          variant={selectedCategory === category.value ? 'success' : 'zinc_secondary'}
+          size="sm"
+          fullWidth
+          className="px-4"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             <span>{category.label}</span>
             {category.count !== undefined && (
               <span className="text-xs opacity-75">({category.count})</span>
             )}
           </div>
-        </button>
+        </Button>
       ))}
     </div>
   );

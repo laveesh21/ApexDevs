@@ -280,7 +280,7 @@ function Profile() {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Link to="/profile/edit" className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors text-center">
+              <Link to="/profile/edit" className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors text-center">
                 Edit Profile
               </Link>
               {(user?.id || user?._id) && (
@@ -401,7 +401,7 @@ function Profile() {
                   </div>
                   <div className="flex justify-end gap-3 pt-4">
                     <button 
-                      className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+                      className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                       onClick={handleSave}
                       disabled={loading}
                     >
@@ -521,7 +521,7 @@ function Profile() {
               <button 
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'projects' 
-                    ? 'bg-primary text-neutral-900' 
+                    ? 'bg-primary text-white' 
                     : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600 hover:text-gray-100'
                 }`}
                 onClick={() => setActiveTab('projects')}
@@ -533,7 +533,7 @@ function Profile() {
               <button 
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'threads' 
-                    ? 'bg-primary text-neutral-900' 
+                    ? 'bg-primary text-white' 
                     : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600 hover:text-gray-100'
                 }`}
                 onClick={() => setActiveTab('threads')}
@@ -544,7 +544,7 @@ function Profile() {
               </button>
             </div>
             {activeTab === 'projects' && (
-              <button className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors" onClick={() => setShowProjectForm(true)}>
+              <button className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors" onClick={() => setShowProjectForm(true)}>
                 + Upload Project
               </button>
             )}
@@ -561,7 +561,7 @@ function Profile() {
                 <div className="text-6xl mb-4">📁</div>
                 <h3 className="text-xl font-bold text-gray-100 mb-2">No projects yet</h3>
                 <p className="text-gray-400 mb-6">Upload your first project to showcase your work!</p>
-                <button className="px-6 py-3 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors" onClick={() => setShowProjectForm(true)}>
+                <button className="px-6 py-3 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors" onClick={() => setShowProjectForm(true)}>
                   Upload Your First Project
                 </button>
               </div>
@@ -588,7 +588,7 @@ function Profile() {
                 <div className="text-6xl mb-4">💬</div>
                 <h3 className="text-xl font-bold text-gray-100 mb-2">No threads yet</h3>
                 <p className="text-gray-400 mb-6">Start a discussion in the community to see your threads here!</p>
-                <Link to="/community" className="inline-block px-6 py-3 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
+                <Link to="/community" className="inline-block px-6 py-3 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors">
                   Go to Community
                 </Link>
               </div>

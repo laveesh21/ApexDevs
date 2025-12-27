@@ -105,7 +105,7 @@ const Connections = () => {
           <button
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'followers'
-                ? 'bg-primary text-neutral-900'
+                ? 'bg-primary text-white'
                 : 'bg-neutral-800 border border-neutral-600 text-gray-300 hover:bg-neutral-700 hover:border-primary/50'
             }`}
             onClick={() => handleTabChange('followers')}
@@ -116,7 +116,7 @@ const Connections = () => {
           <button
             className={`px-6 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'following'
-                ? 'bg-primary text-neutral-900'
+                ? 'bg-primary text-white'
                 : 'bg-neutral-800 border border-neutral-600 text-gray-300 hover:bg-neutral-700 hover:border-primary/50'
             }`}
             onClick={() => handleTabChange('following')}
@@ -160,7 +160,7 @@ const Connections = () => {
                       className={`w-full py-2 rounded-lg font-medium transition-colors ${
                         activeTab === 'following' || isFollowingUser(userDisplayId)
                           ? 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-red-500/10 hover:border-red-500 hover:text-red-400'
-                          : 'bg-primary hover:bg-primary-light text-neutral-900'
+                          : 'bg-primary hover:bg-primary-light text-white'
                       }`}
                       onClick={() => {
                         if (activeTab === 'following') {

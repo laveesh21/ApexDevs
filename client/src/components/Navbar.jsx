@@ -21,7 +21,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-neutral-800 border-b border-neutral-600 sticky top-0 z-50">
+    <nav className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-12">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -33,8 +33,8 @@ function Navbar() {
             <li>
               <Link 
                 to="/" 
-                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-700 transition-all ${
-                  isActive('/') ? 'bg-neutral-700 text-primary' : ''
+                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
+                  isActive('/') ? 'bg-neutral-800 text-primary' : ''
                 }`}
               >
                 Home
@@ -43,8 +43,8 @@ function Navbar() {
             <li>
               <Link 
                 to="/community" 
-                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-700 transition-all ${
-                  isActive('/community') ? 'bg-neutral-700 text-primary' : ''
+                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
+                  isActive('/community') ? 'bg-neutral-800 text-primary' : ''
                 }`}
               >
                 Community
@@ -53,8 +53,8 @@ function Navbar() {
             <li>
               <Link 
                 to="/about" 
-                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-700 transition-all ${
-                  isActive('/about') ? 'bg-neutral-700 text-primary' : ''
+                className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
+                  isActive('/about') ? 'bg-neutral-800 text-primary' : ''
                 }`}
               >
                 About
@@ -74,7 +74,7 @@ function Navbar() {
                 <li>
                   <Link 
                     to="/signup" 
-                    className="px-3 py-1.5 text-sm bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors"
+                    className="px-3 py-1.5 text-sm bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors"
                   >
                     Sign Up
                   </Link>
@@ -93,7 +93,7 @@ function Navbar() {
               
               <div className="relative">
                 <button 
-                  className="flex items-center gap-1.5 p-1 hover:bg-neutral-700 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 p-1 hover:bg-neutral-800 rounded-lg transition-colors"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   <img 
@@ -108,22 +108,22 @@ function Navbar() {
                 </button>
                 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-1 w-44 bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl py-1.5 animate-scale-up">
-                    <Link to="/profile" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-700 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
+                  <div className="absolute right-0 mt-1 w-44 bg-neutral-900 border border-neutral-800 rounded-lg shadow-2xl py-1.5 animate-scale-up">
+                    <Link to="/profile" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="8" r="4"/>
                         <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
                       </svg>
                       Profile
                     </Link>
-                    <Link to="/settings" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-700 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
+                    <Link to="/settings" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
                       </svg>
                       Settings
                     </Link>
-                    <button className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-700 hover:text-red-400 transition-colors w-full text-left" onClick={handleLogout}>
+                    <button className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-red-400 transition-colors w-full text-left" onClick={handleLogout}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                         <polyline points="16 17 21 12 16 7"/>

@@ -43,9 +43,8 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
       </div>
       <div className="p-5">
         <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{project.title}</h3>
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
+        <p className="text-gray-400 text-sm mb-4 line-clamp-2 min-h-[5rem]">{project.description}</p>
         <div className="mb-4">
-          <span className="text-sm text-gray-400 mr-2">By:</span>
           <AuthorAvatar 
             author={{ ...project.author, username: authorName, _id: authorId || project.author?._id, id: authorId || project.author?.id }}
             size="sm"
@@ -55,20 +54,13 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {technologies.map((tech, index) => (
-            <Tag key={index} variant="primary" size="sm">
+            <Tag key={index} variant="primary" size="xs">
               {tech}
             </Tag>
           ))}
         </div>
-        <div className="pt-4 border-t border-neutral-600">
-          <Button 
-            to={`/project/${projectId}`}
-            variant="primary"
-            size="md"
-            fullWidth
-          >
-            View Project
-          </Button>
+        <div className="pt-1">
+          <Button to={`/project/${projectId}`} variant="outline" size="md" fullWidth> View Project </Button>
         </div>
       </div>
     </div>

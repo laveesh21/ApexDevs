@@ -201,6 +201,7 @@ export const projectAPI = {
     
     formData.append('title', projectData.title);
     formData.append('description', projectData.description);
+    formData.append('briefDescription', projectData.briefDescription);
     formData.append('category', projectData.category);
     formData.append('status', projectData.status);
     formData.append('technologies', JSON.stringify(projectData.technologies));

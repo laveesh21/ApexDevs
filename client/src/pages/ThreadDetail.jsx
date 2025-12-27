@@ -526,7 +526,7 @@ function ThreadDetail() {
                   <button 
                     className={`p-2 rounded-lg transition-all ${
                       voteStatus === 'upvote' 
-                        ? 'bg-primary text-neutral-900' 
+                        ? 'bg-primary text-white' 
                         : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
                     }`}
                     onClick={() => handleVote('upvote')}
@@ -750,7 +750,7 @@ function ThreadDetail() {
                       <button 
                         className={`p-1 rounded transition-all text-sm ${
                           commentVote.voteStatus === 'upvote' 
-                            ? 'bg-primary text-neutral-900' 
+                            ? 'bg-primary text-white' 
                             : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
                         }`}
                         onClick={() => handleCommentVote(comment._id, 'upvote')}

@@ -6,21 +6,24 @@ import PropTypes from 'prop-types';
  * @param {string} variant - Style variant: 'primary' | 'secondary' | 'outline' | 'success' | 'warning' | 'danger'
  * @param {string} size - Size variant: 'xs' | 'sm' | 'md' | 'lg'
  * @param {function} onRemove - Optional callback for removable tags (shows X button)
+ * @param {function} onClick - Optional click handler for interactive tags
  * @param {string} className - Additional custom classes
  */
 function Tag({ 
   children, 
   variant = 'primary', 
   size = 'sm', 
-  onRemove, 
+  onRemove,
+  onClick,
   className = '' 
 }) {
   const baseClasses = 'inline-flex items-center gap-1.5 font-medium rounded transition-colors';
+  const clickableClass = onClick ? 'cursor-pointer' : '';
   
   const variantClasses = {
-    primary: 'text-green-500/90 border border-green-500/90 hover:from-purple-500 hover:via-pink-600 hover:to-red-600',
-    secondary: 'bg-neutral-700 text-gray-300 border border-neutral-600 hover:bg-neutral-600',
-    outline: 'bg-transparent text-gray-300 border border-neutral-600 hover:border-primary hover:text-primary',
+    primary: 'bg-transparent text-green-500 border border-green-500 hover:bg-green-500/10 hover:cursor-default',
+    secondary: 'bg-zinc-800 text-gray-300 border border-neutral-700 hover:bg-zinc-700',
+    outline: 'bg-transparent text-gray-300 border border-neutral-700 hover:border-primary hover:text-primary',
     success: 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30',
     warning: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30',
     danger: 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30'
@@ -33,10 +36,16 @@ function Tag({
     lg: 'px-4 py-1.5 text-base'
   };
   
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${clickableClass} ${className}`;
+  
+  const TagElement = onClick ? 'button' : 'span';
   
   return (
-    <span className={classes}>
+    <TagElement 
+      className={classes}
+      onClick={onClick}
+      type={onClick ? 'button' : undefined}
+    >
       {children}
       {onRemove && (
         <button
@@ -48,7 +57,7 @@ function Tag({
           ×
         </button>
       )}
-    </span>
+    </TagElement>
   );
 }
 
@@ -57,6 +66,7 @@ Tag.propTypes = {
   variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'success', 'warning', 'danger']),
   size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
   onRemove: PropTypes.func,
+  onClick: PropTypes.func,
   className: PropTypes.string
 };
 

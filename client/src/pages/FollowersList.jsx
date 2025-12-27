@@ -114,7 +114,7 @@ const FollowersList = () => {
                     className={`w-full py-2 rounded-lg font-medium transition-all ${
                       isFollowingUser(follower._id) 
                         ? 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-neutral-600' 
-                        : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                        : 'bg-primary text-white hover:bg-primary-light'
                     }`}
                     onClick={() => handleFollowToggle(follower._id, isFollowingUser(follower._id))}
                   >

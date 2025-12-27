@@ -371,7 +371,7 @@ function ProjectDetail() {
                       Cancel
                     </button>
                     <button
-                      className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                       onClick={() => handleReviewSubmit(reviewFormData.rating)}
                       disabled={!reviewFormData.rating}
                     >
@@ -502,7 +502,7 @@ function ProjectDetail() {
                   <button
                     className={`w-full py-3 rounded-lg font-medium transition-all ${
                       isLiked
-                        ? 'bg-primary text-neutral-900 hover:bg-primary-light'
+                        ? 'bg-primary text-white hover:bg-primary-light'
                         : 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:border-primary/50 hover:bg-neutral-600'
                     }`}
                     onClick={async () => {

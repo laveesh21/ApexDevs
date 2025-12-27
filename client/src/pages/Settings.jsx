@@ -172,7 +172,7 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'profile' 
-                    ? 'bg-primary text-neutral-900 font-medium' 
+                    ? 'bg-primary text-white font-medium' 
                     : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('profile')}
@@ -187,7 +187,7 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'password' 
-                    ? 'bg-primary text-neutral-900 font-medium' 
+                    ? 'bg-primary text-white font-medium' 
                     : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('password')}
@@ -202,7 +202,7 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'privacy' 
-                    ? 'bg-primary text-neutral-900 font-medium' 
+                    ? 'bg-primary text-white font-medium' 
                     : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('privacy')}
@@ -216,7 +216,7 @@ function Settings() {
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'blocked' 
-                    ? 'bg-primary text-neutral-900 font-medium' 
+                    ? 'bg-primary text-white font-medium' 
                     : 'text-gray-300 hover:bg-neutral-700'
                 }`}
                 onClick={() => setActiveTab('blocked')}
@@ -335,7 +335,7 @@ function Settings() {
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
                       ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                      : 'bg-primary text-white hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -390,7 +390,7 @@ function Settings() {
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
                       ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                      : 'bg-primary text-white hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -452,7 +452,7 @@ function Settings() {
                   className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
                     loading 
                       ? 'bg-neutral-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                      : 'bg-primary text-white hover:bg-primary-light'
                   }`}
                   disabled={loading}
                 >
@@ -494,7 +494,7 @@ function Settings() {
                         </div>
                         <button
                           onClick={() => handleUnblock(blockedUser._id)}
-                          className="px-4 py-2 bg-primary text-neutral-900 rounded-lg hover:bg-primary-light transition-colors font-medium"
+                          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-medium"
                         >
                           Unblock
                         </button>

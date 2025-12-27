@@ -99,7 +99,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
                   type="button"
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     formData.type === type
-                      ? 'bg-primary text-neutral-900'
+                      ? 'bg-primary text-white'
                       : 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-neutral-600 hover:border-primary/50'
                   }`}
                   onClick={() => setFormData({ ...formData, type })}
@@ -205,7 +205,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               />
               <button
                 type="button"
-                className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                 onClick={handleAddCustomTag}
                 disabled={!tagInput.trim() || formData.tags.length >= 5}
               >
@@ -221,7 +221,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
             </button>
             <button 
               type="submit" 
-              className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50"
+              className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
               disabled={!formData.title.trim() || !formData.content.trim()}
             >
               Post Discussion

@@ -33,15 +33,17 @@ function Button({
   iconRight,
   ...props 
 }) {
-  const baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-colors focus:outline-none focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
     primary: 'text-green-500/90 border border-green-500/90 hover:from-purple-500 hover:via-pink-600 hover:to-red-600',
     secondary: 'bg-neutral-700 hover:bg-neutral-600 text-gray-300 border border-neutral-600 hover:border-primary/50',
+    zinc_secondary: 'bg-zinc-800 hover:bg-zinc-700 text-gray-300 border border-neutral-700 hover:border-primary/50',
     outline: 'bg-transparent hover:bg-neutral-700 text-gray-300 border border-neutral-600 hover:border-primary hover:text-primary',
     ghost: 'bg-transparent hover:bg-neutral-700 text-gray-300 hover:text-primary',
     danger: 'bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md',
-    success: 'bg-green-500 hover:bg-green-600 text-white shadow-sm hover:shadow-md'
+    success: 'bg-green-700 hover:bg-green-600 text-white shadow-sm hover:shadow-md',
+    select: 'bg-green-700 text-white'
   };
   
   const sizeClasses = {

@@ -16,8 +16,8 @@ function Sort({ sortBy, onSortChange }) {
             onClick={() => onSortChange(option.value)}
             className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               sortBy === option.value
-                ? 'bg-primary text-neutral-900'
-                : 'bg-neutral-700 text-gray-300 border border-neutral-600 hover:border-primary hover:text-white'
+                ? 'bg-primary text-white'
+                : 'bg-zinc-800 text-gray-300 border border-neutral-700 hover:border-primary hover:text-white'
             }`}
           >
             {option.label}

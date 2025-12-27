@@ -344,7 +344,7 @@ function Chat() {
                               {conversation.lastMessage.content}
                             </span>
                             {conversation.unreadCount > 0 && (
-                              <span className="px-2 py-0.5 bg-primary text-neutral-900 text-xs font-bold rounded-full">
+                              <span className="px-2 py-0.5 bg-primary text-white text-xs font-bold rounded-full">
                                 {conversation.unreadCount}
                               </span>
                             )}
@@ -466,7 +466,7 @@ function Chat() {
                   >
                     <div className={`max-w-md rounded-xl px-4 py-2 ${
                       (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                        ? 'bg-primary text-neutral-900'
+                        ? 'bg-primary text-white'
                         : 'bg-neutral-800 border border-neutral-600 text-white'
                     }`}>
                       <p className="break-words text-inherit">{message.content}</p>
@@ -499,7 +499,7 @@ function Chat() {
                 className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                   sending || !newMessage.trim()
                     ? 'bg-neutral-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-primary text-neutral-900 hover:bg-primary-light'
+                    : 'bg-primary text-white hover:bg-primary-light'
                 }`}
                 disabled={sending || !newMessage.trim()}
               >

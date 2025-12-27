@@ -120,11 +120,15 @@ function Homepage() {
       <div className={`flex-1 transition-all duration-300 ${
         isFilterCollapsed ? 'ml-16' : 'ml-72'
       }`}>
-        <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
-          <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Discover Amazing Projects</h1>
-            <p className="text-gray-400 text-lg mb-8">Browse through developer projects and get inspired</p>
-            <div className="max-w-2xl mx-auto">
+        <div className="bg-neutral-900 border-b border-neutral-800 py-6 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <div>
+                <h1 className="text-2xl font-bold text-white mb-1">Discover Amazing Projects</h1>
+                <p className="text-gray-400 text-sm">Browse through developer projects and get inspired</p>
+              </div>
+            </div>
+            <div className="max-w-xl">
               <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
@@ -181,7 +185,7 @@ function Homepage() {
                               key={page}
                               className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                                 page === currentPage 
-                                  ? 'bg-primary text-neutral-900' 
+                                  ? 'bg-primary text-white' 
                                   : 'bg-neutral-700 text-white border border-neutral-600 hover:bg-neutral-600 hover:border-primary'
                               }`}
                               onClick={() => handlePageChange(page)}

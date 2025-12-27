@@ -91,6 +91,21 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
     e.preventDefault();
     setError('');
 
+    if (!formData.title.trim()) {
+      setError('Title is required');
+      return;
+    }
+
+    if (!formData.briefDescription.trim()) {
+      setError('Brief description is required');
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError('Description is required');
+      return;
+    }
+
     if (!thumbnail) {
       setError('Thumbnail is required');
       return;
@@ -285,7 +300,7 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
                 }}
                 className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <button type="button" onClick={handleAddTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors">
+              <button type="button" onClick={handleAddTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
@@ -337,7 +352,7 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
             <button type="button" onClick={onClose} className="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-neutral-900 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
+            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? 'Uploading...' : 'Upload Project'}
             </button>
           </div>

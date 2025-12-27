@@ -6,9 +6,9 @@ function SearchBar({ value, onChange, placeholder = "Search..." }) {
   return (
     <div className="relative w-full">
       <svg 
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" 
-        width="20" 
-        height="20" 
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
+        width="18" 
+        height="18" 
         viewBox="0 0 24 24" 
         fill="none" 
         stroke="currentColor" 
@@ -19,14 +19,14 @@ function SearchBar({ value, onChange, placeholder = "Search..." }) {
       </svg>
       <input
         type="text"
-        className="w-full bg-neutral-700 border border-neutral-600 rounded-xl py-4 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+        className="w-full bg-zinc-800/50 border border-neutral-700/50 rounded-lg py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
       {value && (
         <button 
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors text-lg"
           onClick={handleClear}
           aria-label="Clear search"
         >

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Button } from '../ui';
 
 const DEFAULT_SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
@@ -15,17 +16,16 @@ function SortFilter({ sortBy, onSortChange, options = DEFAULT_SORT_OPTIONS }) {
   return (
     <div className="space-y-2">
       {options.map((option) => (
-        <button
+        <Button
           key={option.value}
           onClick={() => onSortChange(option.value)}
-          className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            sortBy === option.value
-              ? 'bg-primary text-neutral-900'
-              : 'bg-neutral-700 text-gray-300 border border-neutral-600 hover:border-primary hover:text-white'
-          }`}
+          variant={sortBy === option.value ? 'success' : 'zinc_secondary'}
+          size="sm"
+          fullWidth
+          className="flex justify-start px-4 py-2"
         >
           {option.label}
-        </button>
+        </Button>
       ))}
     </div>
   );

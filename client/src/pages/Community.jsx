@@ -171,11 +171,15 @@ function Community() {
       <div className={`flex-1 transition-all duration-300 ${
         isFilterCollapsed ? 'ml-16' : 'ml-72'
       }`}>
-        <div className="bg-neutral-800 border-b border-neutral-600 py-12 px-4">
-          <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Community Discussions</h1>
-            <p className="text-gray-400 text-lg mb-8">Ask questions, share knowledge, and help fellow developers</p>
-            <div className="max-w-2xl mx-auto">
+        <div className="bg-neutral-900 border-b border-neutral-800 py-6 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <div>
+                <h1 className="text-2xl font-bold text-white mb-1">Community Discussions</h1>
+                <p className="text-gray-400 text-sm">Ask questions, share knowledge, and help fellow developers</p>
+              </div>
+            </div>
+            <div className="max-w-xl">
               <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
@@ -238,7 +242,7 @@ function Community() {
               <div className="text-center py-20">
                 <p className="text-red-400 mb-4">{error}</p>
                 <button 
-                  className="px-4 py-2 bg-primary text-neutral-900 rounded-lg font-medium hover:bg-primary-light transition-colors"
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-light transition-colors"
                   onClick={() => window.location.reload()}
                 >
                   Try Again

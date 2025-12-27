@@ -8,7 +8,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, title = "Sidebar", children })
   return (
     <aside className={`fixed left-0 top-0 bottom-0 transition-all duration-300 z-40 ${
       isCollapsed ? 'w-16' : 'w-72'
-    } bg-neutral-800 border-r border-neutral-600`}>
+    } bg-neutral-900 border-r border-neutral-700`}>
       {isCollapsed ? (
         <div className="h-full flex items-start justify-center pt-4">
           <button 
@@ -30,7 +30,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, title = "Sidebar", children })
       ) : (
         <div className="h-full overflow-y-auto flex flex-col">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-6 pb-4 border-b border-neutral-700 sticky top-0 bg-neutral-800 z-10">
+          <div className="flex items-center justify-between p-6 pb-4 border-b border-neutral-800 sticky top-0 bg-neutral-900 z-10">
             <h2 className="text-xl font-bold text-white">{title}</h2>
             <button 
               className="text-gray-400 hover:text-white transition-colors text-2xl" 
