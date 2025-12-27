@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { projectAPI } from '../services/api';
-import './NewProjectForm.css';
 
 const CATEGORIES = ['Web App', 'Mobile App', 'Desktop App', 'Game', 'AI/ML', 'DevTools', 'Other'];
 const STATUSES = ['In Progress', 'Completed', 'Maintained'];
@@ -184,18 +183,18 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Edit Project</h2>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-dark-800 border border-dark-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={e => e.stopPropagation()}>
+        <div className="sticky top-0 bg-dark-800 border-b border-dark-600 px-6 py-4 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-100">Edit Project</h2>
+          <button className="text-gray-400 hover:text-gray-100 text-3xl leading-none transition-colors" onClick={onClose}>&times;</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="project-form">
-          {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {error && <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg">{error}</div>}
 
-          <div className="form-group">
-            <label htmlFor="title">Project Title *</label>
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Project Title *</label>
             <input
               type="text"
               id="title"
@@ -204,11 +203,12 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               onChange={handleInputChange}
               placeholder="Enter project title"
               required
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Description *</label>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
             <textarea
               id="description"
               name="description"
@@ -219,11 +219,12 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               minLength={10}
               maxLength={2000}
               required
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="briefDescription">Brief Description *</label>
+          <div>
+            <label htmlFor="briefDescription" className="block text-sm font-medium text-gray-300 mb-2">Brief Description *</label>
             <textarea
               id="briefDescription"
               name="briefDescription"
@@ -234,18 +235,20 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               minLength={10}
               maxLength={150}
               required
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
-            <small className="char-count">{formData.briefDescription.length}/150</small>
+            <small className="text-xs text-gray-500">{formData.briefDescription.length}/150</small>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="category">Category</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-2">Category</label>
               <select
                 id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
+                className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -253,13 +256,14 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               </select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="status">Status</label>
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-300 mb-2">Status</label>
               <select
                 id="status"
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
+                className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               >
                 {STATUSES.map(stat => (
                   <option key={stat} value={stat}>{stat}</option>
@@ -268,40 +272,42 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="thumbnail">Project Thumbnail {thumbnail || thumbnailPreview ? '' : '*'}</label>
+          <div>
+            <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-300 mb-2">Project Thumbnail {thumbnail || thumbnailPreview ? '' : '*'}</label>
             <input
               type="file"
               id="thumbnail"
               accept="image/*"
               onChange={handleThumbnailChange}
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-dark-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
             />
             {thumbnailPreview && (
-              <div className="image-preview">
-                <img src={thumbnailPreview} alt="Thumbnail preview" />
+              <div className="mt-3 rounded-lg overflow-hidden border border-dark-600">
+                <img src={thumbnailPreview} alt="Thumbnail preview" className="w-full h-48 object-cover" />
               </div>
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="images">Additional Images (Max 5 total)</label>
+          <div>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-300 mb-2">Additional Images (Max 5 total)</label>
             <input
               type="file"
               id="images"
               accept="image/*"
               multiple
               onChange={handleImagesChange}
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-dark-900 file:font-medium hover:file:bg-primary-light file:cursor-pointer"
             />
             {imagePreviews.length > 0 && (
-              <div className="images-preview-grid">
+              <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3">
                 {imagePreviews.map((preview, index) => {
                   const isExisting = project?.images?.includes(preview) && !removedImages.includes(preview);
                   return (
-                    <div key={index} className="image-preview-item">
-                      <img src={preview} alt={`Preview ${index + 1}`} />
+                    <div key={index} className="relative group rounded-lg overflow-hidden border border-dark-600">
+                      <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover" />
                       <button 
                         type="button" 
-                        className="remove-image-btn"
+                        className="absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-lg leading-none transition-colors"
                         onClick={() => isExisting ? removeExistingImage(preview) : removeNewImage(index)}
                       >
                         &times;
@@ -313,9 +319,9 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="technologies">Technologies *</label>
-            <div className="tech-input-container">
+          <div>
+            <label htmlFor="technologies" className="block text-sm font-medium text-gray-300 mb-2">Technologies *</label>
+            <div className="flex gap-2">
               <input
                 type="text"
                 id="technologies"
@@ -323,20 +329,21 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 onChange={(e) => setTechInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
                 placeholder="Add a technology (e.g., React, Node.js)"
+                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <button type="button" onClick={addTechnology} className="add-tech-btn">
+              <button type="button" onClick={addTechnology} className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
             {formData.technologies.length > 0 && (
-              <div className="tech-tags">
+              <div className="flex flex-wrap gap-2 mt-3">
                 {formData.technologies.map(tech => (
-                  <span key={tech} className="tech-tag">
+                  <span key={tech} className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary rounded-md text-sm">
                     {tech}
                     <button 
                       type="button" 
                       onClick={() => removeTechnology(tech)}
-                      className="remove-tech-btn"
+                      className="text-primary hover:text-red-400 font-bold transition-colors"
                     >
                       &times;
                     </button>
@@ -346,8 +353,8 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="demoUrl">Demo URL</label>
+          <div>
+            <label htmlFor="demoUrl" className="block text-sm font-medium text-gray-300 mb-2">Demo URL</label>
             <input
               type="url"
               id="demoUrl"
@@ -355,11 +362,12 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               value={formData.demoUrl}
               onChange={handleInputChange}
               placeholder="https://your-demo.com"
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="githubUrl">GitHub URL</label>
+          <div>
+            <label htmlFor="githubUrl" className="block text-sm font-medium text-gray-300 mb-2">GitHub URL</label>
             <input
               type="url"
               id="githubUrl"
@@ -367,14 +375,15 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
               value={formData.githubUrl}
               onChange={handleInputChange}
               placeholder="https://github.com/username/repo"
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="form-actions">
-            <button type="button" onClick={onClose} className="cancel-btn" disabled={loading}>
+          <div className="flex justify-end gap-3 pt-4 border-t border-dark-600">
+            <button type="button" onClick={onClose} className="px-6 py-2 bg-dark-700 hover:bg-dark-600 border border-dark-600 text-gray-300 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit" className="px-6 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? 'Updating...' : 'Update Project'}
             </button>
           </div>

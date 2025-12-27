@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import Modal from '../components/Modal';
-import './EditProfile.css';
 
 function EditProfile() {
   const { user, token, updateUser } = useAuth();
@@ -185,108 +184,86 @@ function EditProfile() {
   if (!user) return null;
 
   return (
-    <div className="edit-profile-container">
-      <div className="edit-profile-content">
-        <div className="edit-profile-header">
-          <h1>Edit Profile</h1>
-          <Link to="/profile" className="back-link">← Back to Profile</Link>
+    <div className="min-h-screen bg-dark-900 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-100">Edit Profile</h1>
+          <Link to="/profile" className="text-primary hover:text-primary-light transition-colors flex items-center gap-1">
+            ← Back to Profile
+          </Link>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+        {error && <div className="mb-4 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400">{error}</div>}
+        {success && <div className="mb-4 p-4 bg-primary/10 border border-primary/50 rounded-lg text-primary">{success}</div>}
 
         {/* Avatar Section */}
-        <div className="avatar-section">
-          <h2>Profile Picture</h2>
-          <div className="avatar-edit-wrapper">
-            <div className="avatar-preview">
-              {user?.identicon || user?.avatar ? (
-                <img 
-                  src={
-                    user.avatarPreference === 'custom' && user.avatar 
-                      ? user.avatar 
-                      : user.identicon
-                  } 
-                  alt={user.username} 
-                />
-              ) : (
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              )}
-              {(uploadingAvatar || deletingAvatar) && (
-                <div className="avatar-loading-overlay">
-                  <div className="spinner"></div>
-                </div>
-              )}
-            </div>
-            <div className="avatar-actions">
-              <label htmlFor="avatar-upload" className="btn-secondary">
-                {user?.avatar ? 'Change Picture' : 'Upload Picture'}
-              </label>
-              <input
-                type="file"
-                id="avatar-upload"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                style={{ display: 'none' }}
-              />
-              {user?.avatar && (
-                <button 
-                  onClick={handleDeleteAvatar} 
-                  className="btn-danger"
-                  disabled={deletingAvatar}
-                >
-                  {deletingAvatar ? 'Deleting...' : 'Delete Picture'}
-                </button>
-              )}
-            </div>
-            
-            {/* Avatar Preference Selector */}
-            {user?.identicon && (
-              <div className="avatar-preference-section">
-                <h3>Display Preference</h3>
-                <div className="avatar-options">
-                  <div 
-                    className={`avatar-option ${user.avatarPreference === 'identicon' ? 'active' : ''}`}
-                    onClick={async () => {
-                      try {
-                        const response = await authAPI.updateProfile(token, { avatarPreference: 'identicon' });
-                        await updateUser({
-                          ...user,
-                          avatarPreference: 'identicon'
-                        });
-                        setSuccess('Avatar preference updated!');
-                        setTimeout(() => setSuccess(''), 2000);
-                      } catch (err) {
-                        setError('Failed to update preference');
-                      }
-                    }}
-                  >
-                    <div className="option-preview">
-                      <img src={user.identicon} alt="Identicon" />
-                    </div>
-                    <label>
-                      <input
-                        type="radio"
-                        name="avatarPreference"
-                        value="identicon"
-                        checked={user.avatarPreference === 'identicon'}
-                        readOnly
-                      />
-                      Identicon
-                    </label>
+        <div className="bg-dark-800 border border-dark-600 rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-100 mb-4">Profile Picture</h2>
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="relative">
+              <div className="w-32 h-32 rounded-full overflow-hidden bg-dark-700 border-2 border-dark-600">
+                {user?.identicon || user?.avatar ? (
+                  <img 
+                    src={
+                      user.avatarPreference === 'custom' && user.avatar 
+                        ? user.avatar 
+                        : user.identicon
+                    } 
+                    alt={user.username}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg width="128" height="128" viewBox="0 0 24 24" fill="currentColor" className="text-gray-600">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                )}
+                {(uploadingAvatar || deletingAvatar) && (
+                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                  
-                  {user?.avatar && (
+                )}
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex flex-wrap gap-3 mb-4">
+                <label htmlFor="avatar-upload" className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg cursor-pointer transition-colors">
+                  {user?.avatar ? 'Change Picture' : 'Upload Picture'}
+                </label>
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  style={{ display: 'none' }}
+                />
+                {user?.avatar && (
+                  <button 
+                    onClick={handleDeleteAvatar} 
+                    className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg transition-colors disabled:opacity-50"
+                    disabled={deletingAvatar}
+                  >
+                    {deletingAvatar ? 'Deleting...' : 'Delete Picture'}
+                  </button>
+                )}
+              </div>
+              
+              {/* Avatar Preference Selector */}
+              {user?.identicon && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-300 mb-3">Display Preference</h3>
+                  <div className="flex gap-4">
                     <div 
-                      className={`avatar-option ${user.avatarPreference === 'custom' ? 'active' : ''}`}
+                      className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                        user.avatarPreference === 'identicon' 
+                          ? 'border-primary bg-primary/10' 
+                          : 'border-dark-600 hover:border-dark-500'
+                      }`}
                       onClick={async () => {
                         try {
-                          const response = await authAPI.updateProfile(token, { avatarPreference: 'custom' });
+                          const response = await authAPI.updateProfile(token, { avatarPreference: 'identicon' });
                           await updateUser({
                             ...user,
-                            avatarPreference: 'custom'
+                            avatarPreference: 'identicon'
                           });
                           setSuccess('Avatar preference updated!');
                           setTimeout(() => setSuccess(''), 2000);
@@ -295,138 +272,189 @@ function EditProfile() {
                         }
                       }}
                     >
-                      <div className="option-preview">
-                        <img src={user.avatar} alt="Custom Avatar" />
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-dark-700 mx-auto mb-2">
+                        <img src={user.identicon} alt="Identicon" className="w-full h-full object-cover" />
                       </div>
-                      <label>
+                      <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
                         <input
                           type="radio"
                           name="avatarPreference"
-                          value="custom"
-                          checked={user.avatarPreference === 'custom'}
+                          value="identicon"
+                          checked={user.avatarPreference === 'identicon'}
                           readOnly
+                          className="text-primary"
                         />
-                        Custom Picture
+                        Identicon
                       </label>
                     </div>
-                  )}
+                    
+                    {user?.avatar && (
+                      <div 
+                        className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                          user.avatarPreference === 'custom' 
+                            ? 'border-primary bg-primary/10' 
+                            : 'border-dark-600 hover:border-dark-500'
+                        }`}
+                        onClick={async () => {
+                          try {
+                            const response = await authAPI.updateProfile(token, { avatarPreference: 'custom' });
+                            await updateUser({
+                              ...user,
+                              avatarPreference: 'custom'
+                            });
+                            setSuccess('Avatar preference updated!');
+                            setTimeout(() => setSuccess(''), 2000);
+                          } catch (err) {
+                            setError('Failed to update preference');
+                          }
+                        }}
+                      >
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-dark-700 mx-auto mb-2">
+                          <img src={user.avatar} alt="Custom Avatar" className="w-full h-full object-cover" />
+                        </div>
+                        <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="avatarPreference"
+                            value="custom"
+                            checked={user.avatarPreference === 'custom'}
+                            readOnly
+                            className="text-primary"
+                          />
+                          Custom Picture
+                        </label>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
         {/* Profile Form */}
-        <form onSubmit={handleSubmit} className="edit-profile-form">
-          <div className="form-section">
-            <h2>Basic Information</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-100 mb-4">Basic Information</h2>
             
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="bio">Bio</label>
-              <textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                rows="20"
-                placeholder="Tell us about yourself..."
-              />
-            </div>
+              <div>
+                <label htmlFor="bio" className="block text-sm font-medium text-gray-300 mb-1.5">Bio</label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  rows="20"
+                  placeholder="Tell us about yourself..."
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="briefBio">Brief Bio</label>
-              <textarea
-                id="briefBio"
-                name="briefBio"
-                value={formData.briefBio}
-                onChange={handleChange}
-                rows="2"
-                maxLength={150}
-                placeholder="A short summary (max 150 characters)"
-              />
-              <small className="char-count">{formData.briefBio.length}/150</small>
-            </div>
+              <div>
+                <label htmlFor="briefBio" className="block text-sm font-medium text-gray-300 mb-1.5">Brief Bio</label>
+                <textarea
+                  id="briefBio"
+                  name="briefBio"
+                  value={formData.briefBio}
+                  onChange={handleChange}
+                  rows="2"
+                  maxLength={150}
+                  placeholder="A short summary (max 150 characters)"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
+                />
+                <small className="text-xs text-gray-500 mt-1 block">{formData.briefBio.length}/150</small>
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="location">Location</label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="City, Country"
-              />
-            </div>
+              <div>
+                <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1.5">Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="City, Country"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="website">Website</label>
-              <input
-                type="url"
-                id="website"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                placeholder="https://yourwebsite.com"
-              />
+              <div>
+                <label htmlFor="website" className="block text-sm font-medium text-gray-300 mb-1.5">Website</label>
+                <input
+                  type="url"
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  placeholder="https://yourwebsite.com"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="form-section">
-            <h2>Social Links</h2>
+          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-100 mb-4">Social Links</h2>
             
-            <div className="form-group">
-              <label htmlFor="github">GitHub</label>
-              <input
-                type="text"
-                id="github"
-                name="github"
-                value={formData.github}
-                onChange={handleChange}
-                placeholder="username"
-              />
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="github" className="block text-sm font-medium text-gray-300 mb-1.5">GitHub</label>
+                <input
+                  type="text"
+                  id="github"
+                  name="github"
+                  value={formData.github}
+                  onChange={handleChange}
+                  placeholder="username"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="twitter">Twitter</label>
-              <input
-                type="text"
-                id="twitter"
-                name="twitter"
-                value={formData.twitter}
-                onChange={handleChange}
-                placeholder="username"
-              />
-            </div>
+              <div>
+                <label htmlFor="twitter" className="block text-sm font-medium text-gray-300 mb-1.5">Twitter</label>
+                <input
+                  type="text"
+                  id="twitter"
+                  name="twitter"
+                  value={formData.twitter}
+                  onChange={handleChange}
+                  placeholder="username"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="linkedin">LinkedIn</label>
-              <input
-                type="text"
-                id="linkedin"
-                name="linkedin"
-                value={formData.linkedin}
-                onChange={handleChange}
-                placeholder="username"
-              />
+              <div>
+                <label htmlFor="linkedin" className="block text-sm font-medium text-gray-300 mb-1.5">LinkedIn</label>
+                <input
+                  type="text"
+                  id="linkedin"
+                  name="linkedin"
+                  value={formData.linkedin}
+                  onChange={handleChange}
+                  placeholder="username"
+                  className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="form-section">
-            <h2>Skills</h2>
-            <div className="skills-input-group">
+          <div className="bg-dark-800 border border-dark-600 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-100 mb-4">Skills</h2>
+            <div className="flex gap-2 mb-4">
               <input
                 type="text"
                 value={skillInput}
@@ -437,19 +465,20 @@ function EditProfile() {
                     handleAddSkill(e);
                   }
                 }}
+                className="flex-1 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
-              <button type="button" onClick={handleAddSkill} className="btn-add-skill">
+              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors">
                 Add
               </button>
             </div>
-            <div className="skills-list">
+            <div className="flex flex-wrap gap-2">
               {formData.skills.map((skill, index) => (
-                <span key={index} className="skill-tag">
+                <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-dark-700 text-gray-300 rounded-md border border-dark-600">
                   {skill}
                   <button
                     type="button"
                     onClick={() => handleRemoveSkill(skill)}
-                    className="remove-skill"
+                    className="text-gray-500 hover:text-red-400 transition-colors"
                   >
                     ×
                   </button>
@@ -458,11 +487,11 @@ function EditProfile() {
             </div>
           </div>
 
-          <div className="form-actions">
-            <button type="button" onClick={handleCancel} className="btn-cancel">
+          <div className="flex items-center justify-end gap-3">
+            <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-save">
+            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-dark-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>

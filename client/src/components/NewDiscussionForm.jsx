@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './NewDiscussionForm.css';
 
 function NewDiscussionForm({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -82,23 +81,27 @@ function NewDiscussionForm({ onClose, onSubmit }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Start a New Discussion</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-dark-800 border border-dark-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 bg-dark-800 border-b border-dark-600 px-6 py-4 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-100">Start a New Discussion</h2>
+          <button className="text-gray-400 hover:text-gray-100 text-3xl leading-none transition-colors" onClick={onClose}>✕</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="discussion-form">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Type Selection */}
-          <div className="form-group">
-            <label htmlFor="type">Discussion Type *</label>
-            <div className="type-selector">
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-3">Discussion Type *</label>
+            <div className="flex flex-wrap gap-2">
               {discussionTypes.map(type => (
                 <button
                   key={type}
                   type="button"
-                  className={`type-option ${formData.type === type ? 'selected' : ''}`}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    formData.type === type
+                      ? 'bg-primary text-dark-900'
+                      : 'bg-dark-700 border border-dark-600 text-gray-300 hover:bg-dark-600 hover:border-primary/50'
+                  }`}
                   onClick={() => setFormData({ ...formData, type })}
                 >
                   {type}
@@ -108,53 +111,53 @@ function NewDiscussionForm({ onClose, onSubmit }) {
           </div>
 
           {/* Title */}
-          <div className="form-group">
-            <label htmlFor="title">Title *</label>
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Title *</label>
             <input
               type="text"
               id="title"
               name="title"
-              className="form-input"
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="What's your question or topic?"
               value={formData.title}
               onChange={handleChange}
               required
               maxLength={200}
             />
-            <span className="char-count">{formData.title.length}/200</span>
+            <span className="text-xs text-gray-500 mt-1 block">{formData.title.length}/200</span>
           </div>
 
           {/* Content */}
-          <div className="form-group">
-            <label htmlFor="content">Description *</label>
+          <div>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
             <textarea
               id="content"
               name="content"
-              className="form-textarea"
+              className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder="Provide details about your discussion. You can use Markdown for formatting."
               value={formData.content}
               onChange={handleChange}
               required
               rows="10"
             />
-            <div className="textarea-footer">
-              <span className="help-text">💡 Tip: Include code examples and context</span>
-              <span className="char-count">{formData.content.length} characters</span>
+            <div className="flex justify-between items-center mt-2 text-xs">
+              <span className="text-gray-500">💡 Tip: Include code examples and context</span>
+              <span className="text-gray-500">{formData.content.length} characters</span>
             </div>
           </div>
 
           {/* Tags */}
-          <div className="form-group">
-            <label>Tags (Max 5)</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Tags (Max 5)</label>
             
             {formData.tags.length > 0 && (
-              <div className="selected-tags">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {formData.tags.map((tag, index) => (
-                  <span key={index} className="selected-tag">
+                  <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary rounded-md text-sm">
                     {tag}
                     <button
                       type="button"
-                      className="remove-tag-btn"
+                      className="text-primary hover:text-red-400 font-bold transition-colors"
                       onClick={() => handleRemoveTag(tag)}
                     >
                       ✕
@@ -164,14 +167,18 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               </div>
             )}
 
-            <div className="popular-tags-section">
-              <p className="tags-label">Popular Tags:</p>
-              <div className="popular-tags-grid">
+            <div className="mb-3">
+              <p className="text-xs text-gray-400 mb-2">Popular Tags:</p>
+              <div className="flex flex-wrap gap-2">
                 {popularTags.map(tag => (
                   <button
                     key={tag}
                     type="button"
-                    className={`tag-option ${formData.tags.includes(tag) ? 'active' : ''}`}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      formData.tags.includes(tag)
+                        ? 'bg-primary/30 border border-primary text-primary'
+                        : 'bg-dark-700 border border-dark-600 text-gray-400 hover:bg-dark-600 hover:border-primary/50'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={() => handleAddTag(tag)}
                     disabled={formData.tags.includes(tag) || formData.tags.length >= 5}
                   >
@@ -181,10 +188,10 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               </div>
             </div>
 
-            <div className="custom-tag-input">
+            <div className="flex gap-2">
               <input
                 type="text"
-                className="form-input"
+                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
                 placeholder="Or add a custom tag..."
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -198,7 +205,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               />
               <button
                 type="button"
-                className="add-tag-btn"
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50"
                 onClick={handleAddCustomTag}
                 disabled={!tagInput.trim() || formData.tags.length >= 5}
               >
@@ -208,13 +215,13 @@ function NewDiscussionForm({ onClose, onSubmit }) {
           </div>
 
           {/* Form Actions */}
-          <div className="form-actions">
-            <button type="button" className="btn-cancel" onClick={onClose}>
+          <div className="flex justify-end gap-3 pt-4 border-t border-dark-600">
+            <button type="button" className="px-6 py-2 bg-dark-700 hover:bg-dark-600 border border-dark-600 text-gray-300 font-medium rounded-lg transition-colors" onClick={onClose}>
               Cancel
             </button>
             <button 
               type="submit" 
-              className="btn-submit"
+              className="px-6 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors disabled:opacity-50"
               disabled={!formData.title.trim() || !formData.content.trim()}
             >
               Post Discussion

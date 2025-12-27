@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import './Modal.css';
 
 function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, cancelText, onConfirm }) {
   useEffect(() => {
@@ -35,31 +34,51 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className={`modal-header ${type}`}>
-          <h3 className="modal-title">{title}</h3>
-          <button className="modal-close-btn" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-dark-800 border border-dark-600 rounded-lg shadow-2xl max-w-md w-full animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className={`flex items-center justify-between p-6 border-b border-dark-600 ${
+          type === 'error' ? 'bg-red-500/10' : 
+          type === 'warning' ? 'bg-yellow-500/10' : 
+          type === 'success' ? 'bg-primary/10' : ''
+        }`}>
+          <h3 className="text-xl font-semibold text-gray-100">{title}</h3>
+          <button 
+            className="text-gray-500 hover:text-gray-300 text-2xl leading-none transition-colors"
+            onClick={onClose}
+          >
             ×
           </button>
         </div>
         
-        <div className="modal-body">
-          <p className="modal-message">{message}</p>
+        <div className="p-6">
+          <p className="text-gray-300 leading-relaxed">{message}</p>
         </div>
         
-        <div className="modal-footer">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-dark-600 bg-dark-700/30">
           {onConfirm ? (
             <>
-              <button className="modal-btn modal-btn-cancel" onClick={onClose}>
+              <button 
+                className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 rounded-lg transition-colors"
+                onClick={onClose}
+              >
                 {cancelText || 'Cancel'}
               </button>
-              <button className={`modal-btn modal-btn-confirm ${type}`} onClick={handleConfirm}>
+              <button 
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  type === 'error' ? 'bg-red-500 hover:bg-red-600 text-white' :
+                  type === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 text-dark-900' :
+                  'bg-primary hover:bg-primary-light text-dark-900'
+                }`}
+                onClick={handleConfirm}
+              >
                 {confirmText || 'Confirm'}
               </button>
             </>
           ) : (
-            <button className="modal-btn modal-btn-primary" onClick={onClose}>
+            <button 
+              className="px-4 py-2 bg-primary hover:bg-primary-light text-dark-900 font-medium rounded-lg transition-colors"
+              onClick={onClose}
+            >
               OK
             </button>
           )}

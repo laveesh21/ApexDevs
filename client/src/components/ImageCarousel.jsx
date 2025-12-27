@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './ImageCarousel.css';
 
 function ImageCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,27 +24,41 @@ function ImageCarousel({ images }) {
   }
 
   return (
-    <div className="carousel-container">
-      <div className="carousel-main">
-        <button className="carousel-button prev" onClick={goToPrevious}>
+    <div className="space-y-4">
+      <div className="relative aspect-video bg-dark-900 rounded-lg overflow-hidden group">
+        <button 
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-dark-900/80 backdrop-blur-sm hover:bg-dark-900 text-gray-100 rounded-full text-3xl opacity-0 group-hover:opacity-100 transition-all"
+          onClick={goToPrevious}
+        >
           &#8249;
         </button>
-        <div className="carousel-image-wrapper">
-          <img src={images[currentIndex]} alt={`Screenshot ${currentIndex + 1}`} />
+        <div className="w-full h-full flex items-center justify-center">
+          <img 
+            src={images[currentIndex]} 
+            alt={`Screenshot ${currentIndex + 1}`} 
+            className="max-w-full max-h-full object-contain"
+          />
         </div>
-        <button className="carousel-button next" onClick={goToNext}>
+        <button 
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-dark-900/80 backdrop-blur-sm hover:bg-dark-900 text-gray-100 rounded-full text-3xl opacity-0 group-hover:opacity-100 transition-all"
+          onClick={goToNext}
+        >
           &#8250;
         </button>
       </div>
 
-      <div className="carousel-thumbnails">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         {images.map((image, index) => (
           <div
             key={index}
-            className={`thumbnail ${index === currentIndex ? 'active' : ''}`}
+            className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+              index === currentIndex 
+                ? 'border-primary shadow-lg shadow-primary/20' 
+                : 'border-dark-600 hover:border-dark-500 opacity-60 hover:opacity-100'
+            }`}
             onClick={() => goToSlide(index)}
           >
-            <img src={image} alt={`Thumbnail ${index + 1}`} />
+            <img src={image} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
           </div>
         ))}
       </div>

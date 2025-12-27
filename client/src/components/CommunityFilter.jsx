@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './CommunityFilter.css';
 
 function CommunityFilter({ filters, onFilterChange, isCollapsed, onToggleCollapse }) {
   const categories = [
@@ -52,9 +51,15 @@ function CommunityFilter({ filters, onFilterChange, isCollapsed, onToggleCollaps
   };
 
   return (
-    <div className={`community-filter ${isCollapsed ? 'collapsed' : ''}`}>
+    <div className={`bg-dark-800 border border-dark-600 rounded-xl transition-all duration-300 ${
+      isCollapsed ? 'p-2' : 'p-6'
+    }`}>
       {isCollapsed ? (
-        <button className="filter-icon-btn" onClick={onToggleCollapse} title="Show Filters">
+        <button 
+          className="w-full p-2 text-primary hover:text-primary-light transition-colors" 
+          onClick={onToggleCollapse} 
+          title="Show Filters"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="4" y1="6" x2="20" y2="6"/>
             <line x1="4" y1="12" x2="20" y2="12"/>
@@ -66,68 +71,86 @@ function CommunityFilter({ filters, onFilterChange, isCollapsed, onToggleCollaps
         </button>
       ) : (
         <>
-          <div className="filter-header">
-            <h3>Filters</h3>
-            <button className="collapse-btn" onClick={onToggleCollapse}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-white">Filters</h3>
+            <button 
+              className="text-gray-400 hover:text-white transition-colors text-xl" 
+              onClick={onToggleCollapse}
+            >
               ✕
             </button>
           </div>
 
-          <div className="filter-content">
-          {/* Clear Filters */}
-          {(filters.category !== 'All' || filters.tags.length > 0 || filters.sort !== 'newest') && (
-            <button className="clear-filters-btn" onClick={clearFilters}>
-              Clear All Filters
-            </button>
-          )}
+          <div className="space-y-6">
+            {/* Clear Filters */}
+            {(filters.category !== 'All' || filters.tags.length > 0 || filters.sort !== 'newest') && (
+              <button 
+                className="w-full px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors font-medium text-sm" 
+                onClick={clearFilters}
+              >
+                Clear All Filters
+              </button>
+            )}
 
-          {/* Sort Options */}
-          <div className="filter-section">
-            <h4>Sort By</h4>
-            <div className="sort-options">
-              {sortOptions.map(option => (
-                <button
-                  key={option.value}
-                  className={`sort-option ${filters.sort === option.value ? 'active' : ''}`}
-                  onClick={() => handleSortChange(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
+            {/* Sort Options */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-300 mb-3">Sort By</h4>
+              <div className="space-y-2">
+                {sortOptions.map(option => (
+                  <button
+                    key={option.value}
+                    className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors text-left ${
+                      filters.sort === option.value 
+                        ? 'bg-primary text-dark-900' 
+                        : 'bg-dark-700 text-gray-300 border border-dark-600 hover:border-primary hover:text-white'
+                    }`}
+                    onClick={() => handleSortChange(option.value)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Categories */}
-          <div className="filter-section">
-            <h4>Category</h4>
-            <div className="category-list">
-              {categories.map(category => (
-                <button
-                  key={category}
-                  className={`category-item ${filters.category === category ? 'active' : ''}`}
-                  onClick={() => handleCategoryChange(category)}
-                >
-                  {category}
-                </button>
-              ))}
+            {/* Categories */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-300 mb-3">Category</h4>
+              <div className="space-y-2">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors text-left ${
+                      filters.category === category 
+                        ? 'bg-primary text-dark-900' 
+                        : 'bg-dark-700 text-gray-300 border border-dark-600 hover:border-primary hover:text-white'
+                    }`}
+                    onClick={() => handleCategoryChange(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Popular Tags */}
-          <div className="filter-section">
-            <h4>Popular Tags</h4>
-            <div className="tags-list">
-              {popularTags.map(tag => (
-                <button
-                  key={tag}
-                  className={`tag-filter ${filters.tags.includes(tag) ? 'active' : ''}`}
-                  onClick={() => handleTagToggle(tag)}
-                >
-                  {tag}
-                </button>
-              ))}
+            {/* Popular Tags */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-300 mb-3">Popular Tags</h4>
+              <div className="flex flex-wrap gap-2">
+                {popularTags.map(tag => (
+                  <button
+                    key={tag}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      filters.tags.includes(tag) 
+                        ? 'bg-primary text-dark-900' 
+                        : 'bg-dark-700 text-gray-300 border border-dark-600 hover:border-primary hover:text-white'
+                    }`}
+                    onClick={() => handleTagToggle(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
           </div>
         </>
       )}

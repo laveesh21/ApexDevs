@@ -3,7 +3,6 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSelectedAvatar } from '../utils/avatarHelper';
 import { authAPI } from '../services/api';
-import './Connections.css';
 
 const Connections = () => {
   const { user: currentUser, token } = useAuth();
@@ -84,8 +83,8 @@ const Connections = () => {
 
   if (loading) {
     return (
-      <div className="connections-container">
-        <div className="loading">Loading connections...</div>
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+        <div className="text-gray-400">Loading connections...</div>
       </div>
     );
   }
@@ -93,87 +92,97 @@ const Connections = () => {
   const currentList = activeTab === 'followers' ? followers : following;
 
   return (
-    <div className="connections-container">
-      <div className="connections-header">
-        <button className="back-button" onClick={() => navigate('/profile')}>
-          ← Back to Profile
-        </button>
-        <h1>Connections</h1>
-      </div>
-
-      <div className="tabs">
-        <button
-          className={`tab ${activeTab === 'followers' ? 'active' : ''}`}
-          onClick={() => handleTabChange('followers')}
-        >
-          Followers
-          <span className="tab-count">{followers.length}</span>
-        </button>
-        <button
-          className={`tab ${activeTab === 'following' ? 'active' : ''}`}
-          onClick={() => handleTabChange('following')}
-        >
-          Following
-          <span className="tab-count">{following.length}</span>
-        </button>
-      </div>
-
-      {error && <div className="error-message">{error}</div>}
-
-      {currentList.length === 0 ? (
-        <div className="no-connections">
-          <p>
-            {activeTab === 'followers'
-              ? 'No followers yet'
-              : 'Not following anyone yet'}
-          </p>
+    <div className="min-h-screen bg-dark-900 py-8">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="mb-6">
+          <button className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-4" onClick={() => navigate('/profile')}>
+            ← Back to Profile
+          </button>
+          <h1 className="text-3xl font-bold text-gray-100">Connections</h1>
         </div>
-      ) : (
-        <div className="connections-grid">
-          {currentList.map((user) => {
-            const userDisplayId = user._id || user.id;
-            const currentUserId = currentUser?._id || currentUser?.id;
-            
-            return (
-              <div key={userDisplayId} className="connection-card">
-                <Link to={`/user/${userDisplayId}`} className="connection-info">
-                  <div className="connection-avatar">
-                    <img src={getSelectedAvatar(user)} alt={user.username} />
-                  </div>
-                  <div className="connection-details">
-                    <h3 className="connection-username">{user.username}</h3>
-                    {user.bio && <p className="connection-bio">{user.bio}</p>}
-                  </div>
-                </Link>
-                {currentUser && userDisplayId !== currentUserId && (
-                  <button
-                    className={`action-btn ${
-                      activeTab === 'following' 
-                        ? 'unfollow' 
-                        : isFollowingUser(userDisplayId) 
-                          ? 'following' 
-                          : 'follow'
-                    }`}
-                  onClick={() => {
-                    if (activeTab === 'following') {
-                      handleFollowToggle(userDisplayId, true);
-                    } else {
-                      handleFollowToggle(userDisplayId, isFollowingUser(userDisplayId));
-                    }
-                  }}
-                >
-                  {activeTab === 'following'
-                    ? 'Unfollow'
-                    : isFollowingUser(userDisplayId)
-                      ? 'Following'
-                      : 'Follow'}
-                </button>
-              )}
-            </div>
-          );
-          })}
+
+        <div className="flex gap-2 mb-6">
+          <button
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              activeTab === 'followers'
+                ? 'bg-primary text-dark-900'
+                : 'bg-dark-800 border border-dark-600 text-gray-300 hover:bg-dark-700 hover:border-primary/50'
+            }`}
+            onClick={() => handleTabChange('followers')}
+          >
+            Followers
+            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-dark-900/30">{followers.length}</span>
+          </button>
+          <button
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              activeTab === 'following'
+                ? 'bg-primary text-dark-900'
+                : 'bg-dark-800 border border-dark-600 text-gray-300 hover:bg-dark-700 hover:border-primary/50'
+            }`}
+            onClick={() => handleTabChange('following')}
+          >
+            Following
+            <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-dark-900/30">{following.length}</span>
+          </button>
         </div>
-      )}
+
+        {error && <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-6">{error}</div>}
+
+        {currentList.length === 0 ? (
+          <div className="bg-dark-800 border border-dark-600 rounded-xl p-12 text-center">
+            <p className="text-gray-400">
+              {activeTab === 'followers'
+                ? 'No followers yet'
+                : 'Not following anyone yet'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentList.map((user) => {
+              const userDisplayId = user._id || user.id;
+              const currentUserId = currentUser?._id || currentUser?.id;
+              
+              return (
+                <div key={userDisplayId} className="bg-dark-800 border border-dark-600 rounded-xl p-6 hover:border-primary/50 transition-all">
+                  <Link to={`/user/${userDisplayId}`} className="block">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-dark-600">
+                        <img src={getSelectedAvatar(user)} alt={user.username} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-100 truncate">{user.username}</h3>
+                        {user.bio && <p className="text-sm text-gray-400 line-clamp-2">{user.bio}</p>}
+                      </div>
+                    </div>
+                  </Link>
+                  {currentUser && userDisplayId !== currentUserId && (
+                    <button
+                      className={`w-full py-2 rounded-lg font-medium transition-colors ${
+                        activeTab === 'following' || isFollowingUser(userDisplayId)
+                          ? 'bg-dark-700 border border-dark-600 text-gray-300 hover:bg-red-500/10 hover:border-red-500 hover:text-red-400'
+                          : 'bg-primary hover:bg-primary-light text-dark-900'
+                      }`}
+                      onClick={() => {
+                        if (activeTab === 'following') {
+                          handleFollowToggle(userDisplayId, true);
+                        } else {
+                          handleFollowToggle(userDisplayId, isFollowingUser(userDisplayId));
+                        }
+                      }}
+                    >
+                      {activeTab === 'following'
+                        ? 'Unfollow'
+                        : isFollowingUser(userDisplayId)
+                          ? 'Following'
+                          : 'Follow'}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

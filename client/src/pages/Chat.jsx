@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSelectedAvatar } from '../utils/avatarHelper';
 import { chatAPI, authAPI } from '../services/api';
-import './Chat.css';
 
 function Chat() {
   const { userId } = useParams();
@@ -292,84 +291,97 @@ function Chat() {
 
   if (loading && !selectedConversation) {
     return (
-      <div className="chat-container">
-        <div className="chat-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading chats...</p>
+      <div className="min-h-screen bg-dark-900 py-8 px-4 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-400">Loading chats...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="chat-container">
-      {/* Conversations List */}
-      <div className="chat-sidebar">
-        <div className="chat-sidebar-header">
-          <h2>Messages</h2>
-        </div>
-        
-        <div className="conversations-list">
-          {conversations.length === 0 ? (
-            <div className="no-conversations">
-              <p>No conversations yet</p>
-              <p className="hint">Visit a user's profile to start chatting!</p>
-            </div>
-          ) : (
-            conversations.map((conversation) => (
-              <div
-                key={conversation._id}
-                className={`conversation-item ${selectedConversation?._id === conversation._id ? 'active' : ''}`}
-                onClick={() => handleSelectConversation(conversation)}
-              >
-                <div className="conversation-avatar">
-                  <img src={getSelectedAvatar(conversation.participant)} alt={conversation.participant?.username} />
-                </div>
-                
-                <div className="conversation-info">
-                  <div className="conversation-header">
-                    <span className="conversation-name">{conversation.participant?.username}</span>
-                    <span className="conversation-time">{formatTime(conversation.lastMessageAt)}</span>
-                  </div>
-                  
-                  {conversation.lastMessage && (
-                    <div className="conversation-preview">
-                      <span className="preview-text">
-                        {conversation.lastMessage.content}
-                      </span>
-                      {conversation.unreadCount > 0 && (
-                        <span className="unread-badge">{conversation.unreadCount}</span>
-                      )}
-                    </div>
-                  )}
-                </div>
+    <div className="min-h-screen bg-dark-900">
+      <div className="h-screen flex">
+        {/* Conversations List */}
+        <div className="w-80 bg-dark-800 border-r border-dark-600 flex flex-col">
+          <div className="p-6 border-b border-dark-600">
+            <h2 className="text-2xl font-bold text-white">Messages</h2>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto">
+            {conversations.length === 0 ? (
+              <div className="p-6 text-center">
+                <p className="text-gray-400 mb-2">No conversations yet</p>
+                <p className="text-gray-500 text-sm">Visit a user's profile to start chatting!</p>
               </div>
-            ))
-          )}
+            ) : (
+              <div>
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation._id}
+                    className={`p-4 border-b border-dark-600 cursor-pointer hover:bg-dark-700 transition-colors ${
+                      selectedConversation?._id === conversation._id ? 'bg-dark-700' : ''
+                    }`}
+                    onClick={() => handleSelectConversation(conversation)}
+                  >
+                    <div className="flex gap-3">
+                      <img 
+                        src={getSelectedAvatar(conversation.participant)} 
+                        alt={conversation.participant?.username} 
+                        className="w-12 h-12 rounded-full border-2 border-dark-600 object-cover"
+                      />
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-white font-medium truncate">{conversation.participant?.username}</span>
+                          <span className="text-gray-500 text-xs">{formatTime(conversation.lastMessageAt)}</span>
+                        </div>
+                        
+                        {conversation.lastMessage && (
+                          <div className="flex justify-between items-center gap-2">
+                            <span className="text-gray-400 text-sm truncate">
+                              {conversation.lastMessage.content}
+                            </span>
+                            {conversation.unreadCount > 0 && (
+                              <span className="px-2 py-0.5 bg-primary text-dark-900 text-xs font-bold rounded-full">
+                                {conversation.unreadCount}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
       {/* Chat Window */}
-      <div className="chat-main">
+      <div className="flex-1 flex flex-col bg-dark-900">
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="chat-header">
-              <div className="chat-header-user">
-                <div className="chat-header-avatar">
-                  <img src={getSelectedAvatar(selectedConversation.participant)} alt={selectedConversation.participant?.username} />
-                </div>
+            <div className="p-4 bg-dark-800 border-b border-dark-600 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <img 
+                  src={getSelectedAvatar(selectedConversation.participant)} 
+                  alt={selectedConversation.participant?.username} 
+                  className="w-10 h-10 rounded-full border-2 border-dark-600 object-cover"
+                />
                 <Link 
                   to={`/user/${selectedConversation.participant?._id}`}
-                  className="chat-header-name"
+                  className="text-white font-medium hover:text-primary transition-colors"
                 >
                   {selectedConversation.participant?.username}
                 </Link>
               </div>
 
-              <div className="chat-header-actions">
+              <div className="relative">
                 <button
-                  className="chat-header-menu"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-dark-700 rounded-lg transition-colors"
                   onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((s) => !s); }}
                   aria-label="Open chat menu"
                 >
@@ -385,14 +397,14 @@ function Chat() {
                   <>
                     {/* Backdrop to block interaction and close on click */}
                     <div 
-                      className="menu-backdrop" 
+                      className="fixed inset-0 z-40" 
                       onClick={() => setHeaderMenuOpen(false)}
                     />
                     
-                    <div className="header-dropdown" onClick={(e) => e.stopPropagation()}>
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-dark-800 border border-dark-600 rounded-xl shadow-xl z-50" onClick={(e) => e.stopPropagation()}>
                       <Link
                         to={`/user/${selectedConversation.participant?._id}`}
-                        className="dropdown-item"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-dark-700 hover:text-white transition-colors rounded-t-xl"
                         onClick={() => setHeaderMenuOpen(false)}
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -403,7 +415,7 @@ function Chat() {
                       </Link>
                       
                       <button
-                        className="dropdown-item"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-dark-700 hover:text-white transition-colors disabled:opacity-50"
                         onClick={handleBlockToggle}
                         disabled={blockLoading}
                       >
@@ -415,7 +427,7 @@ function Chat() {
                       </button>
                       
                       <button
-                        className="dropdown-item delete-item"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors rounded-b-xl"
                         onClick={() => {
                           setHeaderMenuOpen(false);
                           handleDeleteConversation(selectedConversation._id);
@@ -437,24 +449,32 @@ function Chat() {
             </div>
 
             {/* Messages */}
-            <div className="chat-messages">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.length === 0 ? (
-                <div className="no-messages">
-                  <p>No messages yet. Start the conversation!</p>
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-400">No messages yet. Start the conversation!</p>
                 </div>
               ) : (
                 messages.map((message) => (
                   <div
                     key={message._id}
-                    className={`message ${
+                    className={`flex ${
                       (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                        ? 'message-sent' 
-                        : 'message-received'
+                        ? 'justify-end' 
+                        : 'justify-start'
                     }`}
                   >
-                    <div className="message-bubble">
-                      <p className="message-content">{message.content}</p>
-                      <span className="message-time">{formatTime(message.createdAt)}</span>
+                    <div className={`max-w-md rounded-xl px-4 py-2 ${
+                      (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
+                        ? 'bg-primary text-dark-900'
+                        : 'bg-dark-800 border border-dark-600 text-white'
+                    }`}>
+                      <p className="break-words">{message.content}</p>
+                      <span className={`block text-xs mt-1 ${
+                        (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
+                          ? 'text-dark-900/70'
+                          : 'text-gray-500'
+                      }`}>{formatTime(message.createdAt)}</span>
                     </div>
                   </div>
                 ))
@@ -463,10 +483,10 @@ function Chat() {
             </div>
 
             {/* Message Input */}
-            <form className="chat-input-form" onSubmit={handleSendMessage}>
+            <form className="p-4 bg-dark-800 border-t border-dark-600 flex gap-3" onSubmit={handleSendMessage}>
               <textarea
                 rows="1"
-                className="chat-input"
+                className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -476,7 +496,11 @@ function Chat() {
               />
               <button
                 type="submit"
-                className="send-btn"
+                className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                  sending || !newMessage.trim()
+                    ? 'bg-dark-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-primary text-dark-900 hover:bg-primary-light'
+                }`}
                 disabled={sending || !newMessage.trim()}
               >
                 {sending ? '...' : 'Send'}
@@ -484,16 +508,17 @@ function Chat() {
             </form>
           </>
         ) : (
-          <div className="no-chat-selected">
-            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <svg className="text-gray-600 mb-4" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            <h3>Select a conversation</h3>
-            <p>Choose a conversation from the list to start chatting</p>
+            <h3 className="text-xl font-bold text-white mb-2">Select a conversation</h3>
+            <p className="text-gray-400">Choose a conversation from the list to start chatting</p>
           </div>
         )}
       </div>
     </div>
+  </div>
   );
 }
 

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
-import './Auth.css';
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -67,16 +66,22 @@ function Signup() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Join ApexDevs!</h2>
-        <p className="auth-subtitle">Create your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-dark-900 px-4 py-12">
+      <div className="w-full max-w-md bg-dark-800 border border-dark-600 rounded-lg shadow-2xl p-8">
+        <h2 className="text-3xl font-bold text-gray-100 mb-2">Join ApexDevs!</h2>
+        <p className="text-gray-400 mb-6">Create your account</p>
         
-        {error && <div className="auth-error">{error}</div>}
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1.5">
+              Username
+            </label>
             <input
               type="text"
               id="username"
@@ -88,11 +93,14 @@ function Signup() {
               minLength={3}
               maxLength={30}
               disabled={loading}
+              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1.5">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -102,11 +110,14 @@ function Signup() {
               placeholder="Enter your email"
               required
               disabled={loading}
+              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1.5">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -117,11 +128,14 @@ function Signup() {
               required
               minLength={6}
               disabled={loading}
+              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1.5">
+              Confirm Password
+            </label>
             <input
               type="password"
               id="confirmPassword"
@@ -131,16 +145,21 @@ function Signup() {
               placeholder="Confirm your password"
               required
               disabled={loading}
+              className="w-full bg-dark-700 border border-dark-600 text-gray-100 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
-          <button type="submit" className="auth-button" disabled={loading}>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full bg-primary hover:bg-primary-light text-dark-900 font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+          >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="auth-footer">
-          Already have an account? <Link to="/login" className="auth-link">Login</Link>
+        <p className="text-center text-gray-400 text-sm mt-6">
+          Already have an account? <Link to="/login" className="text-primary hover:text-primary-light transition-colors font-medium">Login</Link>
         </p>
       </div>
     </div>

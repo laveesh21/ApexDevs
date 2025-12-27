@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { getSelectedAvatar } from '../utils/avatarHelper';
 import { threadAPI } from '../services/api';
 import Modal from '../components/Modal';
-import './ThreadDetail.css';
 
 function ThreadDetail() {
   const { id } = useParams();
@@ -459,10 +458,10 @@ function ThreadDetail() {
 
   if (loading) {
     return (
-      <div className="thread-detail-container">
-        <div className="loading-state">
-          <div className="loader"></div>
-          <p>Loading thread...</p>
+      <div className="min-h-screen bg-dark-900 py-8 px-4 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-400">Loading thread...</p>
         </div>
       </div>
     );
@@ -470,9 +469,13 @@ function ThreadDetail() {
 
   if (error || !thread) {
     return (
-      <div className="thread-not-found">
-        <h2>{error || 'Thread not found'}</h2>
-        <Link to="/community" className="back-link">← Back to Community</Link>
+      <div className="min-h-screen bg-dark-900 py-8 px-4 flex flex-col items-center justify-center">
+        <div className="bg-dark-800 border border-dark-600 rounded-xl p-12 text-center max-w-md">
+          <h2 className="text-2xl font-bold text-white mb-4">{error || 'Thread not found'}</h2>
+          <Link to="/community" className="text-primary hover:text-primary-light inline-flex items-center gap-2">
+            ← Back to Community
+          </Link>
+        </div>
       </div>
     );
   }
@@ -507,61 +510,82 @@ function ThreadDetail() {
   };
 
   return (
-    <div className="thread-detail-container">
-      <div className="thread-detail-content">
-        <Link to="/community" className="back-link">← Back to Community</Link>
+    <div className="min-h-screen bg-dark-900 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <Link to="/community" className="inline-flex items-center gap-2 text-primary hover:text-primary-light mb-6">
+              ← Back to Community
+            </Link>
 
-        {/* Main Question/Thread - Combined Header and Content */}
-        <div className="thread-main">
-          <div className="thread-voting">
-            <button 
-              className={`vote-btn upvote ${voteStatus === 'upvote' ? 'active' : ''}`}
-              onClick={() => handleVote('upvote')}
-            >
-              ▲
-            </button>
-            <span className="vote-count">{voteScore}</span>
-            <button 
-              className={`vote-btn downvote ${voteStatus === 'downvote' ? 'active' : ''}`}
-              onClick={() => handleVote('downvote')}
-            >
-              ▼
-            </button>
-          </div>
+            {/* Main Question/Thread - Combined Header and Content */}
+            <div className="bg-dark-800 border border-dark-600 rounded-xl overflow-hidden">
+              <div className="flex gap-4 p-6">
+                {/* Voting Column */}
+                <div className="flex flex-col items-center gap-2">
+                  <button 
+                    className={`p-2 rounded-lg transition-all ${
+                      voteStatus === 'upvote' 
+                        ? 'bg-primary text-dark-900' 
+                        : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-primary'
+                    }`}
+                    onClick={() => handleVote('upvote')}
+                  >
+                    ▲
+                  </button>
+                  <span className="text-xl font-bold text-white">{voteScore}</span>
+                  <button 
+                    className={`p-2 rounded-lg transition-all ${
+                      voteStatus === 'downvote' 
+                        ? 'bg-red-500 text-white' 
+                        : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-red-500'
+                    }`}
+                    onClick={() => handleVote('downvote')}
+                  >
+                    ▼
+                  </button>
+                </div>
 
-          <div className="thread-body">
-            {/* Header inside main body */}
-            <div className="thread-header-inline">
-              <div className="thread-title-row">
-                <span 
-                  className="thread-type-badge" 
-                  style={{ backgroundColor: getTypeColor(thread.category) }}
-                >
-                  {thread.category}
-                </span>
-                {isThreadAuthor(thread.author) && !isEditing && (
-                  <div className="thread-actions">
-                    <button className="action-btn edit-btn" onClick={handleEditClick}>
-                      ✏️ Edit
-                    </button>
-                    <button className="action-btn delete-btn" onClick={handleDelete}>
-                      🗑️ Delete
-                    </button>
+                {/* Thread Body */}
+                <div className="flex-1 min-w-0">
+                  {/* Header inside main body */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span 
+                        className="px-3 py-1 rounded-lg text-sm font-medium text-white"
+                        style={{ backgroundColor: getTypeColor(thread.category) }}
+                      >
+                        {thread.category}
+                      </span>
+                      {isThreadAuthor(thread.author) && !isEditing && (
+                        <div className="flex gap-2">
+                          <button 
+                            className="px-3 py-1 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors text-sm"
+                            onClick={handleEditClick}
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button 
+                            className="px-3 py-1 bg-red-500/10 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm"
+                            onClick={handleDelete}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <h1 className="text-2xl font-bold text-white">{thread.title}</h1>
                   </div>
-                )}
-              </div>
-              <h1 className="thread-title">{thread.title}</h1>
-            </div>
 
             {isEditing ? (
-              <form className="thread-edit-form" onSubmit={handleEditSubmit}>
-                <div className="form-group">
-                  <label htmlFor="title">Title</label>
+              <form className="space-y-4" onSubmit={handleEditSubmit}>
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Title</label>
                   <input
                     type="text"
                     id="title"
                     name="title"
-                    className="form-input"
+                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.title}
                     onChange={handleEditChange}
                     required
@@ -569,12 +593,12 @@ function ThreadDetail() {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="content">Content</label>
+                <div>
+                  <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">Content</label>
                   <textarea
                     id="content"
                     name="content"
-                    className="form-textarea"
+                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
                     value={editFormData.content}
                     onChange={handleEditChange}
                     required
@@ -582,12 +606,12 @@ function ThreadDetail() {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="category">Category</label>
+                <div>
+                  <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-2">Category</label>
                   <select
                     id="category"
                     name="category"
-                    className="form-select"
+                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.category}
                     onChange={handleEditChange}
                     required
@@ -602,31 +626,38 @@ function ThreadDetail() {
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="tags">Tags (comma-separated)</label>
+                <div>
+                  <label htmlFor="tags" className="block text-sm font-medium text-gray-300 mb-2">Tags (comma-separated)</label>
                   <input
                     type="text"
                     id="tags"
                     name="tags"
-                    className="form-input"
+                    className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                     value={editFormData.tags.join(', ')}
                     onChange={handleTagsChange}
                     placeholder="JavaScript, React, Node.js"
                   />
                 </div>
 
-                <div className="form-actions">
-                  <button type="button" className="btn-cancel" onClick={handleCancelEdit}>
+                <div className="flex gap-3 pt-2">
+                  <button 
+                    type="button" 
+                    className="px-4 py-2 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors"
+                    onClick={handleCancelEdit}
+                  >
                     Cancel
                   </button>
-                  <button type="submit" className="btn-submit">
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-primary text-dark-900 rounded-lg hover:bg-primary-light transition-colors font-medium"
+                  >
                     Save Changes
                   </button>
                 </div>
               </form>
             ) : (
               <>
-                <div className="thread-content">
+                <div className="prose prose-invert max-w-none">
                   {(() => {
                     const raw = thread.content || '';
                     const isLong = raw.length > 1500;
@@ -644,12 +675,12 @@ function ThreadDetail() {
 
                       if (formattedParagraph.includes('<li>')) {
                         return (
-                          <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                          <ul key={index} className="list-disc pl-5 mb-3 text-gray-300" dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
                         );
                       }
 
                       return paragraph.trim() && (
-                        <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                        <p key={index} className="mb-3 text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
                       );
                     });
                   })()}
@@ -658,7 +689,7 @@ function ThreadDetail() {
                   {(thread.content || '').length > 1500 && (
                     <button
                       type="button"
-                      className="see-more-btn"
+                      className="text-primary hover:text-primary-light text-sm font-medium"
                       onClick={() => setShowFullContent(s => !s)}
                     >
                       {showFullContent ? 'See less' : 'See more'}
@@ -666,153 +697,180 @@ function ThreadDetail() {
                   )}
                 </div>
 
-                <div className="thread-tags">
+                <div className="flex flex-wrap gap-2 mt-4">
                   {thread.tags.map((tag, index) => (
-                    <span key={index} className="thread-tag">{tag}</span>
+                    <span key={index} className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-sm rounded-lg">
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </>
             )}
 
             {/* Compact Author Info */}
-            <div className="thread-author-compact">
-              <div className="author-avatar-tiny">
-                <img src={getSelectedAvatar(thread.author)} alt={thread.author?.username} />
-              </div>
+            <div className="flex items-center gap-2 mt-6 pt-6 border-t border-dark-600">
+              <img 
+                src={getSelectedAvatar(thread.author)} 
+                alt={thread.author?.username} 
+                className="w-8 h-8 rounded-full border-2 border-dark-600 object-cover"
+              />
               {thread.author?._id ? (
-                <Link to={`/user/${thread.author._id}`} className="author-username">
+                <Link to={`/user/${thread.author._id}`} className="text-primary hover:text-primary-light font-medium">
                   {thread.author.username}
                 </Link>
               ) : (
-                <span className="author-username">{thread.author?.username || 'Anonymous'}</span>
+                <span className="text-white font-medium">{thread.author?.username || 'Anonymous'}</span>
               )}
-              <span className="author-time">• {formatTimeAgo(thread.createdAt)}</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-400 text-sm">{formatTimeAgo(thread.createdAt)}</span>
               {thread.updatedAt && new Date(thread.updatedAt).getTime() !== new Date(thread.createdAt).getTime() && (
-                <span className="updated-time">• edited {formatTimeAgo(thread.updatedAt)}</span>
+                <>
+                  <span className="text-gray-500">•</span>
+                  <span className="text-gray-500 text-sm">edited {formatTimeAgo(thread.updatedAt)}</span>
+                </>
               )}
             </div>
           </div>
         </div>
+      </div>
 
         {/* Comments Section */}
-        <div className="answers-section">
-          <h2 className="answers-header">
+        <div className="mt-6">
+          <h2 className="text-2xl font-bold text-white mb-6">
             {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
           </h2>
 
-          {comments.map(comment => {
-            const commentVote = commentVotes[comment._id] || { voteStatus: null, voteScore: 0 };
-            
-            return (
-              <div key={comment._id} className="answer-card">
-                {/* Comment Voting */}
-                <div className="comment-voting">
-                  <button 
-                    className={`vote-btn-small upvote ${commentVote.voteStatus === 'upvote' ? 'active' : ''}`}
-                    onClick={() => handleCommentVote(comment._id, 'upvote')}
-                  >
-                    ▲
-                  </button>
-                  <span className="vote-count-small">{commentVote.voteScore}</span>
-                  <button 
-                    className={`vote-btn-small downvote ${commentVote.voteStatus === 'downvote' ? 'active' : ''}`}
-                    onClick={() => handleCommentVote(comment._id, 'downvote')}
-                  >
-                    ▼
-                  </button>
-                </div>
-
-                <div className="answer-body">
-                  {/* Compact Comment Author */}
-                  <div className="comment-author-compact">
-                    <div className="author-avatar-tiny">
-                      <img src={getSelectedAvatar(comment.author)} alt={comment.author?.username} />
+          <div className="space-y-4">
+            {comments.map(comment => {
+              const commentVote = commentVotes[comment._id] || { voteStatus: null, voteScore: 0 };
+              
+              return (
+                <div key={comment._id} className="bg-dark-800 border border-dark-600 rounded-xl overflow-hidden">
+                  <div className="flex gap-4 p-6">
+                    {/* Comment Voting */}
+                    <div className="flex flex-col items-center gap-1">
+                      <button 
+                        className={`p-1 rounded transition-all text-sm ${
+                          commentVote.voteStatus === 'upvote' 
+                            ? 'bg-primary text-dark-900' 
+                            : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-primary'
+                        }`}
+                        onClick={() => handleCommentVote(comment._id, 'upvote')}
+                      >
+                        ▲
+                      </button>
+                      <span className="text-sm font-bold text-white">{commentVote.voteScore}</span>
+                      <button 
+                        className={`p-1 rounded transition-all text-sm ${
+                          commentVote.voteStatus === 'downvote' 
+                            ? 'bg-red-500 text-white' 
+                            : 'bg-dark-700 text-gray-400 hover:bg-dark-600 hover:text-red-500'
+                        }`}
+                        onClick={() => handleCommentVote(comment._id, 'downvote')}
+                      >
+                        ▼
+                      </button>
                     </div>
-                    {comment.author?._id ? (
-                      <Link to={`/user/${comment.author._id}`} className="author-username">
-                        {comment.author.username}
-                      </Link>
-                    ) : (
-                      <span className="author-username">{comment.author?.username || 'Anonymous'}</span>
-                    )}
-                    <span className="author-time">• {formatTimeAgo(comment.createdAt)}</span>
-                    {comment.updatedAt && new Date(comment.updatedAt).getTime() !== new Date(comment.createdAt).getTime() && (
-                      <span className="updated-time">• edited {formatTimeAgo(comment.updatedAt)}</span>
-                    )}
-                    {isCommentAuthor(comment.author) && editingCommentId !== comment._id && (
-                      <div className="comment-actions">
-                        <button 
-                          className="comment-action-btn edit" 
-                          onClick={() => handleEditComment(comment)}
-                          title="Edit comment"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          className="comment-action-btn delete" 
-                          onClick={() => handleDeleteComment(comment._id)}
-                          title="Delete comment"
-                        >
-                          🗑️
-                        </button>
+
+                    <div className="flex-1 min-w-0">
+                      {/* Compact Comment Author */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <img 
+                          src={getSelectedAvatar(comment.author)} 
+                          alt={comment.author?.username} 
+                          className="w-8 h-8 rounded-full border-2 border-dark-600 object-cover"
+                        />
+                        {comment.author?._id ? (
+                          <Link to={`/user/${comment.author._id}`} className="text-primary hover:text-primary-light font-medium">
+                            {comment.author.username}
+                          </Link>
+                        ) : (
+                          <span className="text-white font-medium">{comment.author?.username || 'Anonymous'}</span>
+                        )}
+                        <span className="text-gray-500">•</span>
+                        <span className="text-gray-400 text-sm">{formatTimeAgo(comment.createdAt)}</span>
+                        {comment.updatedAt && new Date(comment.updatedAt).getTime() !== new Date(comment.createdAt).getTime() && (
+                          <>
+                            <span className="text-gray-500">•</span>
+                            <span className="text-gray-500 text-sm">edited {formatTimeAgo(comment.updatedAt)}</span>
+                          </>
+                        )}
+                        {isCommentAuthor(comment.author) && editingCommentId !== comment._id && (
+                          <div className="ml-auto flex gap-2">
+                            <button 
+                              className="p-1 text-gray-400 hover:text-primary transition-colors" 
+                              onClick={() => handleEditComment(comment)}
+                              title="Edit comment"
+                            >
+                              ✏️
+                            </button>
+                                <button 
+                              className="p-1 text-gray-400 hover:text-red-500 transition-colors" 
+                              onClick={() => handleDeleteComment(comment._id)}
+                              title="Delete comment"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+
+                      {editingCommentId === comment._id ? (
+                        <div className="space-y-3">
+                          <textarea
+                            className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+                            value={editCommentContent}
+                            onChange={(e) => setEditCommentContent(e.target.value)}
+                            rows="4"
+                          />
+                          <div className="flex gap-2">
+                            <button 
+                              className="px-3 py-1 bg-dark-700 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-600 transition-colors text-sm" 
+                              onClick={handleCancelCommentEdit}
+                            >
+                              Cancel
+                            </button>
+                            <button 
+                              className="px-3 py-1 bg-primary text-dark-900 rounded-lg hover:bg-primary-light transition-colors font-medium text-sm" 
+                              onClick={() => handleUpdateComment(comment._id)}
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="prose prose-invert max-w-none">
+                          {comment.content.split('\n').map((paragraph, index) => {
+                            const formattedParagraph = paragraph
+                              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                              .replace(/- (.*?)$/gm, '<li>$1</li>');
+                            
+                            if (formattedParagraph.includes('<li>')) {
+                              return (
+                                <ul key={index} className="list-disc pl-5 mb-2 text-gray-300" dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                              );
+                            }
+                            
+                            return paragraph.trim() && (
+                              <p key={index} className="mb-2 text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-
-                  {editingCommentId === comment._id ? (
-                    <div className="comment-edit-form">
-                      <textarea
-                        className="comment-edit-textarea"
-                        value={editCommentContent}
-                        onChange={(e) => setEditCommentContent(e.target.value)}
-                        rows="4"
-                      />
-                      <div className="comment-edit-actions">
-                        <button 
-                          className="btn-cancel-small" 
-                          onClick={handleCancelCommentEdit}
-                        >
-                          Cancel
-                        </button>
-                        <button 
-                          className="btn-submit-small" 
-                          onClick={() => handleUpdateComment(comment._id)}
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="answer-content">
-                      {comment.content.split('\n').map((paragraph, index) => {
-                        const formattedParagraph = paragraph
-                          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                          .replace(/- (.*?)$/gm, '<li>$1</li>');
-                        
-                        if (formattedParagraph.includes('<li>')) {
-                          return (
-                            <ul key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                          );
-                        }
-                        
-                        return paragraph.trim() && (
-                          <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph }} />
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Add Comment Section */}
-        <div className="add-answer-section">
-          <h3>Your Comment</h3>
+        <div className="mt-6 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <h3 className="text-xl font-bold text-white mb-4">Your Comment</h3>
           <form onSubmit={handleSubmitComment}>
             <textarea 
-              className="answer-textarea" 
+              className="w-full px-4 py-3 bg-dark-700 border border-dark-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none" 
               placeholder="Write your comment here..."
               rows="6"
               value={newComment}
@@ -821,7 +879,11 @@ function ThreadDetail() {
             ></textarea>
             <button 
               type="submit" 
-              className="submit-answer-btn"
+              className={`mt-3 px-6 py-2 rounded-lg font-medium transition-colors ${
+                token && newComment.trim() 
+                  ? 'bg-primary text-dark-900 hover:bg-primary-light' 
+                  : 'bg-dark-700 text-gray-500 cursor-not-allowed'
+              }`}
               disabled={!token || !newComment.trim()}
             >
               {token ? 'Post Comment' : 'Login to Comment'}
@@ -831,48 +893,70 @@ function ThreadDetail() {
       </div>
 
       {/* Sidebar */}
-      <aside className="thread-sidebar">
-        <div className="sidebar-card">
-          <h3>Thread Stats</h3>
-          <div className="stat-item">
-            <span className="stat-label">Asked</span>
-            <span className="stat-value">{formatTimeAgo(thread.createdAt)}</span>
+      <aside className="lg:col-span-1">
+        <div className="space-y-6 lg:sticky lg:top-8">
+          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Thread Stats</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Asked</span>
+                <span className="text-white font-medium">{formatTimeAgo(thread.createdAt)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Views</span>
+                <span className="text-white font-medium">{thread.views}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Comments</span>
+                <span className="text-white font-medium">{comments.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Vote Score</span>
+                <span className="text-primary font-bold">{voteScore}</span>
+              </div>
+            </div>
           </div>
-          <div className="stat-item">
-            <span className="stat-label">Views</span>
-            <span className="stat-value">{thread.views}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Comments</span>
-            <span className="stat-value">{comments.length}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Vote Score</span>
-            <span className="stat-value">{voteScore}</span>
-          </div>
-        </div>
 
-        <div className="sidebar-card">
-          <h3>Related Tags</h3>
-          <div className="related-tags">
-            {thread.tags.map((tag, index) => (
-              <Link key={index} to="/community" className="related-tag">
-                {tag}
-              </Link>
-            ))}
+          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Related Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {thread.tags.map((tag, index) => (
+                <Link 
+                  key={index} 
+                  to="/community" 
+                  className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-sm rounded-lg hover:bg-primary/30 transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="sidebar-card">
-          <h3>Community Guidelines</h3>
-          <ul className="guidelines-list">
-            <li>Be respectful and constructive</li>
-            <li>Stay on topic</li>
-            <li>Provide code examples when relevant</li>
-            <li>Mark helpful comments as accepted</li>
-          </ul>
+          <div className="bg-dark-800 border border-dark-600 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Community Guidelines</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Be respectful and constructive</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Stay on topic</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Provide code examples when relevant</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">•</span>
+                <span>Mark helpful comments as accepted</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </aside>
+    </div>
+  </div>
 
       <Modal
         isOpen={modalState.isOpen}

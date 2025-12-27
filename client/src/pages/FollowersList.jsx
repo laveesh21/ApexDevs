@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSelectedAvatar } from '../utils/avatarHelper';
 import * as authAPI from '../services/api';
-import './FollowersList.css';
 
 const FollowersList = () => {
   const { user: currentUser, token } = useAuth();
@@ -61,53 +60,72 @@ const FollowersList = () => {
 
   if (loading) {
     return (
-      <div className="followers-list-container">
-        <div className="loading">Loading followers...</div>
+      <div className="min-h-screen bg-dark-900 py-8 px-4 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="followers-list-container">
-      <div className="followers-list-header">
-        <button className="back-button" onClick={() => navigate('/profile')}>
-          ← Back to Profile
-        </button>
-        <h1>Followers</h1>
-        <p className="followers-count">{followers.length} {followers.length === 1 ? 'follower' : 'followers'}</p>
+    <div className="min-h-screen bg-dark-900 py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <button 
+            className="mb-6 px-4 py-2 bg-dark-800 border border-dark-600 text-gray-300 rounded-lg hover:bg-dark-700 transition-colors flex items-center gap-2" 
+            onClick={() => navigate('/profile')}
+          >
+            ← Back to Profile
+          </button>
+          <h1 className="text-3xl font-bold text-white mb-2">Followers</h1>
+          <p className="text-gray-400">{followers.length} {followers.length === 1 ? 'follower' : 'followers'}</p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-400 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {followers.length === 0 ? (
+          <div className="bg-dark-800 border border-dark-600 rounded-xl p-12 text-center">
+            <p className="text-gray-400 text-lg">No followers yet</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {followers.map((follower) => (
+              <div key={follower._id} className="bg-dark-800 border border-dark-600 rounded-xl p-6 hover:border-primary/50 transition-all">
+                <Link to={`/users/${follower._id}`} className="block mb-4">
+                  <div className="flex items-center gap-4 mb-3">
+                    <img 
+                      src={getSelectedAvatar(follower)} 
+                      alt={follower.username} 
+                      className="w-16 h-16 rounded-full border-2 border-dark-600 object-cover"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-semibold text-lg truncate">{follower.username}</h3>
+                    </div>
+                  </div>
+                  {follower.bio && (
+                    <p className="text-gray-400 text-sm line-clamp-2">{follower.bio}</p>
+                  )}
+                </Link>
+                {currentUser && follower._id !== currentUser._id && (
+                  <button
+                    className={`w-full py-2 rounded-lg font-medium transition-all ${
+                      isFollowingUser(follower._id) 
+                        ? 'bg-dark-700 border border-dark-600 text-gray-300 hover:bg-dark-600' 
+                        : 'bg-primary text-dark-900 hover:bg-primary-light'
+                    }`}
+                    onClick={() => handleFollowToggle(follower._id, isFollowingUser(follower._id))}
+                  >
+                    {isFollowingUser(follower._id) ? 'Following' : 'Follow'}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-
-      {error && <div className="error-message">{error}</div>}
-
-      {followers.length === 0 ? (
-        <div className="no-followers">
-          <p>No followers yet</p>
-        </div>
-      ) : (
-        <div className="followers-grid">
-          {followers.map((follower) => (
-            <div key={follower._id} className="follower-card">
-              <Link to={`/users/${follower._id}`} className="follower-info">
-                <div className="follower-avatar">
-                  <img src={getSelectedAvatar(follower)} alt={follower.username} />
-                </div>
-                <div className="follower-details">
-                  <h3 className="follower-username">{follower.username}</h3>
-                  {follower.bio && <p className="follower-bio">{follower.bio}</p>}
-                </div>
-              </Link>
-              {currentUser && follower._id !== currentUser._id && (
-                <button
-                  className={`follow-btn ${isFollowingUser(follower._id) ? 'following' : ''}`}
-                  onClick={() => handleFollowToggle(follower._id, isFollowingUser(follower._id))}
-                >
-                  {isFollowingUser(follower._id) ? 'Following' : 'Follow'}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

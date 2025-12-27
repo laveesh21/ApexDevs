@@ -1,4 +1,3 @@
-import './Filter.css';
 
 function Filter({ selectedTech, onTechChange, isCollapsed, onToggleCollapse }) {
   const techStacks = [
@@ -49,9 +48,15 @@ function Filter({ selectedTech, onTechChange, isCollapsed, onToggleCollapse }) {
   };
 
   return (
-    <div className={`filter-container ${isCollapsed ? 'collapsed' : ''}`}>
+    <div className={`bg-dark-800 border border-dark-600 rounded-xl transition-all duration-300 ${
+      isCollapsed ? 'p-2' : 'p-6'
+    }`}>
       {isCollapsed ? (
-        <button className="filter-icon-btn" onClick={onToggleCollapse} title="Show Filters">
+        <button 
+          className="w-full p-2 text-primary hover:text-primary-light transition-colors" 
+          onClick={onToggleCollapse} 
+          title="Show Filters"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="4" y1="6" x2="20" y2="6"/>
             <line x1="4" y1="12" x2="20" y2="12"/>
@@ -63,29 +68,39 @@ function Filter({ selectedTech, onTechChange, isCollapsed, onToggleCollapse }) {
         </button>
       ) : (
         <>
-          <div className="filter-header">
-            <h3>Filter by Tech Stack</h3>
-            <button className="collapse-btn" onClick={onToggleCollapse}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white">Filter by Tech Stack</h3>
+            <button 
+              className="text-gray-400 hover:text-white transition-colors text-xl" 
+              onClick={onToggleCollapse}
+            >
               ✕
             </button>
           </div>
           
           {selectedTech.length > 0 && (
-            <div className="selected-info">
-              <div className="selected-count">
+            <div className="flex items-center justify-between mb-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
+              <div className="text-sm font-medium text-primary">
                 {selectedTech.length} selected
               </div>
-              <button onClick={clearFilters} className="clear-button">
+              <button 
+                onClick={clearFilters} 
+                className="text-sm text-primary hover:text-primary-light transition-colors font-medium"
+              >
                 Clear All
               </button>
             </div>
           )}
 
-          <div className="filter-list">
+          <div className="flex flex-wrap gap-2">
             {techStacks.map((tech) => (
               <button
                 key={tech}
-                className={`filter-chip ${selectedTech.includes(tech) ? 'selected' : ''}`}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  selectedTech.includes(tech) 
+                    ? 'bg-primary text-dark-900' 
+                    : 'bg-dark-700 text-gray-300 border border-dark-600 hover:border-primary hover:text-white'
+                }`}
                 onClick={() => handleTechToggle(tech)}
               >
                 {tech}

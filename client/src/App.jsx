@@ -22,15 +22,15 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="app-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-dark-900">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-400 mt-4">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="app">
+    <div className="min-h-screen bg-dark-900 flex flex-col">
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
@@ -41,7 +41,7 @@ function AppContent() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/project/:id" element={<ProjectDetail />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/profile/edit" element={<EditProfile />} />0
         <Route path="/profile/connections" element={<Connections />} />
         <Route path="/user/:userId" element={<PublicProfile />} />
         <Route path="/settings" element={<Settings />} />
