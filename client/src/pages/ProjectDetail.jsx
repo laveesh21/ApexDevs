@@ -3,8 +3,10 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ImageCarousel from '../components/ImageCarousel';
 import EditProjectForm from '../components/EditProjectForm';
+import ProjectSidebar from '../components/ProjectSidebar';
+import ReviewSection from '../components/ReviewSection';
 import { projectAPI } from '../services/api';
-import { Tag, Button, AuthorAvatar } from '../components/ui';
+import { AuthorAvatar } from '../components/ui';
 
 function ProjectDetail() {
   const { id } = useParams();
@@ -258,308 +260,79 @@ function ProjectDetail() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Images and Description */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Image Carousel */}
-            <ImageCarousel images={carouselImages} />
-
-            {/* Description Section */}
-            <section className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-100 mb-4">About This Project</h2>
-              <div className="text-gray-300 leading-relaxed">
-                <p>{project.description}</p>
-              </div>
-            </section>
-
-            {/* Tech Stack Section */}
-            <section className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-100 mb-4">Technologies Used</h2>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies?.map((tech, index) => (
-                  <Tag key={index} variant="primary" size="md">
-                    {tech}
-                  </Tag>
-                ))}
-              </div>
-            </section>
-
-            {/* Review Section */}
-            <section className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-100">Reviews</h2>
-                <div className="flex gap-4 text-sm">
-                  <span className="flex items-center gap-1 text-green-400 font-medium">👍 {reviewStats.likes}</span>
-                  <span className="flex items-center gap-1 text-red-400 font-medium">👎 {reviewStats.dislikes}</span>
-                </div>
-              </div>
-
-              {/* Review Actions */}
-              {!isOwner && (
-                <div className="mb-6">
-                  {userReview ? (
-                    <div className="bg-neutral-700 border border-neutral-600 rounded-lg p-4">
-                      <p className="text-gray-300 mb-2">Your review: <strong className="text-primary">{userReview.rating === 'like' ? '👍 Like' : '👎 Dislike'}</strong></p>
-                      {userReview.comment && <p className="text-gray-400 italic mb-3">"{userReview.comment}"</p>}
-                      <div className="flex gap-2">
-                        <button className="px-4 py-2 bg-neutral-600 hover:bg-neutral-500 border border-neutral-500 text-gray-300 rounded-lg transition-colors text-sm" onClick={() => setShowReviewForm(true)}>
-                          Edit Review
-                        </button>
-                        <button className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg transition-colors text-sm" onClick={handleDeleteReview}>
-                          Delete Review
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-neutral-700 border border-neutral-600 rounded-lg p-4">
-                      <p className="text-gray-300 mb-3">What do you think about this project?</p>
-                      <div className="flex flex-wrap gap-2">
-                        <button className="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/40 text-green-400 rounded-lg transition-colors" onClick={() => handleQuickReview('like')}>
-                          👍 Like
-                        </button>
-                        <button className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-400 rounded-lg transition-colors" onClick={() => handleQuickReview('dislike')}>
-                          👎 Dislike
-                        </button>
-                        <button className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 text-primary rounded-lg transition-colors" onClick={() => setShowReviewForm(true)}>
-                          ✍️ Write Review
-                        </button>
-                      </div>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Hero Section */}
+            {/* <div className="space-y-4"> */}
+              {/* <h1 className="text-3xl font-bold text-white leading-tight">{project.title}</h1>
+              <p className="text-lg text-gray-400">{project.briefDescription}</p> */}
+              
+              {/* Author & Meta */}
+              {/* <div className="flex items-center justify-between py-4 border-y border-neutral-700">
+                <div className="flex items-center gap-4">
+                  {project.author && (
+                    <AuthorAvatar
+                      author={project.author}
+                      size="md"
+                      subtitle={new Date(project.createdAt).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                      clickable={!!project.author?._id}
+                    />
                   )}
                 </div>
-              )}
-
-              {/* Review Form */}
-              {showReviewForm && (
-                <div className="bg-neutral-700 border border-neutral-600 rounded-lg p-4 mb-6">
-                  <h3 className="text-lg font-bold text-gray-100 mb-4">Write a Review</h3>
-                  <div className="flex gap-2 mb-4">
-                    <button
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                        reviewFormData.rating === 'like'
-                          ? 'bg-green-500/30 border-2 border-green-500 text-green-400'
-                          : 'bg-neutral-600 border border-neutral-500 text-gray-400 hover:border-green-500/50'
-                      }`}
-                      onClick={() => setReviewFormData({ ...reviewFormData, rating: 'like' })}
-                    >
-                      👍 Like
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                        reviewFormData.rating === 'dislike'
-                          ? 'bg-red-500/30 border-2 border-red-500 text-red-400'
-                          : 'bg-neutral-600 border border-neutral-500 text-gray-400 hover:border-red-500/50'
-                      }`}
-                      onClick={() => setReviewFormData({ ...reviewFormData, rating: 'dislike' })}
-                    >
-                      👎 Dislike
-                    </button>
+                <div className="flex items-center gap-6 text-sm text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>{project.views || 0} views</span>
                   </div>
-                  <textarea
-                    className="w-full px-4 py-2 bg-neutral-600 border border-neutral-500 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary mb-4"
-                    placeholder="Share your thoughts about this project (optional)..."
-                    value={reviewFormData.comment}
-                    onChange={(e) => setReviewFormData({ ...reviewFormData, comment: e.target.value })}
-                    rows="4"
-                    maxLength={500}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <button className="px-4 py-2 bg-neutral-600 hover:bg-neutral-500 border border-neutral-500 text-gray-300 rounded-lg transition-colors" onClick={() => {
-                      setShowReviewForm(false);
-                      setReviewFormData({ rating: '', comment: '' });
-                    }}>
-                      Cancel
-                    </button>
-                    <button
-                      className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
-                      onClick={() => handleReviewSubmit(reviewFormData.rating)}
-                      disabled={!reviewFormData.rating}
-                    >
-                      Submit Review
-                    </button>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                    </svg>
+                    <span>{reviewStats.likes || 0}</span>
                   </div>
                 </div>
-              )}
+              </div> */}
+            {/* </div> */}
 
-              {/* Reviews List */}
-              {reviews.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-bold text-gray-100 mb-4">User Reviews ({reviews.length})</h3>
-                  <div className="space-y-4">
-                    {reviews.map((review) => (
-                      <div key={review._id} className="bg-neutral-700 border border-neutral-600 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <AuthorAvatar
-                              author={review.user}
-                              size="md"
-                              clickable={!!review.user?._id}
-                            />
-                            <span className="text-xl">{review.rating === 'like' ? '👍' : '👎'}</span>
-                          </div>
-                          <span className="text-xs text-gray-500">
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        {review.comment && (
-                          <p className="text-gray-300 pl-13">{review.comment}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* Image Carousel */}
+            <div className="bg-neutral-800 border border-neutral-700 rounded-2xl overflow-hidden">
+              <ImageCarousel images={carouselImages} />
+            </div>
 
-              {reviews.length === 0 && !isOwner && !userReview && (
-                <p className="text-center text-gray-500 py-8">No reviews yet. Be the first to review!</p>
-              )}
-            </section>
+            {/* Description */}
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-2xl p-8">
+              <h2 className="text-xl font-bold text-white mb-4">About</h2>
+              <p className="text-gray-300 leading-relaxed">{project.description}</p>
+            </div>
+
+            {/* Reviews Section */}
+            <ReviewSection
+              reviews={reviews}
+              reviewStats={reviewStats}
+              userReview={userReview}
+              isOwner={isOwner}
+              token={token}
+              onQuickReview={handleQuickReview}
+              onReviewSubmit={handleReviewSubmit}
+              onDeleteReview={handleDeleteReview}
+              showReviewForm={showReviewForm}
+              setShowReviewForm={setShowReviewForm}
+              reviewFormData={reviewFormData}
+              setReviewFormData={setReviewFormData}
+            />
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Project Info Card */}
-            <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6 sticky top-8">
-              <h3 className="text-2xl font-bold text-gray-100 mb-2">{project.title}</h3>
-              <p className="text-gray-400 mb-6">{project.briefDescription}</p>
-
-              {/* Author Info */}
-              <div className="mb-6">
-                <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3">Created By</h4>
-                {project.author ? (
-                  <AuthorAvatar
-                    author={project.author}
-                    size="lg"
-                    subtitle={project.author?.role || 'Developer'}
-                  />
-                ) : (
-                  <div className="text-gray-400">Unknown Author</div>
-                )}
-              </div>
-
-              {/* Project Stats */}
-              <div className="mb-6 pb-6 border-b border-neutral-600">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-neutral-700 rounded-lg p-3">
-                    <span className="block text-xs text-gray-500 mb-1">Status</span>
-                    <span className={`text-sm font-semibold ${
-                      project.status?.toLowerCase() === 'completed' ? 'text-green-400' :
-                      project.status?.toLowerCase() === 'in progress' ? 'text-yellow-400' :
-                      'text-blue-400'
-                    }`}>
-                      {project.status || 'Completed'}
-                    </span>
-                  </div>
-                  <div className="bg-neutral-700 rounded-lg p-3">
-                    <span className="block text-xs text-gray-500 mb-1">Category</span>
-                    <span className="text-sm font-semibold text-gray-100">{project.category || 'Other'}</span>
-                  </div>
-                  <div className="bg-neutral-700 rounded-lg p-3">
-                    <span className="block text-xs text-gray-500 mb-1">Likes</span>
-                    <span className="text-sm font-semibold text-green-400">{reviewStats.likes || 0}</span>
-                  </div>
-                  <div className="bg-neutral-700 rounded-lg p-3">
-                    <span className="block text-xs text-gray-500 mb-1">Dislikes</span>
-                    <span className="text-sm font-semibold text-red-400">{reviewStats.dislikes || 0}</span>
-                  </div>
-                  <div className="bg-neutral-700 rounded-lg p-3 col-span-2">
-                    <span className="block text-xs text-gray-500 mb-1">Views</span>
-                    <span className="text-sm font-semibold text-primary">{project.views || 0}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Links Section */}
-              <div className="mb-6">
-                <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3">Project Links</h4>
-                {!project.demoUrl && !project.githubUrl ? (
-                  <p className="text-gray-500 text-sm">No links available</p>
-                ) : (
-                  <div className="space-y-2">
-                    {project.demoUrl && (
-                      <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 hover:border-primary/50 rounded-lg transition-all group">
-                        <span className="text-2xl">🌐</span>
-                        <span className="text-gray-300 group-hover:text-primary font-medium">Live Demo</span>
-                      </a>
-                    )}
-                    {project.githubUrl && (
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 hover:border-primary/50 rounded-lg transition-all group">
-                        <span className="text-gray-400 group-hover:text-primary">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                          </svg>
-                        </span>
-                        <span className="text-gray-300 group-hover:text-primary font-medium">Source Code</span>
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Like Button */}
-              {!isOwner && (
-                <div className="mb-6">
-                  <button
-                    className={`w-full py-3 rounded-lg font-medium transition-all ${
-                      isLiked
-                        ? 'bg-primary text-white hover:bg-primary-light'
-                        : 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:border-primary/50 hover:bg-neutral-600'
-                    }`}
-                    onClick={async () => {
-                      if (!token) {
-                        alert('Please login to like this project');
-                        return;
-                      }
-
-                      try {
-                        const res = await projectAPI.toggleLike(token, id);
-                        if (res && res.data) {
-                          setLikeCount(res.data.likes || 0);
-                          setIsLiked(!!res.data.isLiked);
-                        } else {
-                          setIsLiked(prev => !prev);
-                          setLikeCount(prev => prev + (isLiked ? -1 : 1));
-                        }
-                      } catch (err) {
-                        console.error('Failed to toggle like:', err);
-                        alert('Failed to update like. Please try again.');
-                      }
-                    }}
-                  >
-                    {isLiked ? 'Unlike' : 'Like'} • {likeCount || 0}
-                  </button>
-                </div>
-              )}
-
-              {/* Project Meta Info */}
-              <div>
-                <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3">Project Info</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Created:</span>
-                    <span className="text-gray-300">
-                      {new Date(project.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                  {project.updatedAt && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Last Updated:</span>
-                      <span className="text-gray-300">
-                        {new Date(project.updatedAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <ProjectSidebar project={project} reviewStats={reviewStats} />
           </div>
         </div>
       </div>

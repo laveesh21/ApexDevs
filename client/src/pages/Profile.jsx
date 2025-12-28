@@ -269,13 +269,13 @@ function Profile() {
                 <p className="text-gray-300 mb-4 max-w-2xl">{userInfo.briefBio}</p>
               )}
               <div className="flex gap-6 mt-4">
-                <Link to="/profile/connections?tab=followers" className="flex flex-col items-center hover:text-primary transition-colors group">
-                  <span className="text-2xl font-bold text-primary group-hover:scale-110 transition-transform">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
-                  <span className="text-sm text-gray-400 group-hover:text-primary">Followers</span>
+                <Link to="/profile/connections?tab=followers" className="flex flex-col items-center hover:text-green-500 transition-colors group">
+                  <span className="text-2xl font-bold text-green-500 group-hover:scale-110 transition-transform">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
+                  <span className="text-sm text-gray-400 group-hover:text-green-500">Followers</span>
                 </Link>
-                <Link to="/profile/connections?tab=following" className="flex flex-col items-center hover:text-primary transition-colors group">
-                  <span className="text-2xl font-bold text-primary group-hover:scale-110 transition-transform">{freshUserData?.followingCount || user?.following?.length || 0}</span>
-                  <span className="text-sm text-gray-400 group-hover:text-primary">Following</span>
+                <Link to="/profile/connections?tab=following" className="flex flex-col items-center hover:text-green-500 transition-colors group">
+                  <span className="text-2xl font-bold text-green-500 group-hover:scale-110 transition-transform">{freshUserData?.followingCount || user?.following?.length || 0}</span>
+                  <span className="text-sm text-gray-400 group-hover:text-green-500">Following</span>
                 </Link>
               </div>
             </div>

@@ -514,7 +514,7 @@ function ThreadDetail() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Link to="/community" className="inline-flex items-center gap-2 text-gray-200 hover:text-green-500 mb-6">
+            <Link to="/community" className="inline-flex items-center gap-2 text-gray-400 hover:text-green-500 mb-6">
               ← Back to Community
             </Link>
 
@@ -761,7 +761,7 @@ function ThreadDetail() {
                         {isCommentAuthor(comment.author) && editingCommentId !== comment._id && (
                           <div className="ml-auto flex gap-2">
                             <button 
-                              className="p-1 text-gray-400 hover:text-primary transition-colors" 
+                              className="p-1 text-gray-400 hover:text-green-500 transition-colors" 
                               onClick={() => handleEditComment(comment)}
                               title="Edit comment"
                             >
@@ -873,7 +873,7 @@ function ThreadDetail() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Vote Score</span>
-                <span className="text-primary font-bold">{voteScore}</span>
+                <span className="text-green-500 font-bold">{voteScore}</span>
               </div>
             </div>
           </div>
@@ -895,19 +895,19 @@ function ThreadDetail() {
             <h3 className="text-lg font-bold text-white mb-4">Community Guidelines</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
+                <span className="text-green-500 mt-1">•</span>
                 <span>Be respectful and constructive</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
+                <span className="text-green-500 mt-1">•</span>
                 <span>Stay on topic</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
+                <span className="text-green-500 mt-1">•</span>
                 <span>Provide code examples when relevant</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
+                <span className="text-green-500 mt-1">•</span>
                 <span>Mark helpful comments as accepted</span>
               </li>
             </ul>
