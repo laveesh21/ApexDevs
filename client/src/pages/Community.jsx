@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import DiscussionCard from '../components/DiscussionCard';
+import ActiveFilters from '../components/ActiveFilters';
 import { Sidebar, SidebarSection, SortFilter, CategoryFilter, TagFilter } from '../components/sidebar';
 import NewDiscussionForm from '../components/NewDiscussionForm';
 import SearchBar from '../components/SearchBar';
@@ -32,6 +33,11 @@ function Community() {
   const handleSortChange = (sort) => {
     setFilters({ ...filters, sort });
   };
+
+  const handleRemoveTag = (tag) => {
+    setFilters({ ...filters, tags: filters.tags.filter(t => t !== tag) });
+  };
+
   const hasFetched = useRef(false);
 
   // Fetch discussions from API
@@ -190,6 +196,12 @@ function Community() {
         </div>
 
         <div className="max-w-6xl mx-auto py-8 px-4">
+          <ActiveFilters
+            selectedTags={filters.tags}
+            onRemoveTag={handleRemoveTag}
+            label="Filtered by"
+          />
+          
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-white">
@@ -211,28 +223,6 @@ function Community() {
               New Discussion
             </Button>
           </div>
-
-          {filters.tags.length > 0 && (
-            <div className="mb-6 flex items-center gap-2 flex-wrap">
-              <span className="text-gray-400 text-sm font-medium">Filtered by:</span>
-              {filters.tags.map(tag => (
-                <Tag
-                  key={tag}
-                  variant="primary"
-                  size="sm"
-                  onRemove={() => {
-                    setFilters({
-                      ...filters,
-                      tags: filters.tags.filter(t => t !== tag)
-                    });
-                  }}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-          )}
-
           {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>

@@ -1,20 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Tag, AuthorAvatar } from './ui';
+import { Tag, AuthorAvatar, Stat, VoteCounter } from './ui';
+import { getCategoryVariant } from '../constants/categories';
 
 function DiscussionCard({ discussion }) {
-  const getTypeColor = (category) => {
-    const colors = {
-      'General': '#1f6feb',
-      'Questions': '#00be62',
-      'Showcase': '#f97316',
-      'Resources': '#d73a49',
-      'Collaboration': '#a371f7',
-      'Feedback': '#e85d04',
-      'Other': '#6c757d'
-    };
-    return colors[category] || '#00be62';
-  };
-
   // Format time ago
   const formatTimeAgo = (date) => {
     const now = new Date();
@@ -47,30 +35,20 @@ function DiscussionCard({ discussion }) {
       to={`/thread/${discussion._id}`} 
       className="flex gap-4 bg-neutral-800 border border-neutral-600 rounded-xl p-5 hover:border-primary/50 transition-all group"
     >
-      <div className="flex flex-col items-center gap-2 pt-1">
-        <button 
-          className="text-gray-400 hover:text-primary transition-colors" 
-          onClick={(e) => e.preventDefault()}
-        >
-          ▲
-        </button>
-        <span className="text-lg font-semibold text-white">{voteScore}</span>
-        <button 
-          className="text-gray-400 hover:text-red-400 transition-colors" 
-          onClick={(e) => e.preventDefault()}
-        >
-          ▼
-        </button>
-      </div>
+      <VoteCounter
+        score={voteScore}
+        userVote={null}
+        onUpvote={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onDownvote={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        orientation="vertical"
+        size="md"
+      />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-start gap-3 mb-3">
-          <span 
-            className="px-3 py-1 rounded text-xs font-semibold text-white" 
-            style={{ backgroundColor: getTypeColor(discussion.category) }}
-          >
+          <Tag variant={getCategoryVariant(discussion.category)} size="sm">
             {discussion.category}
-          </span>
+          </Tag>
           <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors line-clamp-2 flex-1">
             {discussion.title}
           </h3>
@@ -92,22 +70,39 @@ function DiscussionCard({ discussion }) {
               size="sm"
               clickable={false}
             />
-            <span className="flex items-center gap-1 text-gray-400">
-              <span>💬</span>
-              {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-            </span>
-            <span className="flex items-center gap-1 text-gray-400">
-              <span>👁</span>
-              {discussion.views} views
-            </span>
+            <Stat
+              icon={
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              }
+              value={commentCount}
+              text={commentCount === 1 ? 'comment' : 'comments'}
+            />
+            <Stat
+              icon={
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              }
+              value={discussion.views}
+              text="views"
+            />
             {discussion.updatedAt && new Date(discussion.updatedAt).getTime() !== new Date(discussion.createdAt).getTime() && (
-              <span className="flex items-center gap-1 text-primary text-xs">
-                <span>✏️</span>
-                edited
-              </span>
+              <Stat
+                icon={
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                }
+                text="edited"
+                className="text-primary"
+              />
             )}
           </div>
-          <span className="text-gray-500 text-xs">{formatTimeAgo(discussion.createdAt)}</span>
+          <span className="text-gray-500">{formatTimeAgo(discussion.createdAt)}</span>
         </div>
       </div>
     </Link>

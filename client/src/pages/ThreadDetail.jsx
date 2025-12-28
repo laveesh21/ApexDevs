@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { threadAPI } from '../services/api';
 import Modal from '../components/Modal';
-import { Tag, Button, AuthorAvatar } from '../components/ui';
+import { Tag, Button, AuthorAvatar, VoteCounter } from '../components/ui';
 
 function ThreadDetail() {
   const { id } = useParams();
@@ -514,37 +514,22 @@ function ThreadDetail() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Link to="/community" className="inline-flex items-center gap-2 text-primary hover:text-primary-light mb-6">
+            <Link to="/community" className="inline-flex items-center gap-2 text-gray-200 hover:text-green-500 mb-6">
               ← Back to Community
             </Link>
 
             {/* Main Question/Thread - Combined Header and Content */}
-            <div className="bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden">
-              <div className="flex gap-4 p-6">
+            <div className="bg-neutral-800/50 border border-neutral-600 rounded-xl overflow-hidden">
+              <div className="flex gap-4 p-4">
                 {/* Voting Column */}
-                <div className="flex flex-col items-center gap-2">
-                  <button 
-                    className={`p-2 rounded-lg transition-all ${
-                      voteStatus === 'upvote' 
-                        ? 'bg-primary text-white' 
-                        : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
-                    }`}
-                    onClick={() => handleVote('upvote')}
-                  >
-                    ▲
-                  </button>
-                  <span className="text-xl font-bold text-white">{voteScore}</span>
-                  <button 
-                    className={`p-2 rounded-lg transition-all ${
-                      voteStatus === 'downvote' 
-                        ? 'bg-red-500 text-white' 
-                        : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-red-500'
-                    }`}
-                    onClick={() => handleVote('downvote')}
-                  >
-                    ▼
-                  </button>
-                </div>
+                <VoteCounter
+                  score={voteScore}
+                  userVote={voteStatus}
+                  onUpvote={() => handleVote('upvote')}
+                  onDownvote={() => handleVote('downvote')}
+                  orientation="vertical"
+                  size="lg"
+                />
 
                 {/* Thread Body */}
                 <div className="flex-1 min-w-0">
@@ -563,6 +548,7 @@ function ThreadDetail() {
                             variant="secondary"
                             size="sm"
                             onClick={handleEditClick}
+                            className="!px-6 !py-1"
                           >
                             Edit
                           </Button>
@@ -570,6 +556,7 @@ function ThreadDetail() {
                             variant="danger"
                             size="sm"
                             onClick={handleDelete}
+                            className="!px-6 !py-1"
                           >
                            Delete
                           </Button>
@@ -704,7 +691,7 @@ function ThreadDetail() {
 
                 <div className="flex flex-wrap gap-2 mt-4">
                   {thread.tags.map((tag, index) => (
-                    <Tag key={index} variant="primary" size="md">
+                    <Tag key={index} variant="primary" size="xs">
                       {tag}
                     </Tag>
                   ))}
@@ -713,10 +700,10 @@ function ThreadDetail() {
             )}
 
             {/* Compact Author Info */}
-            <div className="flex items-center gap-2 mt-6 pt-6 border-t border-neutral-600">
+            <div className="flex items-center gap-2 mt-4 border-t border-neutral-600 pt-4">
               <AuthorAvatar
                 author={thread.author}
-                size="md"
+                size="xs"
                 clickable={!!thread.author?._id}
               />
               <span className="text-gray-500">•</span>
@@ -743,39 +730,24 @@ function ThreadDetail() {
               const commentVote = commentVotes[comment._id] || { voteStatus: null, voteScore: 0 };
               
               return (
-                <div key={comment._id} className="bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden">
+                <div key={comment._id} className="bg-neutral-800/50 border border-neutral-600 rounded-xl overflow-hidden">
                   <div className="flex gap-4 p-6">
                     {/* Comment Voting */}
-                    <div className="flex flex-col items-center gap-1">
-                      <button 
-                        className={`p-1 rounded transition-all text-sm ${
-                          commentVote.voteStatus === 'upvote' 
-                            ? 'bg-primary text-white' 
-                            : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-primary'
-                        }`}
-                        onClick={() => handleCommentVote(comment._id, 'upvote')}
-                      >
-                        ▲
-                      </button>
-                      <span className="text-sm font-bold text-white">{commentVote.voteScore}</span>
-                      <button 
-                        className={`p-1 rounded transition-all text-sm ${
-                          commentVote.voteStatus === 'downvote' 
-                            ? 'bg-red-500 text-white' 
-                            : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-red-500'
-                        }`}
-                        onClick={() => handleCommentVote(comment._id, 'downvote')}
-                      >
-                        ▼
-                      </button>
-                    </div>
+                    <VoteCounter
+                      score={commentVote.voteScore}
+                      userVote={commentVote.voteStatus}
+                      onUpvote={() => handleCommentVote(comment._id, 'upvote')}
+                      onDownvote={() => handleCommentVote(comment._id, 'downvote')}
+                      orientation="vertical"
+                      size="md"
+                    />
 
                     <div className="flex-1 min-w-0">
                       {/* Compact Comment Author */}
                       <div className="flex items-center gap-2 mb-3">
                         <AuthorAvatar
                           author={comment.author}
-                          size="md"
+                          size="xs"
                           clickable={!!comment.author?._id}
                         />
                         <span className="text-gray-500">•</span>
@@ -857,11 +829,11 @@ function ThreadDetail() {
         </div>
 
         {/* Add Comment Section */}
-        <div className="mt-6 bg-neutral-800 border border-neutral-600 rounded-xl p-6">
+        <div className="mt-6 bg-neutral-800/50 border border-neutral-600 rounded-xl p-6">
           <h3 className="text-xl font-bold text-white mb-4">Your Comment</h3>
           <form onSubmit={handleSubmitComment}>
             <textarea 
-              className="w-full px-4 py-3 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none" 
+              className="w-full px-4 py-3 bg-neutral-800 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none" 
               placeholder="Write your comment here..."
               rows="6"
               value={newComment}
@@ -884,7 +856,7 @@ function ThreadDetail() {
       {/* Sidebar */}
       <aside className="lg:col-span-1">
         <div className="space-y-6 lg:sticky lg:top-8">
-          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
+          <div className="bg-neutral-800/50 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Thread Stats</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -906,11 +878,11 @@ function ThreadDetail() {
             </div>
           </div>
 
-          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
+          <div className="bg-neutral-800/50 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Related Tags</h3>
             <div className="flex flex-wrap gap-2">
               {thread.tags.map((tag, index) => (
-                <Tag key={index} variant="primary" size="md">
+                <Tag key={index} variant="primary" size="xs">
                   <Link to="/community" className="hover:opacity-80">
                     {tag}
                   </Link>
@@ -919,7 +891,7 @@ function ThreadDetail() {
             </div>
           </div>
 
-          <div className="bg-neutral-800 border border-neutral-600 rounded-xl p-6">
+          <div className="bg-neutral-800/50 border border-neutral-600 rounded-xl p-6">
             <h3 className="text-lg font-bold text-white mb-4">Community Guidelines</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">

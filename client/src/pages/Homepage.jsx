@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ProjectCard from '../components/ProjectCard';
+import ActiveFilters from '../components/ActiveFilters';
 import { Sidebar, SidebarSection, SortFilter, TechStackFilter } from '../components/sidebar';
 import SearchBar from '../components/SearchBar';
 import { projectAPI } from '../services/api';
@@ -87,6 +88,10 @@ function Homepage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleRemoveTech = (tech) => {
+    setSelectedTech(selectedTech.filter(t => t !== tech));
+  };
+
   return (
     <div className="min-h-screen bg-neutral-900 flex">
       {/* Left Sidebar with Filters */}
@@ -139,6 +144,12 @@ function Homepage() {
         </div>
 
         <div className="max-w-6xl mx-auto py-8 px-4">
+          <ActiveFilters
+            selectedTags={selectedTech}
+            onRemoveTag={handleRemoveTech}
+            label="Filtered by"
+          />
+          
           <main className="w-full">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
