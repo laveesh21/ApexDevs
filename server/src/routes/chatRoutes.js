@@ -7,7 +7,8 @@ import {
   getMessages,
   sendMessage,
   markAsRead,
-  deleteConversation
+  deleteConversation,
+  updateOnlineStatus
 } from '../controllers/chatController.js';
 
 // All chat routes require authentication
@@ -30,5 +31,8 @@ router.put('/conversation/:conversationId/read', markAsRead);
 
 // Delete conversation
 router.delete('/conversation/:conversationId', deleteConversation);
+
+// Update online status
+router.put('/status', updateOnlineStatus);
 
 export default router;

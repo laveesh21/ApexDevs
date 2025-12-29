@@ -195,7 +195,7 @@ function About() {
           <div className="flex gap-4 justify-center">
             <a 
               href="/signup" 
-              className="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors"
+              className="px-8 py-3 bg-primary hover:bg-primary/90 border border-primary text-white font-semibold rounded-lg transition-colors"
             >
               Get Started
             </a>

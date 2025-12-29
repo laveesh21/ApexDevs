@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { storage } from '../services/api';
+import { storage, chatAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -35,7 +35,15 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Try to update online status before logging out
+    if (token) {
+      try {
+        await chatAPI.updateOnlineStatus(token, false);
+      } catch (error) {
+        console.error('Failed to update status on logout:', error);
+      }
+    }
     storage.clearAuth();
     setToken(null);
     setUser(null);

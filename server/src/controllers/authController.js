@@ -107,6 +107,11 @@ const login = async (req, res) => {
       });
     }
 
+    // Update online status and last seen
+    user.isOnline = true;
+    user.lastSeen = new Date();
+    await user.save();
+
     res.json({
       success: true,
       data: {

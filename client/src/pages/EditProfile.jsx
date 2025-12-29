@@ -184,316 +184,305 @@ function EditProfile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-900 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-100">Edit Profile</h1>
-          <Link to="/profile" className="text-primary hover:text-primary-light transition-colors flex items-center gap-1">
-            ← Back to Profile
-          </Link>
-        </div>
-
-        {error && <div className="mb-4 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400">{error}</div>}
-        {success && <div className="mb-4 p-4 bg-primary/10 border border-primary/50 rounded-lg text-primary">{success}</div>}
-
-        {/* Avatar Section */}
-        <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-100 mb-4">Profile Picture</h2>
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="relative">
-              <div className="w-32 h-32 rounded-full overflow-hidden bg-neutral-700 border-2 border-neutral-600">
-                {user?.identicon || user?.avatar ? (
-                  <img 
-                    src={
-                      user.avatarPreference === 'custom' && user.avatar 
-                        ? user.avatar 
-                        : user.identicon
-                    } 
-                    alt={user.username}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <svg width="128" height="128" viewBox="0 0 24 24" fill="currentColor" className="text-gray-600">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                  </svg>
-                )}
-                {(uploadingAvatar || deletingAvatar) && (
-                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                )}
-              </div>
+    <div className="min-h-screen bg-neutral-900">
+      {/* Compact Header */}
+      <div className="bg-neutral-800/50 border-b border-neutral-700/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 px-3 py-1.5 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 rounded-lg transition-all text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back
+              </Link>
+              <h1 className="text-2xl font-bold text-white">Edit Profile</h1>
             </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap gap-3 mb-4">
-                <label htmlFor="avatar-upload" className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg cursor-pointer transition-colors">
-                  {user?.avatar ? 'Change Picture' : 'Upload Picture'}
-                </label>
-                <input
-                  type="file"
-                  id="avatar-upload"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  style={{ display: 'none' }}
-                />
-                {user?.avatar && (
-                  <button 
-                    onClick={handleDeleteAvatar} 
-                    className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg transition-colors disabled:opacity-50"
-                    disabled={deletingAvatar}
-                  >
-                    {deletingAvatar ? 'Deleting...' : 'Delete Picture'}
-                  </button>
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={handleCancel} className="px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 rounded-lg transition-all text-sm">
+                Cancel
+              </button>
+              <button 
+                onClick={handleSubmit} 
+                disabled={loading} 
+                className="px-5 py-2 bg-primary hover:bg-primary/90 border border-primary text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Changes
+                  </>
                 )}
-              </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        {/* Alerts */}
+        {error && (
+          <div className="mb-4 px-4 py-2.5 bg-red-500/10 border border-red-500/50 text-red-400 rounded-lg flex items-center gap-2 text-sm">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span>{error}</span>
+          </div>
+        )}
+        {success && (
+          <div className="mb-4 px-4 py-2.5 bg-green-500/10 border border-green-500/50 text-green-400 rounded-lg flex items-center gap-2 text-sm">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>{success}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Column - Avatar & Skills */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Avatar Section */}
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-lg p-5">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Profile Picture</h3>
+              <div className="flex flex-col items-center">
+                <div className="relative group mb-4">
+                  <div className="w-32 h-32 rounded-full overflow-hidden bg-neutral-700 border-2 border-neutral-600 group-hover:border-primary/50 transition-all">
+                    {user?.identicon || user?.avatar ? (
+                      <img 
+                        src={
+                          user.avatarPreference === 'custom' && user.avatar 
+                            ? user.avatar 
+                            : user.identicon
+                        } 
+                        alt={user.username}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <svg width="128" height="128" viewBox="0 0 24 24" fill="currentColor" className="text-gray-600">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                    )}
+                    {(uploadingAvatar || deletingAvatar) && (
+                      <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="w-full space-y-2">
+                  <label htmlFor="avatar-upload" className="w-full px-4 py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-center rounded-lg cursor-pointer transition-all text-sm font-medium flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    {user?.avatar ? 'Change' : 'Upload'}
+                  </label>
+                  <input
+                    type="file"
+                    id="avatar-upload"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                  {user?.avatar && (
+                    <button 
+                      type="button"
+                      onClick={handleDeleteAvatar} 
+                      className="w-full px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg transition-all text-sm font-medium"
+                      disabled={deletingAvatar}
+                    >
+                      {deletingAvatar ? 'Deleting...' : 'Delete'}
+                    </button>
+                  )}
+                </div>
               
-              {/* Avatar Preference Selector */}
+              {/* Avatar Preference */}
               {user?.identicon && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-300 mb-3">Display Preference</h3>
-                  <div className="flex gap-4">
-                    <div 
-                      className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                <div className="mt-4 pt-4 border-t border-neutral-700">
+                  <p className="text-xs text-gray-500 mb-3">Display Preference</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      className={`p-2 border rounded-lg transition-all ${
                         user.avatarPreference === 'identicon' 
                           ? 'border-primary bg-primary/10' 
                           : 'border-neutral-600 hover:border-neutral-500'
                       }`}
                       onClick={async () => {
                         try {
-                          const response = await authAPI.updateProfile(token, { avatarPreference: 'identicon' });
-                          await updateUser({
-                            ...user,
-                            avatarPreference: 'identicon'
-                          });
-                          setSuccess('Avatar preference updated!');
+                          await authAPI.updateProfile(token, { avatarPreference: 'identicon' });
+                          await updateUser({ ...user, avatarPreference: 'identicon' });
+                          setSuccess('Updated');
                           setTimeout(() => setSuccess(''), 2000);
                         } catch (err) {
-                          setError('Failed to update preference');
+                          setError('Failed to update');
                         }
                       }}
                     >
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-2">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-1">
                         <img src={user.identicon} alt="Identicon" className="w-full h-full object-cover" />
                       </div>
-                      <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="avatarPreference"
-                          value="identicon"
-                          checked={user.avatarPreference === 'identicon'}
-                          readOnly
-                          className="text-primary"
-                        />
-                        Identicon
-                      </label>
-                    </div>
-                    
+                      <p className="text-xs text-gray-400">Identicon</p>
+                    </button>
                     {user?.avatar && (
-                      <div 
-                        className={`flex-1 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                      <button
+                        type="button"
+                        className={`p-2 border rounded-lg transition-all ${
                           user.avatarPreference === 'custom' 
                             ? 'border-primary bg-primary/10' 
                             : 'border-neutral-600 hover:border-neutral-500'
                         }`}
                         onClick={async () => {
                           try {
-                            const response = await authAPI.updateProfile(token, { avatarPreference: 'custom' });
-                            await updateUser({
-                              ...user,
-                              avatarPreference: 'custom'
-                            });
-                            setSuccess('Avatar preference updated!');
+                            await authAPI.updateProfile(token, { avatarPreference: 'custom' });
+                            await updateUser({ ...user, avatarPreference: 'custom' });
+                            setSuccess('Updated');
                             setTimeout(() => setSuccess(''), 2000);
                           } catch (err) {
-                            setError('Failed to update preference');
+                            setError('Failed to update');
                           }
                         }}
                       >
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-2">
-                          <img src={user.avatar} alt="Custom Avatar" className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-neutral-700 mx-auto mb-1">
+                          <img src={user.avatar} alt="Custom" className="w-full h-full object-cover" />
                         </div>
-                        <label className="flex items-center justify-center gap-2 text-sm text-gray-300 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="avatarPreference"
-                            value="custom"
-                            checked={user.avatarPreference === 'custom'}
-                            readOnly
-                            className="text-primary"
-                          />
-                          Custom Picture
-                        </label>
-                      </div>
+                        <p className="text-xs text-gray-400">Custom</p>
+                      </button>
                     )}
                   </div>
                 </div>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Profile Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-100 mb-4">Basic Information</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-gray-300 mb-1.5">Bio</label>
-                <textarea
-                  id="bio"
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleChange}
-                  rows="20"
-                  placeholder="Tell us about yourself..."
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="briefBio" className="block text-sm font-medium text-gray-300 mb-1.5">Brief Bio</label>
-                <textarea
-                  id="briefBio"
-                  name="briefBio"
-                  value={formData.briefBio}
-                  onChange={handleChange}
-                  rows="2"
-                  maxLength={150}
-                  placeholder="A short summary (max 150 characters)"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-y"
-                />
-                <small className="text-xs text-gray-500 mt-1 block">{formData.briefBio.length}/150</small>
-              </div>
-
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1.5">Location</label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  placeholder="City, Country"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="website" className="block text-sm font-medium text-gray-300 mb-1.5">Website</label>
-                <input
-                  type="url"
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleChange}
-                  placeholder="https://yourwebsite.com"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
             </div>
           </div>
 
-          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-100 mb-4">Social Links</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="github" className="block text-sm font-medium text-gray-300 mb-1.5">GitHub</label>
-                <input
-                  type="text"
-                  id="github"
-                  name="github"
-                  value={formData.github}
-                  onChange={handleChange}
-                  placeholder="username"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
+          {/* Right Column - Form Fields */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Basic Information */}
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-lg p-5">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label htmlFor="username" className="block text-xs font-medium text-gray-400 mb-1.5">Username*</label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="twitter" className="block text-sm font-medium text-gray-300 mb-1.5">Twitter</label>
-                <input
-                  type="text"
-                  id="twitter"
-                  name="twitter"
-                  value={formData.twitter}
-                  onChange={handleChange}
-                  placeholder="username"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
+                <div className="md:col-span-2">
+                  <label htmlFor="briefBio" className="block text-xs font-medium text-gray-400 mb-1.5">Brief Bio ({formData.briefBio.length}/150)</label>
+                  <textarea
+                    id="briefBio"
+                    name="briefBio"
+                    value={formData.briefBio}
+                    onChange={handleChange}
+                    rows="2"
+                    maxLength={150}
+                    placeholder="A short summary"
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all resize-none"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="linkedin" className="block text-sm font-medium text-gray-300 mb-1.5">LinkedIn</label>
-                <input
-                  type="text"
-                  id="linkedin"
-                  name="linkedin"
-                  value={formData.linkedin}
-                  onChange={handleChange}
-                  placeholder="username"
-                  className="w-full bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                />
+                <div>
+                  <label htmlFor="location" className="block text-xs font-medium text-gray-400 mb-1.5">Location</label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    placeholder="City, Country"
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="website" className="block text-xs font-medium text-gray-400 mb-1.5">Website</label>
+                  <input
+                    type="url"
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    placeholder="https://..."
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label htmlFor="bio" className="block text-xs font-medium text-gray-400 mb-1.5">Full Bio</label>
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    rows="8"
+                    placeholder="Tell us about yourself..."
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all resize-y"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-neutral-800 border border-neutral-600 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-100 mb-4">Skills</h2>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                placeholder="Add a skill"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddSkill(e);
-                  }
-                }}
-                className="flex-1 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              />
-              <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors">
-                Add
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.skills.map((skill, index) => (
-                <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-neutral-700 text-gray-300 rounded-md border border-neutral-600">
-                  {skill}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSkill(skill)}
-                    className="text-gray-500 hover:text-red-400 transition-colors"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
+            {/* Social Links */}
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-lg p-5">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Social Links</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="github" className="block text-xs font-medium text-gray-400 mb-1.5">GitHub</label>
+                  <input
+                    type="text"
+                    id="github"
+                    name="github"
+                    value={formData.github}
+                    onChange={handleChange}
+                    placeholder="username"
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
 
-          <div className="flex items-center justify-end gap-3">
-            <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-gray-300 rounded-lg transition-colors">
-              Cancel
-            </button>
-            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              {loading ? 'Saving...' : 'Save Changes'}
-            </button>
+                <div>
+                  <label htmlFor="twitter" className="block text-xs font-medium text-gray-400 mb-1.5">Twitter</label>
+                  <input
+                    type="text"
+                    id="twitter"
+                    name="twitter"
+                    value={formData.twitter}
+                    onChange={handleChange}
+                    placeholder="username"
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="linkedin" className="block text-xs font-medium text-gray-400 mb-1.5">LinkedIn</label>
+                  <input
+                    type="text"
+                    id="linkedin"
+                    name="linkedin"
+                    value={formData.linkedin}
+                    onChange={handleChange}
+                    placeholder="username"
+                    className="w-full bg-neutral-700/50 border border-neutral-600 text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>

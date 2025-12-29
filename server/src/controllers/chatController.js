@@ -11,7 +11,7 @@ const getConversations = async (req, res) => {
     const conversations = await Conversation.find({
       participants: req.user._id
     })
-      .populate('participants', 'username avatar identicon avatarPreference')
+      .populate('participants', 'username avatar identicon avatarPreference isOnline lastSeen')
       .populate({
         path: 'lastMessage',
         select: 'content sender createdAt'
@@ -100,7 +100,7 @@ const getOrCreateConversation = async (req, res) => {
     let conversation = await Conversation.findOne({
       participants: { $all: [req.user._id, userObjectId] }
     })
-      .populate('participants', 'username avatar identicon avatarPreference')
+      .populate('participants', 'username avatar identicon avatarPreference isOnline lastSeen')
       .populate({
         path: 'lastMessage',
         select: 'content sender createdAt'
@@ -157,7 +157,7 @@ const getOrCreateConversation = async (req, res) => {
           ])
         });
 
-        await conversation.populate('participants', 'username avatar identicon avatarPreference');
+        await conversation.populate('participants', 'username avatar identicon avatarPreference isOnline lastSeen');
       } catch (createError) {
         // Handle race condition: another request created the conversation
         if (createError.code === 11000) {
@@ -165,7 +165,7 @@ const getOrCreateConversation = async (req, res) => {
           conversation = await Conversation.findOne({
             participants: { $all: [req.user._id, userObjectId] }
           })
-            .populate('participants', 'username avatar identicon avatarPreference')
+            .populate('participants', 'username avatar identicon avatarPreference isOnline lastSeen')
             .populate({
               path: 'lastMessage',
               select: 'content sender createdAt'
@@ -478,11 +478,38 @@ const deleteConversation = async (req, res) => {
   }
 };
 
+// @desc    Update user's online status
+// @route   PUT /api/chat/status
+// @access  Private
+const updateOnlineStatus = async (req, res) => {
+  try {
+    const { isOnline } = req.body;
+    
+    await User.findByIdAndUpdate(req.user._id, {
+      isOnline,
+      lastSeen: new Date()
+    });
+
+    res.json({
+      success: true,
+      message: 'Status updated'
+    });
+  } catch (error) {
+    console.error('Update online status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 export {
   getConversations,
   getOrCreateConversation,
   getMessages,
   sendMessage,
   markAsRead,
-  deleteConversation
+  deleteConversation,
+  updateOnlineStatus
 };

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -19,6 +19,8 @@ import Settings from './pages/Settings'
 
 function AppContent() {
   const { loading } = useAuth();
+  const location = useLocation();
+  const hideFooter = location.pathname.startsWith('/chat');
 
   if (loading) {
     return (
@@ -48,7 +50,7 @@ function AppContent() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/:userId" element={<Chat />} />
       </Routes>
-      <Footer />
+      {!hideFooter && <Footer />}
     </div>
   );
 }

@@ -161,7 +161,7 @@ function ReviewSection({
               Cancel
             </button>
             <button
-              className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-primary hover:bg-primary/90 border border-primary text-white font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => onReviewSubmit(reviewFormData.rating)}
               disabled={!reviewFormData.rating}
             >

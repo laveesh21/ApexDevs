@@ -81,26 +81,33 @@ function NewDiscussionForm({ onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-neutral-800 border border-neutral-600 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={(e) => e.stopPropagation()}>
-        <div className="sticky top-0 bg-neutral-800 border-b border-neutral-600 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-100">Start a New Discussion</h2>
-          <button className="text-gray-400 hover:text-gray-100 text-3xl leading-none transition-colors" onClick={onClose}>✕</button>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-neutral-800/95 border border-neutral-700 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scale-up shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 bg-neutral-800 border-b border-neutral-700 px-6 py-4 flex justify-between items-center backdrop-blur-sm">
+          <div>
+            <h2 className="text-xl font-bold text-white">Start a New Discussion</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Ask questions, share knowledge, or showcase your work</p>
+          </div>
+          <button className="text-gray-500 hover:text-white transition-colors p-2" onClick={onClose}>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[calc(90vh-80px)]">
           {/* Type Selection */}
           <div>
-            <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-3">Discussion Type *</label>
-            <div className="flex flex-wrap gap-2">
+            <label htmlFor="type" className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Discussion Type *</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {discussionTypes.map(type => (
                 <button
                   key={type}
                   type="button"
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     formData.type === type
-                      ? 'bg-primary text-white'
-                      : 'bg-neutral-700 border border-neutral-600 text-gray-300 hover:bg-neutral-600 hover:border-primary/50'
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                      : 'bg-neutral-700/50 border border-neutral-600 text-gray-400 hover:bg-neutral-700 hover:border-neutral-500'
                   }`}
                   onClick={() => setFormData({ ...formData, type })}
                 >
@@ -112,12 +119,12 @@ function NewDiscussionForm({ onClose, onSubmit }) {
 
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Title *</label>
+            <label htmlFor="title" className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Title *</label>
             <input
               type="text"
               id="title"
               name="title"
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white text-sm rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors placeholder-gray-500"
               placeholder="What's your question or topic?"
               value={formData.title}
               onChange={handleChange}
@@ -129,55 +136,62 @@ function NewDiscussionForm({ onClose, onSubmit }) {
 
           {/* Content */}
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+            <label htmlFor="content" className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Description *</label>
             <textarea
               id="content"
               name="content"
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-              placeholder="Provide details about your discussion. You can use Markdown for formatting."
+              className="w-full px-4 py-3 bg-neutral-700/50 border border-neutral-600 text-white text-sm rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors placeholder-gray-500 resize-none"
+              placeholder="Provide details about your discussion. Include code examples, context, or any relevant information..."
               value={formData.content}
               onChange={handleChange}
               required
-              rows="10"
+              rows="12"
             />
             <div className="flex justify-between items-center mt-2 text-xs">
-              <span className="text-gray-500">💡 Tip: Include code examples and context</span>
+              <span className="text-gray-500 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                You can use Markdown for formatting
+              </span>
               <span className="text-gray-500">{formData.content.length} characters</span>
             </div>
           </div>
 
           {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Tags (Max 5)</label>
+          <div className="border-t border-neutral-700/50 pt-5">
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tags (Max 5)</label>
             
             {formData.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {formData.tags.map((tag, index) => (
-                  <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary rounded-md text-sm">
+                  <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary rounded-lg text-sm font-medium">
                     {tag}
                     <button
                       type="button"
-                      className="text-primary hover:text-red-400 font-bold transition-colors"
+                      className="text-primary hover:text-red-400 transition-colors"
                       onClick={() => handleRemoveTag(tag)}
                     >
-                      ✕
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </span>
                 ))}
               </div>
             )}
 
-            <div className="mb-3">
-              <p className="text-xs text-gray-400 mb-2">Popular Tags:</p>
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">Popular Tags:</p>
               <div className="flex flex-wrap gap-2">
-                {popularTags.map(tag => (
+                {popularTags.slice(0, 10).map(tag => (
                   <button
                     key={tag}
                     type="button"
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       formData.tags.includes(tag)
-                        ? 'bg-primary/30 border border-primary text-primary'
-                        : 'bg-neutral-700 border border-neutral-600 text-gray-400 hover:bg-neutral-600 hover:border-primary/50'
+                        ? 'bg-primary/20 border border-primary text-primary'
+                        : 'bg-neutral-700/50 border border-neutral-600 text-gray-400 hover:bg-neutral-700 hover:border-primary/30'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={() => handleAddTag(tag)}
                     disabled={formData.tags.includes(tag) || formData.tags.length >= 5}
@@ -191,7 +205,7 @@ function NewDiscussionForm({ onClose, onSubmit }) {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-gray-100 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50"
+                className="flex-1 px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white text-sm rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors placeholder-gray-500 disabled:opacity-50"
                 placeholder="Or add a custom tag..."
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -205,25 +219,31 @@ function NewDiscussionForm({ onClose, onSubmit }) {
               />
               <button
                 type="button"
-                className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2.5 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 onClick={handleAddCustomTag}
                 disabled={!tagInput.trim() || formData.tags.length >= 5}
               >
-                Add Tag
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add
               </button>
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-neutral-600">
-            <button type="button" className="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 font-medium rounded-lg transition-colors" onClick={onClose}>
+          <div className="flex justify-end gap-3 pt-6 border-t border-neutral-700 mt-2">
+            <button type="button" className="px-5 py-2.5 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 text-sm font-medium rounded-lg transition-colors" onClick={onClose}>
               Cancel
             </button>
             <button 
               type="submit" 
-              className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+              className="px-5 py-2.5 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               disabled={!formData.title.trim() || !formData.content.trim()}
             >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
               Post Discussion
             </button>
           </div>

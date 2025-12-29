@@ -32,6 +32,25 @@ function Chat() {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [headerMenuOpen]);
 
+  // Update online status on mount and before unmount
+  useEffect(() => {
+    const updateStatus = async (isOnline) => {
+      try {
+        await chatAPI.updateOnlineStatus(token, isOnline);
+      } catch (error) {
+        console.error('Failed to update status:', error);
+      }
+    };
+
+    // Set user as online
+    updateStatus(true);
+
+    // Set user as offline on unmount
+    return () => {
+      updateStatus(false);
+    };
+  }, [token]);
+
   // Fetch conversations on mount
   useEffect(() => {
     fetchConversations();
@@ -301,91 +320,130 @@ function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900">
-      <div className="h-screen flex">
-        {/* Conversations List */}
-        <div className="w-80 bg-neutral-800 border-r border-neutral-600 flex flex-col">
-          <div className="p-6 border-b border-neutral-600">
-            <h2 className="text-2xl font-bold text-white">Messages</h2>
+    <div className="bg-neutral-900 flex overflow-hidden" style={{ height: 'calc(100vh - 48px)' }}>
+      {/* Conversations Sidebar */}
+      <div className="w-full md:w-60 bg-neutral-800 border-r border-neutral-700 flex flex-col">
+        {/* Sidebar Header */}
+        <div className="px-4 py-3 border-b border-neutral-700 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-white flex items-center gap-2">
+            <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+            Direct Messages
+          </h2>
+          <div className="relative">
+            <img 
+              src={getSelectedAvatar(user)} 
+              alt={user?.username} 
+              className="w-8 h-8 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+            />
+            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-neutral-800"></div>
           </div>
-          
-          <div className="flex-1 overflow-y-auto">
-            {conversations.length === 0 ? (
-              <div className="p-6 text-center">
-                <p className="text-gray-400 mb-2">No conversations yet</p>
-                <p className="text-gray-500 text-sm">Visit a user's profile to start chatting!</p>
+        </div>
+        
+        {/* Conversations List */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-600 scrollbar-track-transparent">
+          {conversations.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full px-4 text-center">
+              <div className="w-14 h-14 bg-neutral-700/50 rounded-full flex items-center justify-center mb-3">
+                <svg className="w-7 h-7 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
               </div>
-            ) : (
-              <div>
-                {conversations.map((conversation) => (
-                  <div
-                    key={conversation._id}
-                    className={`p-4 border-b border-neutral-600 cursor-pointer hover:bg-neutral-700 transition-colors ${
-                      selectedConversation?._id === conversation._id ? 'bg-neutral-700' : ''
-                    }`}
-                    onClick={() => handleSelectConversation(conversation)}
-                  >
-                    <div className="flex gap-3">
+              <p className="text-gray-400 font-medium text-sm mb-1">No conversations</p>
+              <p className="text-gray-500 text-xs">Visit a profile to start chatting</p>
+            </div>
+          ) : (
+            <div className="py-2">
+              {conversations.map((conversation) => (
+                <div
+                  key={conversation._id}
+                  className={`mx-2 mb-0.5 px-2 py-1.5 rounded cursor-pointer transition-all ${
+                    selectedConversation?._id === conversation._id 
+                      ? 'bg-neutral-700' 
+                      : 'hover:bg-neutral-700/50'
+                  }`}
+                  onClick={() => handleSelectConversation(conversation)}
+                >
+                  <div className="flex gap-3 items-center">
+                    <div className="relative flex-shrink-0">
                       <img 
                         src={getSelectedAvatar(conversation.participant)} 
                         alt={conversation.participant?.username} 
-                        className="w-12 h-12 rounded-full border-2 border-neutral-600 object-cover"
+                        className="w-8 h-8 rounded-full object-cover"
                       />
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-white font-medium truncate">{conversation.participant?.username}</span>
-                          <span className="text-gray-500 text-xs">{formatTime(conversation.lastMessageAt)}</span>
-                        </div>
-                        
+                      {conversation.participant?.isOnline && (
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-neutral-800"></div>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-white font-medium truncate text-sm">{conversation.participant?.username}</span>
                         {conversation.lastMessage && (
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-gray-400 text-sm truncate">
-                              {conversation.lastMessage.content}
-                            </span>
-                            {conversation.unreadCount > 0 && (
-                              <span className="px-2 py-0.5 bg-primary text-white text-xs font-bold rounded-full">
-                                {conversation.unreadCount}
-                              </span>
-                            )}
-                          </div>
+                          <span className="text-gray-500 text-[10px] flex-shrink-0">{formatTime(conversation.lastMessageAt)}</span>
                         )}
                       </div>
+                      
+                      {conversation.lastMessage && (
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-gray-400 text-xs truncate leading-tight">
+                            {conversation.lastMessage.content}
+                          </span>
+                          {conversation.unreadCount > 0 && (
+                            <span className="px-1.5 py-0.5 bg-primary text-white text-[10px] font-bold rounded-full min-w-[18px] text-center flex-shrink-0">
+                              {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+      </div>
 
-      {/* Chat Window */}
-      <div className="flex-1 flex flex-col bg-neutral-900">
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col bg-neutral-900 relative">
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 bg-neutral-800 border-b border-neutral-600 flex justify-between items-center">
+            <div className="px-4 h-12 border-b border-neutral-700 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <img 
-                  src={getSelectedAvatar(selectedConversation.participant)} 
-                  alt={selectedConversation.participant?.username} 
-                  className="w-10 h-10 rounded-full border-2 border-neutral-600 object-cover"
-                />
-                <Link 
-                  to={`/user/${selectedConversation.participant?._id}`}
-                  className="text-white font-medium hover:text-primary transition-colors"
-                >
-                  {selectedConversation.participant?.username}
-                </Link>
+                <div className="relative flex-shrink-0">
+                  <img 
+                    src={getSelectedAvatar(selectedConversation.participant)} 
+                    alt={selectedConversation.participant?.username} 
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  {selectedConversation.participant?.isOnline && (
+                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-neutral-900"></div>
+                  )}
+                </div>
+                <div>
+                  <Link 
+                    to={`/user/${selectedConversation.participant?._id}`}
+                    className="text-white font-semibold hover:text-primary transition-all text-sm block"
+                  >
+                    {selectedConversation.participant?.username}
+                  </Link>
+                  {selectedConversation.participant?.isOnline ? (
+                    <span className="text-xs text-green-400">Online</span>
+                  ) : (
+                    <span className="text-xs text-gray-500">Offline</span>
+                  )}
+                </div>
               </div>
 
               <div className="relative">
                 <button
-                  className="p-2 text-gray-400 hover:text-white hover:bg-neutral-700 rounded-lg transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-white hover:bg-neutral-700/50 rounded transition-all"
                   onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((s) => !s); }}
                   aria-label="Open chat menu"
                 >
-                  {/* three dots icon */}
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="5" cy="12" r="2" fill="currentColor" />
                     <circle cx="12" cy="12" r="2" fill="currentColor" />
@@ -395,19 +453,18 @@ function Chat() {
 
                 {headerMenuOpen && (
                   <>
-                    {/* Backdrop to block interaction and close on click */}
                     <div 
                       className="fixed inset-0 z-40" 
                       onClick={() => setHeaderMenuOpen(false)}
                     />
                     
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-neutral-800 border border-neutral-600 rounded-xl shadow-xl z-50" onClick={(e) => e.stopPropagation()}>
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-neutral-800 border border-neutral-700 rounded-lg shadow-2xl z-50 overflow-hidden py-2" onClick={(e) => e.stopPropagation()}>
                       <Link
                         to={`/user/${selectedConversation.participant?._id}`}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors rounded-t-xl"
+                        className="flex items-center gap-3 px-2 py-1.5 mx-2 text-gray-300 hover:bg-primary hover:text-white rounded transition-all text-sm"
                         onClick={() => setHeaderMenuOpen(false)}
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="12" cy="8" r="4"/>
                           <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
                         </svg>
@@ -415,25 +472,27 @@ function Chat() {
                       </Link>
                       
                       <button
-                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-neutral-700 hover:text-white transition-colors disabled:opacity-50"
+                        className="w-full flex items-center gap-3 px-2 py-1.5 mx-2 text-gray-300 hover:bg-primary hover:text-white rounded transition-all disabled:opacity-50 text-sm"
                         onClick={handleBlockToggle}
                         disabled={blockLoading}
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="12" cy="12" r="10"/>
                           <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" strokeLinecap="round"/>
                         </svg>
                         {blockLoading ? 'Loading...' : isBlocked ? 'Unblock User' : 'Block User'}
                       </button>
                       
+                      <div className="h-px bg-neutral-700 my-2 mx-2"></div>
+                      
                       <button
-                        className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors rounded-b-xl"
+                        className="w-full flex items-center gap-3 px-2 py-1.5 mx-2 text-red-400 hover:bg-red-500 hover:text-white rounded transition-all text-sm"
                         onClick={() => {
                           setHeaderMenuOpen(false);
                           handleDeleteConversation(selectedConversation._id);
                         }}
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M3 6h18" strokeLinecap="round" strokeLinejoin="round"/>
                           <path d="M8 6v14a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" strokeLinecap="round" strokeLinejoin="round"/>
                           <path d="M10 11v6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -448,77 +507,117 @@ function Chat() {
               </div>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-gray-400">No messages yet. Start the conversation!</p>
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-neutral-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                      </svg>
+                    </div>
+                    <p className="text-gray-400 font-semibold text-sm">No messages yet</p>
+                    <p className="text-gray-500 text-xs mt-1">Start the conversation!</p>
+                  </div>
                 </div>
               ) : (
-                messages.map((message) => (
-                  <div
-                    key={message._id}
-                    className={`flex ${
-                      (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                        ? 'justify-end' 
-                        : 'justify-start'
-                    }`}
-                  >
-                    <div className={`max-w-md rounded-xl px-4 py-2 ${
-                      (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                        ? 'bg-primary text-white'
-                        : 'bg-neutral-800 border border-neutral-600 text-white'
-                    }`}>
-                      <p className="break-words text-inherit">{message.content}</p>
-                      <span className={`block text-xs mt-1 ${
-                        (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString()
-                          ? 'text-neutral-900/70'
-                          : 'text-gray-500'
-                      }`}>{formatTime(message.createdAt)}</span>
+                messages.map((message, index) => {
+                  const isOwnMessage = (message.sender._id || message.sender.id || message.sender).toString() === (user._id || user.id).toString();
+                  const prevMessage = messages[index - 1];
+                  const isSameAuthor = prevMessage && 
+                    (prevMessage.sender._id || prevMessage.sender.id || prevMessage.sender).toString() === 
+                    (message.sender._id || message.sender.id || message.sender).toString();
+                  const showAvatar = !isSameAuthor;
+                  
+                  return (
+                    <div
+                      key={message._id}
+                      className={`group flex items-start gap-3 px-4 py-0.5 hover:bg-neutral-800/50 -mx-4 ${showAvatar ? 'mt-4' : 'mt-0'}`}
+                    >
+                      <div className="w-10 flex-shrink-0">
+                        {showAvatar && !isOwnMessage && (
+                          <img 
+                            src={getSelectedAvatar(selectedConversation.participant)} 
+                            alt={selectedConversation.participant?.username}
+                            className="w-10 h-10 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                          />
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        {showAvatar && (
+                          <div className="flex items-baseline gap-2 mb-1">
+                            <span className={`font-medium text-sm ${
+                              isOwnMessage ? 'text-primary' : 'text-white'
+                            }`}>
+                              {isOwnMessage ? 'You' : selectedConversation.participant?.username}
+                            </span>
+                            <span className="text-gray-500 text-[11px]">
+                              {formatTime(message.createdAt)}
+                            </span>
+                          </div>
+                        )}
+                        <p className="text-gray-200 text-[15px] break-words whitespace-pre-wrap leading-snug">{message.content}</p>
+                      </div>
+                      
+                      <span className="opacity-0 group-hover:opacity-100 text-gray-500 text-[10px] transition-opacity flex-shrink-0">
+                        {new Date(message.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                      </span>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input */}
-            <form className="p-4 bg-neutral-800 border-t border-neutral-600 flex gap-3" onSubmit={handleSendMessage}>
-              <textarea
-                rows="1"
-                className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 text-white rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={sending}
-                maxLength={2000}
-              />
-              <button
-                type="submit"
-                className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                  sending || !newMessage.trim()
-                    ? 'bg-neutral-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-primary text-white hover:bg-primary-light'
-                }`}
-                disabled={sending || !newMessage.trim()}
-              >
-                {sending ? '...' : 'Send'}
-              </button>
+            <form className="px-4 pb-6" onSubmit={handleSendMessage}>
+              <div className="flex items-center gap-3 bg-neutral-800 rounded-lg px-4 py-2.5 border border-neutral-700 focus-within:border-primary/50 transition-all">
+                <textarea
+                  rows="1"
+                  className="flex-1 bg-transparent text-white text-sm outline-none resize-none max-h-32 placeholder-gray-500"
+                  placeholder={`Message @${selectedConversation.participant?.username}`}
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={sending}
+                  maxLength={2000}
+                />
+                <button
+                  type="submit"
+                  className={`flex-shrink-0 transition-all ${
+                    sending || !newMessage.trim()
+                      ? 'text-gray-600 cursor-not-allowed'
+                      : 'text-primary hover:text-primary/80'
+                  }`}
+                  disabled={sending || !newMessage.trim()}
+                  aria-label="Send message"
+                >
+                  {sending ? (
+                    <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </form>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <svg className="text-gray-600 mb-4" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <h3 className="text-xl font-bold text-white mb-2">Select a conversation</h3>
-            <p className="text-gray-400">Choose a conversation from the list to start chatting</p>
+          <div className="flex flex-col items-center justify-center h-full text-center px-6">
+            <div className="w-20 h-20 bg-neutral-800/50 rounded-full flex items-center justify-center mb-6">
+              <svg className="w-10 h-10 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </div>
+            <h3 className="text-base font-semibold text-white mb-2">No conversation selected</h3>
+            <p className="text-gray-400 text-sm max-w-sm">Choose a conversation from the sidebar to start messaging</p>
           </div>
         )}
       </div>
     </div>
-  </div>
   );
 }
 

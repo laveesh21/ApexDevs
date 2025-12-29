@@ -581,5 +581,18 @@ export const chatAPI = {
     });
     return handleResponse(response);
   },
+
+  // Update online status
+  updateOnlineStatus: async (token, isOnline) => {
+    const response = await fetch(`${API_URL}/chat/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ isOnline }),
+    });
+    return handleResponse(response);
+  },
 };
 

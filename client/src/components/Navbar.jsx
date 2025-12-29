@@ -74,7 +74,7 @@ function Navbar() {
                 <li>
                   <Link 
                     to="/signup" 
-                    className="px-3 py-1.5 text-sm bg-primary hover:bg-primary-light text-white font-medium rounded-lg transition-colors"
+                    className="px-3 py-1.5 text-sm bg-primary hover:bg-primary-light border border-primary text-white font-medium rounded-lg transition-colors"
                   >
                     Sign Up
                   </Link>

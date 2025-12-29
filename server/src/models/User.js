@@ -115,6 +115,14 @@ const userSchema = new mongoose.Schema({
   allowMessages: {
     type: Boolean,
     default: true
+  },
+  lastSeen: {
+    type: Date,
+    default: Date.now
+  },
+  isOnline: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

@@ -181,7 +181,7 @@ function PublicProfile() {
         {currentUser && currentUser._id === userId && searchParams.get('preview') === 'true' && (
           <div className="mb-6 p-4 bg-primary/10 border border-primary/50 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="text-primary font-medium">👁️ Preview Mode - This is how your profile appears to others</span>
-            <Link to="/profile" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-medium">
+            <Link to="/profile" className="px-4 py-2 bg-primary text-white border border-primary rounded-lg hover:bg-primary-light transition-colors font-medium">
               Back to My Profile
             </Link>
           </div>
