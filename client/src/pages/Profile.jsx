@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI, projectAPI, threadAPI } from '../services/api';
@@ -40,7 +40,7 @@ function Profile() {
 
   const [editForm, setEditForm] = useState(userInfo);
 
-  const fetchUserProjects = useCallback(async () => {
+  const fetchUserProjects = async () => {
     const userId = user?._id || user?.id;
     if (!userId) {
       setProjectsLoading(false);
@@ -58,9 +58,9 @@ function Profile() {
     } finally {
       setProjectsLoading(false);
     }
-  }, [user?._id, user?.id]);
+  };
 
-  const fetchUserThreads = useCallback(async () => {
+  const fetchUserThreads = async () => {
     const userId = user?._id || user?.id;
     if (!userId) {
       setThreadsLoading(false);
@@ -77,9 +77,9 @@ function Profile() {
     } finally {
       setThreadsLoading(false);
     }
-  }, [user?._id, user?.id]);
+  };
 
-  const fetchFreshUserData = useCallback(async () => {
+  const fetchFreshUserData = async () => {
     const userId = user?._id || user?.id;
     if (!userId || !token) return;
     
@@ -89,17 +89,10 @@ function Profile() {
     } catch (err) {
       console.error('Failed to fetch fresh user data:', err);
     }
-  }, [user?._id, user?.id, token]);
+  };
 
+  // Initialize user info when user data is available
   useEffect(() => {
-    // Wait for auth to finish loading before redirecting
-    if (authLoading) return;
-    
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-
     if (user) {
       const userData = {
         username: user.username || '',
@@ -114,13 +107,27 @@ function Profile() {
       };
       setUserInfo(userData);
       setEditForm(userData);
-      
-      // Fetch user's projects and threads
+    }
+  }, [user]);
+
+  // Handle authentication redirect
+  useEffect(() => {
+    // Wait for auth to finish loading before redirecting
+    if (authLoading) return;
+    
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate, authLoading]);
+
+  // Fetch data once when user is available
+  useEffect(() => {
+    if (user && token) {
       fetchUserProjects();
       fetchUserThreads();
       fetchFreshUserData();
     }
-  }, [user, isAuthenticated, navigate, authLoading, fetchUserProjects, fetchUserThreads, fetchFreshUserData]);
+  }, [user?._id, user?.id, token]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -545,15 +552,15 @@ function Profile() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center py-2">
                   <span className="text-sm text-gray-400">Projects</span>
-                  <span className="text-lg font-bold text-primary">{userProjects.length}</span>
+                  <span className="text-lg font-bold text-gray-400">{userProjects.length}</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
                   <span className="text-sm text-gray-400">Threads</span>
-                  <span className="text-lg font-bold text-primary">{userThreads.length}</span>
+                  <span className="text-lg font-bold text-gray-400">{userThreads.length}</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
                   <span className="text-sm text-gray-400">Reputation</span>
-                  <span className="text-lg font-bold text-primary">{user?.reputation || 0}</span>
+                  <span className="text-lg font-bold text-gray-400">{user?.reputation || 0}</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
                   <span className="text-sm text-gray-400">Joined</span>
