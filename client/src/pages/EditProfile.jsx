@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import Modal from '../components/Modal';
+import Button from '../components/ui/Button';
 
 function EditProfile() {
   const { user, token, updateUser } = useAuth();
@@ -202,28 +203,28 @@ function EditProfile() {
               <h1 className="text-2xl font-bold text-white">Edit Profile</h1>
             </div>
             <div className="flex items-center gap-3">
-              <button type="button" onClick={handleCancel} className="px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 rounded-lg transition-all text-sm">
-                Cancel
-              </button>
-              <button 
-                onClick={handleSubmit} 
-                disabled={loading} 
-                className="px-5 py-2 bg-primary hover:bg-primary/90 border border-primary text-white rounded-lg transition-all disabled:opacity-50 text-sm font-medium flex items-center gap-2"
+              <Button
+                type="button"
+                onClick={handleCancel}
+                variant="secondary"
+                size="md"
               >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Save Changes
-                  </>
-                )}
-              </button>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                loading={loading}
+                variant="primary"
+                size="md"
+                icon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                }
+              >
+                Save Changes
+              </Button>
             </div>
           </div>
         </div>

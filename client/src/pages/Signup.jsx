@@ -159,7 +159,7 @@ function Signup() {
         </form>
 
         <p className="text-center text-gray-400 text-sm mt-6">
-          Already have an account? <Link to="/login" className="text-primary hover:text-primary-light transition-colors font-medium">Login</Link>
+          Already have an account? <Link to="/login" className="text-gray-200 hover:text-gray-200-light transition-colors font-medium">Login</Link>
         </p>
       </div>
     </div>

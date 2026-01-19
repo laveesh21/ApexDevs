@@ -24,7 +24,7 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
     <div className="relative bg-neutral-800 border border-neutral-600 rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
       {showEditButton && isAuthor && (
         <button 
-          className="absolute top-3 right-3 z-10 p-2 bg-neutral-900/80 text-primary rounded-lg hover:bg-neutral-900 hover:text-primary-light transition-colors" 
+          className="absolute top-3 right-3 z-10 p-2.5 bg-neutral-800 hover:bg-neutral-700 text-white border border-neutral-600 hover:border-neutral-500 rounded-lg shadow-lg hover:shadow-xl transition-all" 
           onClick={() => onEdit(project)} 
           title="Edit Project"
         >

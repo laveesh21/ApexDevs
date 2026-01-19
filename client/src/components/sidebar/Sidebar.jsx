@@ -12,7 +12,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, title = "Sidebar", children })
       {isCollapsed ? (
         <div className="h-full flex items-start justify-center pt-4">
           <button 
-            className="p-2 text-primary hover:text-primary-light transition-colors" 
+            className="p-2 text-gray-200 hover:text-gray-200-light transition-colors" 
             onClick={onToggleCollapse} 
             title="Show Sidebar"
             aria-label="Expand sidebar"
@@ -30,7 +30,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, title = "Sidebar", children })
       ) : (
         <div className="h-full overflow-y-auto flex flex-col">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-6 pb-4 border-b border-neutral-800 sticky top-0 bg-neutral-900 z-10">
+          <div className="flex items-center justify-between pb-4 border-b border-neutral-800 sticky top-0 bg-neutral-900 z-10">
             <h2 className="text-xl font-bold text-white">{title}</h2>
             <button 
               className="text-gray-400 hover:text-white transition-colors text-2xl" 

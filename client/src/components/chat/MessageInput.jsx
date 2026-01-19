@@ -24,7 +24,7 @@ function MessageInput({
           className={`flex-shrink-0 transition-all ${
             sending || !newMessage.trim()
               ? 'text-gray-600 cursor-not-allowed'
-              : 'text-primary hover:text-primary/80'
+              : 'text-gray-200 hover:text-gray-200/80'
           }`}
           disabled={sending || !newMessage.trim()}
           aria-label="Send message"

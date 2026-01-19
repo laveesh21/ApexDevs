@@ -5,6 +5,7 @@ import ActiveFilters from '../components/ActiveFilters';
 import { Sidebar, SidebarSection, SortFilter, CategoryFilter, TagFilter } from '../components/sidebar';
 import NewDiscussionForm from '../components/NewDiscussionForm';
 import SearchBar from '../components/SearchBar';
+import PageHeader from '../components/PageHeader';
 import { threadAPI } from '../services/api';
 import { Tag, Button } from '../components/ui';
 
@@ -177,23 +178,27 @@ function Community() {
       <div className={`flex-1 transition-all duration-300 ${
         isFilterCollapsed ? 'ml-16' : 'ml-72'
       }`}>
-        <div className="bg-neutral-900 border-b border-neutral-800 py-6 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between gap-4 mb-3">
-              <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Community Discussions</h1>
-                <p className="text-gray-400 text-sm">Ask questions, share knowledge, and help fellow developers</p>
-              </div>
-            </div>
-            <div className="max-w-xl">
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder="Search discussions by title, content, or author..."
-              />
-            </div>
-          </div>
-        </div>
+        <PageHeader
+          title="Community Discussions"
+          description="Ask questions, share knowledge, and help fellow developers"
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search discussions by title, content, or author..."
+          actionButton={
+            <Button
+              onClick={() => setShowNewDiscussionForm(true)}
+              variant="zinc_secondary"
+              size="md"
+              icon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              }
+            >
+              New Thread
+            </Button>
+          }
+        />
 
         <div className="max-w-6xl mx-auto py-8 px-4">
           <ActiveFilters
@@ -209,19 +214,6 @@ function Community() {
               </h2>
               <span className="px-3 py-1 bg-neutral-700 text-gray-400 rounded-full text-sm">({filteredDiscussions.length})</span>
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setShowNewDiscussionForm(true)}
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-              }
-            >
-              New Discussion
-            </Button>
           </div>
           {loading ? (
               <div className="flex flex-col items-center justify-center py-20">

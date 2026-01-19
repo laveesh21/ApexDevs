@@ -84,7 +84,7 @@ function Chat() {
             />
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent flex flex-col-reverse">
               <MessagesList
                 messages={messages}
                 currentUser={user}

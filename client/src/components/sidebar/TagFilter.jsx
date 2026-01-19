@@ -58,7 +58,7 @@ function TagFilter({
           {selected.length > 0 && (
           <button 
             onClick={clearTags} 
-            className="text-xs text-white bg-red-700/80 px-2 py-1 rounded font-bold hover:text-primary-light transition-colors"
+            className="text-xs text-white bg-red-700/80 px-2 py-1 rounded font-bold hover:text-gray-200-light transition-colors"
           >
             Clear All
           </button>

@@ -23,7 +23,7 @@ function Tag({
   const variantClasses = {
     primary: 'bg-transparent text-green-500 border border-green-500 hover:bg-green-500/10 hover:cursor-default',
     secondary: 'bg-zinc-800 text-gray-300 border border-neutral-700 hover:bg-zinc-700',
-    outline: 'bg-transparent text-gray-300 border border-neutral-700 hover:border-primary hover:text-primary',
+    outline: 'bg-transparent text-gray-300 border border-neutral-700 hover:border-primary hover:text-gray-200',
     success: 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30',
     warning: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30',
     danger: 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30'

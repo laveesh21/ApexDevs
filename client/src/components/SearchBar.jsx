@@ -1,7 +1,11 @@
-function SearchBar({ value, onChange, placeholder = "Search..." }) {
+function SearchBar({ value, onChange, placeholder = "Search...", attachedButton = false }) {
   const handleClear = () => {
     onChange('');
   };
+
+  const inputClasses = attachedButton
+    ? "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-l-lg rounded-r-none py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+    : "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-lg py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all";
 
   return (
     <div className="relative w-full">
@@ -19,7 +23,7 @@ function SearchBar({ value, onChange, placeholder = "Search..." }) {
       </svg>
       <input
         type="text"
-        className="w-full bg-zinc-800/50 border border-neutral-700/50 rounded-lg py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+        className={inputClasses}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -20,12 +20,17 @@ function CommentsSection({
   isCommentAuthor
 }) {
   const [expandedComments, setExpandedComments] = useState({});
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const toggleExpanded = (commentId) => {
     setExpandedComments(prev => ({
       ...prev,
       [commentId]: !prev[commentId]
     }));
+  };
+
+  const toggleMenu = (commentId) => {
+    setOpenMenuId(openMenuId === commentId ? null : commentId);
   };
 
   const formatContent = (content, isExpanded) => {
@@ -42,7 +47,7 @@ function CommentsSection({
       line = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>');
       
       // Handle inline code `code`
-      line = line.replace(/`(.*?)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 text-primary rounded text-sm">$1</code>');
+      line = line.replace(/`(.*?)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 text-gray-200 rounded text-sm">$1</code>');
       
       // Handle list items
       if (line.trim().startsWith('- ')) {
@@ -108,55 +113,94 @@ function CommentsSection({
           )}
 
           {/* Comments */}
-          <div className="space-y-3">
+          <div className="">
             {comments.map(comment => {
               const commentVote = commentVotes[comment._id] || { voteStatus: null, voteScore: 0 };
               const isExpanded = expandedComments[comment._id];
               const shouldShowToggle = comment.content?.length > 200;
+              const isMenuOpen = openMenuId === comment._id;
 
               return (
               <div 
                 key={comment._id} 
-                className="flex items-start gap-3 py-4 border-b border-neutral-700/50 last:border-0 hover:bg-neutral-800/30 px-3 -mx-3 rounded-lg transition-colors"
+                className="py-4 border-b border-neutral-700/50 last:border-0 hover:bg-neutral-800/30 px-9 -mx-3  transition-colors"
               >
-                {/* Vote Counter */}
-                <div className="flex-shrink-0 pt-1">
-                  <VoteCounter
-                    voteScore={commentVote.voteScore}
-                    voteStatus={commentVote.voteStatus}
-                    onVoteUp={() => onCommentVote(comment._id, 'upvote')}
-                    onVoteDown={() => onCommentVote(comment._id, 'downvote')}
-                    size="sm"
-                    orientation="vertical"
-                  />
-                </div>
+                <div className="flex items-start gap-3">
 
-                {/* Author Avatar */}
-                <div className="flex-shrink-0">
-                  <AuthorAvatar
-                    author={comment.author}
-                    size="sm"
-                    clickable={!!comment.author?._id}
-                  />
-                </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium text-gray-200 text-sm">
-                      {comment.author?.username || 'Anonymous'}
-                    </span>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-2 -ml-9">
+                      <div className="flex items-center gap-2">
+                      {/* Author Avatar */}
+                      <AuthorAvatar
+                        author={comment.author}
+                        size="xs"
+                        clickable={!!comment.author?._id}
+                        className="bg-transparent "
+                      />
                     {comment.author?.role && (
                       <>
                         <span className="text-xs text-gray-500">•</span>
                         <span className="text-xs text-gray-500 capitalize">{comment.author.role}</span>
                       </>
                     )}
-                    <span className="text-xs text-gray-500">•</span>
-                    <span className="text-xs text-gray-500">
-                      {formatTimeAgo(comment.createdAt)}
-                    </span>
-                  </div>
+                        <span className="text-xs text-gray-500">•</span>
+                        <span className="text-xs text-gray-500">
+                          {formatTimeAgo(comment.createdAt)}
+                        </span>
+                      </div>
+
+                      {/* Three Dots Menu */}
+                      {isCommentAuthor(comment.author) && (
+                        <div className="relative">
+                          <button
+                            onClick={() => toggleMenu(comment._id)}
+                            className="p-1 hover:bg-neutral-700 rounded transition-colors"
+                          >
+                            <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                            </svg>
+                          </button>
+
+                          {/* Dropdown Menu */}
+                          {isMenuOpen && (
+                            <>
+                              <div 
+                                className="fixed inset-0 z-10" 
+                                onClick={() => setOpenMenuId(null)}
+                              />
+                              <div className="absolute right-0 mt-1 w-32 bg-neutral-700 border border-neutral-600 rounded-lg shadow-lg z-20 overflow-hidden">
+                                <button
+                                  onClick={() => {
+                                    onEditComment(comment);
+                                    setOpenMenuId(null);
+                                  }}
+                                  className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-neutral-600 transition-colors flex items-center gap-2"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                  </svg>
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    onDeleteComment(comment._id);
+                                    setOpenMenuId(null);
+                                  }}
+                                  className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-neutral-600 transition-colors flex items-center gap-2"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
 
                   {/* Edit Mode */}
                   {editingCommentId === comment._id ? (
@@ -196,33 +240,30 @@ function CommentsSection({
                       {shouldShowToggle && (
                         <button
                           onClick={() => toggleExpanded(comment._id)}
-                          className="text-xs text-primary hover:text-primary/80 mt-2 font-medium transition-colors"
+                          className="text-xs text-white hover:text-gray-200/80 mt-2 font-medium transition-colors"
                         >
                           {isExpanded ? '← Show less' : 'Read more →'}
                         </button>
-                      )}
-
-                      {/* Actions */}
-                      {isCommentAuthor(comment.author) && (
-                        <div className="flex gap-2 mt-3">
-                          <button
-                            onClick={() => onEditComment(comment)}
-                            className="text-xs text-gray-500 hover:text-primary transition-colors font-medium"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => onDeleteComment(comment._id)}
-                            className="text-xs text-gray-500 hover:text-red-400 transition-colors font-medium"
-                          >
-                            Delete
-                          </button>
-                        </div>
                       )}
                     </>
                   )}
                 </div>
               </div>
+
+              {/* Vote Counter - Horizontal at Bottom */}
+              {editingCommentId !== comment._id && (
+                <div className="flex items-center gap-3 mt-3 -ml-1">
+                  <VoteCounter
+                    score={commentVote.voteScore}
+                    userVote={commentVote.voteStatus}
+                    onUpvote={() => onCommentVote(comment._id, 'upvote')}
+                    onDownvote={() => onCommentVote(comment._id, 'downvote')}
+                    size="sm"
+                    orientation="horizontal"
+                  />
+                </div>
+              )}
+            </div>
               );
             })}
           </div>

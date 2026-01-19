@@ -34,7 +34,7 @@ function Navbar() {
               <Link 
                 to="/" 
                 className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
-                  isActive('/') ? 'bg-neutral-800 text-primary' : ''
+                  isActive('/') ? 'bg-neutral-800 text-gray-100' : ''
                 }`}
               >
                 Home
@@ -44,7 +44,7 @@ function Navbar() {
               <Link 
                 to="/community" 
                 className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
-                  isActive('/community') ? 'bg-neutral-800 text-primary' : ''
+                  isActive('/community') ? 'bg-neutral-800 text-gray-100' : ''
                 }`}
               >
                 Community
@@ -54,7 +54,7 @@ function Navbar() {
               <Link 
                 to="/about" 
                 className={`px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all ${
-                  isActive('/about') ? 'bg-neutral-800 text-primary' : ''
+                  isActive('/about') ? 'bg-neutral-800 text-gray-100' : ''
                 }`}
               >
                 About
@@ -85,10 +85,11 @@ function Navbar() {
 
           {!loading && isAuthenticated && (
             <div className="flex items-center gap-3">
-              <Link to="/chat" className="p-1.5 text-gray-400 hover:text-green-500 transition-colors" title="Messages">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <Link to="/chat" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-gray-100 hover:bg-neutral-800 transition-all" title="Messages">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
+                <span>Chat</span>
               </Link>
               
               <div className="relative">
@@ -109,14 +110,14 @@ function Navbar() {
                 
                 {showDropdown && (
                   <div className="absolute right-0 mt-1 w-44 bg-neutral-900 border border-neutral-800 rounded-lg shadow-2xl py-1.5 animate-scale-up">
-                    <Link to="/profile" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
+                    <Link to="/profile" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-gray-100 transition-colors" onClick={() => setShowDropdown(false)}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="8" r="4"/>
                         <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
                       </svg>
                       Profile
                     </Link>
-                    <Link to="/settings" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-primary transition-colors" onClick={() => setShowDropdown(false)}>
+                    <Link to="/settings" className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-300 hover:bg-neutral-800 hover:text-gray-100 transition-colors" onClick={() => setShowDropdown(false)}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>

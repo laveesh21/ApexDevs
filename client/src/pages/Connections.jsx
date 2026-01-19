@@ -95,7 +95,7 @@ const Connections = () => {
     <div className="min-h-screen bg-neutral-900 py-8">
       <div className="max-w-5xl mx-auto px-6">
         <div className="mb-6">
-          <button className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-4" onClick={() => navigate('/profile')}>
+          <button className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors mb-4" onClick={() => navigate('/profile')}>
             ← Back to Profile
           </button>
           <h1 className="text-3xl font-bold text-gray-100">Connections</h1>

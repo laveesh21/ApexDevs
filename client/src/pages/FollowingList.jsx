@@ -79,12 +79,12 @@ const FollowingList = () => {
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
                 Following
-                <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-lg font-semibold rounded-full">
+                <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-gray-200 text-lg font-semibold rounded-full">
                   {following.length}
                 </span>
               </h1>
               <p className="text-gray-400 flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 People you're following
@@ -109,7 +109,7 @@ const FollowingList = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-2xl blur-xl"></div>
             <div className="relative bg-neutral-800/80 backdrop-blur-xl border border-neutral-700 rounded-2xl p-20 text-center">
               <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
@@ -138,7 +138,7 @@ const FollowingList = () => {
                       <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-neutral-800 rounded-full"></div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-lg truncate group-hover:text-primary transition-colors">
+                      <h3 className="text-white font-bold text-lg truncate group-hover:text-gray-200 transition-colors">
                         {user.username}
                       </h3>
                       {user.location && (

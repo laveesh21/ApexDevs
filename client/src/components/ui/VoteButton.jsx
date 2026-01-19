@@ -9,26 +9,26 @@ import PropTypes from 'prop-types';
  */
 function VoteButton({ direction = 'up', active = false, onClick, size = 'lg' }) {
   const sizeClasses = {
-    sm: 'w-7 h-7',
+    sm: 'w-5 h-5',
     md: 'w-8 h-8',
     lg: 'w-9 h-9'
   };
 
   const svgSizes = {
-    sm: 18,
-    md: 22,
-    lg: 26
+    sm: 20,
+    md: 26,
+    lg: 32
   };
 
-  const baseClasses = 'transition-all cursor-pointer select-none flex items-center justify-center rounded-lg';
+  const baseClasses = 'transition-all cursor-pointer select-none flex items-center justify-center';
   
   const colorClasses = direction === 'up' 
     ? active 
-      ? 'bg-green-500 text-white' 
-      : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-green-500'
+      ? 'text-green-500' 
+      : 'text-gray-500 hover:text-green-500'
     : active
-      ? 'bg-red-500 text-white'
-      : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600 hover:text-red-500';
+      ? 'text-red-500'
+      : 'text-gray-500 hover:text-red-500';
 
   const svgSize = svgSizes[size];
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { projectAPI } from '../services/api';
+import Button from './ui/Button';
 
 const CATEGORIES = ['Web App', 'Mobile App', 'Desktop App', 'Game', 'AI/ML', 'DevTools', 'Other'];
 const STATUSES = ['In Progress', 'Completed', 'Maintained'];
@@ -372,7 +373,7 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
             {formData.technologies.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {formData.technologies.map(tech => (
-                  <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 border border-primary/30 text-primary rounded-full text-sm">
+                  <span key={tech} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 border border-primary/30 text-green-500 rounded-full text-sm">
                     {tech}
                     <button 
                       type="button" 
@@ -397,12 +398,19 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
                 placeholder="Add a technology (e.g., React, Node.js)"
                 className="flex-1 px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-gray-100 text-sm rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
-              <button type="button" onClick={addTechnology} className="px-4 py-2.5 bg-primary/90 hover:bg-primary border border-primary text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+              <Button
+                type="button"
+                onClick={addTechnology}
+                variant="primary"
+                size="md"
+                icon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                }
+              >
                 Add
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -445,24 +453,28 @@ const EditProjectForm = ({ project, onClose, onSuccess }) => {
           </div>
 
           <div className="flex justify-end gap-3 pt-6 border-t border-neutral-700 mt-2">
-            <button type="button" className="px-5 py-2.5 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 text-sm font-medium rounded-lg transition-colors" onClick={onClose}>
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              onClick={onClose}
+            >
               Cancel
-            </button>
-            <button type="submit" className="px-5 py-2.5 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" disabled={loading}>
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Update Project
-                </>
-              )}
-            </button>
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              loading={loading}
+              icon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              }
+            >
+              Update Project
+            </Button>
           </div>
         </form>
       </div>

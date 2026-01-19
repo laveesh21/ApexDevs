@@ -3,9 +3,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { threadAPI } from '../services/api';
 import Modal from '../components/Modal';
-import ThreadHeader from '../components/ThreadHeader';
 import ThreadSidebar from '../components/ThreadSidebar';
 import CommentsSection from '../components/CommentsSection';
+import NewDiscussionForm from '../components/NewDiscussionForm';
 import { Tag, Button, VoteCounter } from '../components/ui';
 
 function ThreadDetail() {
@@ -20,13 +20,7 @@ function ThreadDetail() {
   const [voteStatus, setVoteStatus] = useState(null);
   const [voteScore, setVoteScore] = useState(0);
   const [commentVotes, setCommentVotes] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    title: '',
-    content: '',
-    category: '',
-    tags: []
-  });
+  const [showEditForm, setShowEditForm] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editCommentContent, setEditCommentContent] = useState('');
   const [showFullContent, setShowFullContent] = useState(false);
@@ -240,39 +234,19 @@ function ThreadDetail() {
   };
 
   const handleEditClick = () => {
-    setEditFormData({
-      title: thread.title,
-      content: thread.content,
-      category: thread.category,
-      tags: thread.tags || []
-    });
-    setIsEditing(true);
+    setShowEditForm(true);
   };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditFormData({ title: '', content: '', category: '', tags: [] });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleTagsChange = (e) => {
-    const tagsString = e.target.value;
-    const tagsArray = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag);
-    setEditFormData(prev => ({ ...prev, tags: tagsArray }));
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    
+  const handleEditSubmit = async (formData) => {
     try {
-      const response = await threadAPI.update(token, id, editFormData);
+      const response = await threadAPI.update(token, id, {
+        title: formData.title,
+        content: formData.content,
+        category: formData.type,
+        tags: formData.tags
+      });
       setThread(response.data);
-      setIsEditing(false);
-      setEditFormData({ title: '', content: '', category: '', tags: [] });
+      setShowEditForm(false);
     } catch (err) {
       console.error('Failed to update thread:', err);
     }
@@ -337,6 +311,19 @@ function ThreadDetail() {
     });
   };
 
+  const getCategoryColor = (category) => {
+    const colors = {
+      'Questions': 'bg-blue-500',
+      'Showcase': 'bg-purple-500',
+      'Resources': 'bg-green-500',
+      'Collaboration': 'bg-yellow-500',
+      'Feedback': 'bg-pink-500',
+      'General': 'bg-gray-500',
+      'Other': 'bg-neutral-600'
+    };
+    return colors[category] || 'bg-neutral-600';
+  };
+
   const renderContent = (content) => {
     const isLong = content.length > 1500;
     const contentToUse = showFullContent || !isLong ? content : content.slice(0, 1500);
@@ -344,7 +331,7 @@ function ThreadDetail() {
     return contentToUse.split('\n').map((paragraph, index) => {
       const formattedParagraph = paragraph
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 rounded text-primary text-sm">$1</code>')
+        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 rounded text-gray-200 text-sm">$1</code>')
         .replace(/- (.*?)$/gm, '<li>$1</li>');
       
       if (formattedParagraph.includes('<li>')) {
@@ -372,7 +359,7 @@ function ThreadDetail() {
       <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Thread Not Found</h1>
-          <Link to="/community" className="text-primary hover:underline">
+          <Link to="/community" className="text-gray-200 hover:underline">
             ← Back to Community
           </Link>
         </div>
@@ -386,7 +373,7 @@ function ThreadDetail() {
         {/* Back Button */}
         <Link 
           to="/community" 
-          className="inline-flex items-center gap-2 text-gray-400 hover:text-primary mb-6 transition-colors group"
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-200 mb-6 transition-colors group"
         >
           <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -400,123 +387,69 @@ function ThreadDetail() {
             {/* Thread Card */}
             <div className="bg-neutral-800 border border-neutral-700 rounded-xl overflow-hidden">
               <div className="p-6">
-                <ThreadHeader
-                  thread={thread}
-                  isAuthor={isThreadAuthor(thread.author)}
-                  onEdit={handleEditClick}
-                  onDelete={handleDelete}
-                  formatTimeAgo={formatTimeAgo}
-                />
-
-                {isEditing ? (
-                  <form onSubmit={handleEditSubmit} className="space-y-5 mt-6">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Title</label>
-                      <input
-                        type="text"
-                        name="title"
-                        className="w-full px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
-                        value={editFormData.title}
-                        onChange={handleEditChange}
-                        required
-                        maxLength={200}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Content</label>
-                      <textarea
-                        name="content"
-                        className="w-full px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 resize-none transition-colors"
-                        value={editFormData.content}
-                        onChange={handleEditChange}
-                        required
-                        rows="10"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Category</label>
-                        <select
-                          name="category"
-                          className="w-full px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
-                          value={editFormData.category}
-                          onChange={handleEditChange}
-                          required
+                <div className="mb-6">
+                  {/* Category and Actions */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)}`}>
+                      {thread.category}
+                    </span>
+                    {isThreadAuthor(thread.author) && (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={handleEditClick}
                         >
-                          <option value="General">General</option>
-                          <option value="Questions">Questions</option>
-                          <option value="Showcase">Showcase</option>
-                          <option value="Resources">Resources</option>
-                          <option value="Collaboration">Collaboration</option>
-                          <option value="Feedback">Feedback</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tags</label>
-                        <input
-                          type="text"
-                          name="tags"
-                          className="w-full px-4 py-2.5 bg-neutral-700/50 border border-neutral-600 text-white rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
-                          value={editFormData.tags.join(', ')}
-                          onChange={handleTagsChange}
-                          placeholder="React, JavaScript"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 pt-2">
-                      <Button type="button" variant="secondary" size="sm" onClick={handleCancelEdit}>
-                        Cancel
-                      </Button>
-                      <Button type="submit" variant="primary" size="sm">
-                        Save Changes
-                      </Button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="mt-6 space-y-6">
-                    {/* Vote Counter */}
-                    <div className="flex items-center gap-4 pb-5 border-b border-neutral-700">
-                      <VoteCounter
-                        score={voteScore}
-                        userVote={voteStatus}
-                        onUpvote={() => handleVote('upvote')}
-                        onDownvote={() => handleVote('downvote')}
-                        orientation="horizontal"
-                        size="md"
-                      />
-                      <span className="text-xs text-gray-500">Vote to help others find quality content</span>
-                    </div>
-
-                    {/* Content */}
-                    <div className="prose prose-invert prose-sm max-w-none">
-                      {renderContent(thread.content)}
-                      {thread.content.length > 1500 && (
-                        <button
-                          onClick={() => setShowFullContent(s => !s)}
-                          className="text-primary hover:text-primary/80 text-sm font-medium mt-2 transition-colors"
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={handleDelete}
                         >
-                          {showFullContent ? '← Show less' : 'Read more →'}
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Tags */}
-                    {thread.tags && thread.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-5 border-t border-neutral-700">
-                        {thread.tags.map((tag, index) => (
-                          <Tag key={index} variant="primary" size="sm">
-                            {tag}
-                          </Tag>
-                        ))}
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </Button>
                       </div>
                     )}
                   </div>
-                )}
+
+                  {/* Title */}
+                  <h1 className="text-3xl font-bold text-white mb-4 leading-tight">{thread.title}</h1>
+
+                  {/* Content */}
+                  <div className="prose prose-invert prose-sm max-w-none">
+                    {renderContent(thread.content)}
+                    {thread.content.length > 1500 && (
+                      <button
+                        onClick={() => setShowFullContent(s => !s)}
+                        className="text-gray-200 hover:text-gray-200/80 text-sm font-medium mt-2 transition-colors"
+                      >
+                        {showFullContent ? '← Show less' : 'Read more →'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-6">
+                  {/* Vote Counter */}
+                  <div className="flex items-center gap-4 pt-5 border-t border-neutral-700">
+                    <VoteCounter
+                      score={voteScore}
+                      userVote={voteStatus}
+                      onUpvote={() => handleVote('upvote')}
+                      onDownvote={() => handleVote('downvote')}
+                      orientation="horizontal"
+                      size="md"
+                    />
+                    <span className="text-xs text-gray-500">Vote to help others find quality content</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -563,6 +496,20 @@ function ThreadDetail() {
         confirmText={modalState.confirmText}
         cancelText={modalState.cancelText}
       />
+
+      {showEditForm && thread && (
+        <NewDiscussionForm
+          onClose={() => setShowEditForm(false)}
+          onSubmit={handleEditSubmit}
+          initialData={{
+            type: thread.category,
+            title: thread.title,
+            content: thread.content,
+            tags: thread.tags || []
+          }}
+          isEditing={true}
+        />
+      )}
     </div>
   );
 }

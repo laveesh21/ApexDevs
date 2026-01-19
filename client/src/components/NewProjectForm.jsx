@@ -322,12 +322,12 @@ const NewProjectForm = ({ onClose, onSuccess }) => {
             {formData.technologies.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {formData.technologies.map((tech, index) => (
-                  <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary rounded-lg text-sm font-medium">
+                  <span key={index} className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/30 text-gray-200 rounded-lg text-sm font-medium">
                     {tech}
                     <button
                       type="button"
                       onClick={() => removeTechnology(tech)}
-                      className="text-primary hover:text-red-400 transition-colors"
+                      className="text-gray-200 hover:text-red-400 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

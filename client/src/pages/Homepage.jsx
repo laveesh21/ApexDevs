@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ProjectCard from '../components/ProjectCard';
 import ActiveFilters from '../components/ActiveFilters';
 import { Sidebar, SidebarSection, SortFilter, TechStackFilter } from '../components/sidebar';
 import SearchBar from '../components/SearchBar';
+import PageHeader from '../components/PageHeader';
+import Button from '../components/ui/Button';
+import NewProjectForm from '../components/NewProjectForm';
 import { projectAPI } from '../services/api';
 
 function Homepage() {
@@ -15,6 +19,7 @@ function Homepage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProjects, setTotalProjects] = useState(0);
+  const [showProjectForm, setShowProjectForm] = useState(false);
   const itemsPerPage = 40;
 
   useEffect(() => {
@@ -125,23 +130,27 @@ function Homepage() {
       <div className={`flex-1 transition-all duration-300 ${
         isFilterCollapsed ? 'ml-16' : 'ml-72'
       }`}>
-        <div className="bg-neutral-900 border-b border-neutral-800 py-6 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between gap-4 mb-3">
-              <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Discover Amazing Projects</h1>
-                <p className="text-gray-400 text-sm">Browse through developer projects and get inspired</p>
-              </div>
-            </div>
-            <div className="max-w-xl">
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder="Search projects by title, description, or author..."
-              />
-            </div>
-          </div>
-        </div>
+        <PageHeader
+          title="Discover Amazing Projects"
+          description="Browse through developer projects and get inspired"
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search projects by title, description, or author..."
+          actionButton={
+            <Button
+              onClick={() => setShowProjectForm(true)}
+              variant="primary"
+              size="md"
+              icon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              }
+            >
+              Add Project
+            </Button>
+          }
+        />
 
         <div className="max-w-6xl mx-auto py-8 px-4">
           <ActiveFilters
@@ -225,6 +234,13 @@ function Homepage() {
           </main>
         </div>
       </div>
+
+      {showProjectForm && (
+        <NewProjectForm
+          onClose={() => setShowProjectForm(false)}
+          onSuccess={fetchProjects}
+        />
+      )}
     </div>
   );
 }

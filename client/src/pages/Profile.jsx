@@ -6,6 +6,7 @@ import ProjectCard from '../components/ProjectCard';
 import DiscussionCard from '../components/DiscussionCard';
 import NewProjectForm from '../components/NewProjectForm';
 import EditProjectForm from '../components/EditProjectForm';
+import Button from '../components/ui/Button';
 import { getSelectedAvatar } from '../utils/avatarHelper';
 import websiteIcon from '../assets/website.svg';
 import linkedinIcon from '../assets/linkedin.svg';
@@ -235,14 +236,22 @@ function Profile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Profile Header - Compact Design */}
         <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl overflow-hidden mb-6">
-          {/* Cover Banner */}
-          <div className="h-32 bg-gradient-to-r from-primary/20 via-purple-500/20 to-primary/20"></div>
+          {/* Cover Banner - Cool geometric pattern */}
+          <div className="h-32 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 relative overflow-hidden">
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent"></div>
+            {/* Geometric shapes */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-2xl"></div>
+            {/* Grid pattern */}
+            <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255,107,53,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,53,0.03) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+          </div>
           
           <div className="px-6 pb-6">
             {/* Avatar & Basic Info */}
             <div className="flex flex-col sm:flex-row items-start gap-4 -mt-16 mb-4">
               <div className="relative group">
-                <div className="w-28 h-28 rounded-xl border-4 border-neutral-800 overflow-hidden bg-neutral-700 flex items-center justify-center shadow-xl">
+                <div className="w-28 h-28 rounded-full border-4 border-neutral-800 overflow-hidden bg-neutral-700 flex items-center justify-center shadow-xl">
                   {selectedAvatar ? (
                     <img src={selectedAvatar} alt={userInfo.username} className="w-full h-full object-cover" />
                   ) : (
@@ -256,7 +265,7 @@ function Profile() {
                     </div>
                   )}
                 </div>
-                <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
+                <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-full cursor-pointer transition-opacity">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                     <circle cx="12" cy="13" r="4"/>
@@ -273,11 +282,55 @@ function Profile() {
               </div>
 
               <div className="flex-1 mt-14 sm:mt-0">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                   <div>
                     <h1 className="text-2xl font-bold text-white">{userInfo.username}</h1>
                     <p className="text-sm text-gray-500">{userInfo.email}</p>
                   </div>
+                </div>
+                
+                {userInfo.briefBio && (
+                  <p className="text-gray-400 text-sm mt-3 leading-relaxed">{userInfo.briefBio}</p>
+                )}
+
+                {/* Stats Row */}
+                <div className="flex flex-wrap gap-3 mt-6 items-center justify-between">
+                  <div className="flex flex-wrap gap-3">
+                    <Link 
+                      to="/profile/connections?tab=followers" 
+                      className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
+                    >
+                    <span className="text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
+                    <span className="text-xs text-gray-400 uppercase tracking-wider group-hover:text-gray-100 transition-colors flex items-center gap-1">
+                        Followers
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </Link>
+                    <Link 
+                      to="/profile/connections?tab=following" 
+                      className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
+                    >
+                    <span className="text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followingCount || user?.following?.length || 0}</span>
+                    <span className="text-xs text-gray-400 uppercase tracking-wider group-hover:text-gray-100 transition-colors flex items-center gap-1">
+                        Following
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </Link>
+                    <div className="flex items-center gap-2 px-3 py-2">
+                      <span className="text-lg font-bold text-white">{userProjects.length}</span>
+                      <span className="text-xs text-gray-400 uppercase tracking-wider">Projects</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-2">
+                      <span className="text-lg font-bold text-white">{userThreads.length}</span>
+                      <span className="text-xs text-gray-500 uppercase tracking-wider">Threads</span>
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons - Right Side */}
                   <div className="flex flex-wrap gap-2">
                     <Link to="/profile/edit" className="px-4 py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors">
                       Edit Profile
@@ -287,30 +340,6 @@ function Profile() {
                         View Public
                       </Link>
                     )}
-                  </div>
-                </div>
-                
-                {userInfo.briefBio && (
-                  <p className="text-gray-400 text-sm mt-3 leading-relaxed">{userInfo.briefBio}</p>
-                )}
-
-                {/* Stats Row */}
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <Link to="/profile/connections?tab=followers" className="group flex items-center gap-2">
-                    <span className="text-lg font-bold text-white group-hover:text-primary transition-colors">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wider group-hover:text-primary transition-colors">Followers</span>
-                  </Link>
-                  <Link to="/profile/connections?tab=following" className="group flex items-center gap-2">
-                    <span className="text-lg font-bold text-white group-hover:text-primary transition-colors">{freshUserData?.followingCount || user?.following?.length || 0}</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wider group-hover:text-primary transition-colors">Following</span>
-                  </Link>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-white">{userProjects.length}</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wider">Projects</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-white">{userThreads.length}</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wider">Threads</span>
                   </div>
                 </div>
               </div>
@@ -326,17 +355,6 @@ function Profile() {
             <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-bold text-white">About</h2>
-                {!isEditing && (
-                  <button
-                    onClick={handleEdit}
-                    className="text-sm text-gray-500 hover:text-primary transition-colors font-medium flex items-center gap-1"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </button>
-                )}
               </div>
               {isEditing ? (
                 <form className="space-y-4">
@@ -450,22 +468,25 @@ function Profile() {
                   </div>
 
                   <div className="flex justify-end gap-3 pt-4 border-t border-neutral-700 mt-6">
-                    <button 
+                    <Button
                       type="button"
-                      className="px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                      variant="secondary"
+                      size="md"
                       onClick={handleCancel}
                       disabled={loading}
                     >
                       Cancel
-                    </button>
-                    <button 
+                    </Button>
+                    <Button
                       type="button"
-                      className="px-4 py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                      variant="primary"
+                      size="md"
                       onClick={handleSave}
                       disabled={loading}
+                      loading={loading}
                     >
-                      {loading ? 'Saving...' : 'Save Changes'}
-                    </button>
+                      Save Changes
+                    </Button>
                   </div>
                 </form>
               ) : (
@@ -501,7 +522,7 @@ function Profile() {
                             </div>
                           )}
                           {userInfo.website && (
-                            <a href={userInfo.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-primary text-sm transition-colors">
+                            <a href={userInfo.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-gray-100 text-sm transition-colors">
                               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                               </svg>
@@ -564,7 +585,7 @@ function Profile() {
                 </div>
                 <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
                   <span className="text-sm text-gray-400">Joined</span>
-                  <span className="text-xs font-medium text-gray-500">
+                  <span className="text-sm font-medium text-gray-400">
                     {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { 
                       month: 'short', 
                       year: 'numeric' 
@@ -581,36 +602,49 @@ function Profile() {
           {/* Tab Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-700">
             <div className="flex gap-1">
-              <button 
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-                  activeTab === 'projects' 
-                    ? 'bg-primary text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-neutral-700/50'
-                }`}
+              <Button
+                variant={activeTab === 'projects' ? 'zinc_secondary_no_border' : 'ghost'}
+                size="md"
                 onClick={() => setActiveTab('projects')}
               >
                 Projects
                 <span className="ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userProjects.length}</span>
-              </button>
-              <button 
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-                  activeTab === 'threads' 
-                    ? 'bg-primary text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-neutral-700/50'
-                }`}
+              </Button>
+              <Button
+                variant={activeTab === 'threads' ? 'zinc_secondary_no_border' : 'ghost'}
+                size="md"
                 onClick={() => setActiveTab('threads')}
               >
                 Threads
                 <span className="ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userThreads.length}</span>
-              </button>
+              </Button>
             </div>
-            {activeTab === 'projects' && (
-              <button className="px-4 py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2" onClick={() => setShowProjectForm(true)}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+            {activeTab === 'projects' ? (
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => setShowProjectForm(true)}
+                icon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                }
+              >
                 New Project
-              </button>
+              </Button>
+            ) : (
+              <Button
+                to="/community"
+                variant="primary"
+                size="md"
+                icon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                }
+              >
+                New Thread
+              </Button>
             )}
           </div>
 
@@ -631,9 +665,13 @@ function Profile() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2">No projects yet</h3>
                   <p className="text-gray-500 text-sm mb-6">Showcase your work by uploading your first project</p>
-                  <button className="px-5 py-2.5 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors" onClick={() => setShowProjectForm(true)}>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={() => setShowProjectForm(true)}
+                  >
                     Upload Project
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

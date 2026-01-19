@@ -182,7 +182,7 @@ If you're updating existing code to use these components:
 
 **Before:**
 ```jsx
-<span className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded text-xs">
+<span className="px-2 py-1 bg-primary/20 text-gray-200 border border-primary/30 rounded text-xs">
   React
 </span>
 ```

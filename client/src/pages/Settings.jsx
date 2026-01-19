@@ -472,7 +472,7 @@ function Settings() {
                   <input
                     type="checkbox"
                     id="showEmail"
-                    className="w-4 h-4 mt-1 bg-neutral-700 border-neutral-600 rounded focus:ring-primary text-primary cursor-pointer"
+                    className="w-4 h-4 mt-1 bg-neutral-700 border-neutral-600 rounded focus:ring-primary text-gray-200 cursor-pointer"
                     checked={privacySettings.showEmail}
                     onChange={(e) => setPrivacySettings({ ...privacySettings, showEmail: e.target.checked })}
                   />

@@ -40,7 +40,7 @@ function AnswerCard({
     return content.split('\n').map((paragraph, index) => {
       const formattedParagraph = paragraph
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 rounded text-primary text-sm">$1</code>')
+        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-neutral-700 rounded text-gray-200 text-sm">$1</code>')
         .replace(/- (.*?)$/gm, '<li>$1</li>');
       
       if (formattedParagraph.includes('<li>')) {
@@ -97,7 +97,7 @@ function AnswerCard({
               <div className="flex items-center gap-2">
                 <button
                   onClick={onEdit}
-                  className="p-2 text-gray-400 hover:text-primary hover:bg-neutral-700 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-gray-200 hover:bg-neutral-700 rounded-lg transition-colors"
                   title="Edit comment"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

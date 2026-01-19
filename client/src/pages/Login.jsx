@@ -102,7 +102,7 @@ function Login() {
         </form>
 
         <p className="text-center text-gray-400 text-sm mt-6">
-          Don't have an account? <Link to="/signup" className="text-primary hover:text-primary-light transition-colors font-medium">Sign Up</Link>
+          Don't have an account? <Link to="/signup" className="text-gray-200 hover:text-gray-200-light transition-colors font-medium">Sign Up</Link>
         </p>
       </div>
     </div>

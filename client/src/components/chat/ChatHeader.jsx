@@ -27,7 +27,7 @@ function ChatHeader({
         <div>
           <Link 
             to={`/user/${participant?._id}`}
-            className="text-white font-semibold hover:text-primary transition-all text-sm block"
+            className="text-white font-semibold hover:text-gray-200 transition-all text-sm block"
           >
             {participant?.username}
           </Link>

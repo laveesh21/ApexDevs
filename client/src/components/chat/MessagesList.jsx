@@ -18,7 +18,8 @@ function MessagesList({ messages, currentUser, selectedConversation, formatTime,
   }
 
   return (
-    <>
+    <div className="flex flex-col">
+      <div ref={messagesEndRef} />
       {messages.map((message, index) => {
         const isOwnMessage = (message.sender._id || message.sender.id || message.sender).toString() === 
                             (currentUser._id || currentUser.id).toString();
@@ -40,8 +41,7 @@ function MessagesList({ messages, currentUser, selectedConversation, formatTime,
           />
         );
       })}
-      <div ref={messagesEndRef} />
-    </>
+    </div>
   );
 }
 

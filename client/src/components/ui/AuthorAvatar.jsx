@@ -96,7 +96,7 @@ function AuthorAvatar({
     return nameContent;
   };
   
-  const containerClasses = `flex items-center gap-2 bg-neutral-700 px-2 py-1 rounded-lg ${className}`;
+  const containerClasses = `flex items-center gap-2 bg-neutral-700/50 px-2 py-1 rounded-lg ${className}`;
   
   // If clickable and has authorId, wrap in Link
   if (clickable && authorId) {

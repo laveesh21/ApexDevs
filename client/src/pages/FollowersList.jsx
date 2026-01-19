@@ -87,12 +87,12 @@ const FollowersList = () => {
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
                 Followers
-                <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-primary text-lg font-semibold rounded-full">
+                <span className="px-3 py-1 bg-primary/20 border border-primary/30 text-gray-200 text-lg font-semibold rounded-full">
                   {followers.length}
                 </span>
               </h1>
               <p className="text-gray-400 flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 People who follow you
@@ -117,7 +117,7 @@ const FollowersList = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-2xl blur-xl"></div>
             <div className="relative bg-neutral-800/80 backdrop-blur-xl border border-neutral-700 rounded-2xl p-20 text-center">
               <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
@@ -146,7 +146,7 @@ const FollowersList = () => {
                       <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-neutral-800 rounded-full"></div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-lg truncate group-hover:text-primary transition-colors">
+                      <h3 className="text-white font-bold text-lg truncate group-hover:text-gray-200 transition-colors">
                         {follower.username}
                       </h3>
                       {follower.location && (
