@@ -22,7 +22,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50">
+    <nav className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50 hidden md:block">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-12">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">

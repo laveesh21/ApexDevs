@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import BottomNav from './components/BottomNav'
+import MobileNavbar from './components/MobileNavbar'
 import Homepage from './pages/Homepage'
 import About from './pages/About'
 import Login from './pages/Login'
@@ -32,8 +34,9 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 flex flex-col">
+    <div className="min-h-screen bg-neutral-900 flex flex-col pb-14 md:pb-0">
       <Navbar />
+      <MobileNavbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/about" element={<About />} />
@@ -51,6 +54,7 @@ function AppContent() {
         <Route path="/chat/:userId" element={<Chat />} />
       </Routes>
       {!hideFooter && <Footer />}
+      <BottomNav />
     </div>
   );
 }

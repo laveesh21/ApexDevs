@@ -30,7 +30,7 @@ function AuthorAvatar({
   const avatarSrc = getSelectedAvatar(author);
   
   const sizeClasses = {
-    xs: 'w-5 h-5',
+    xs: 'w-4 h-4',
     sm: 'w-6 h-6',
     md: 'w-8 h-8',
     lg: 'w-12 h-12',
@@ -38,7 +38,7 @@ function AuthorAvatar({
   };
   
   const textSizes = {
-    xs: 'text-xs',
+    xs: 'text-[10px]',
     sm: 'text-sm',
     md: 'text-sm',
     lg: 'text-base',
@@ -46,14 +46,14 @@ function AuthorAvatar({
   };
   
   const borderSizes = {
-    xs: 'border',
-    sm: 'border',
-    md: 'border-2',
-    lg: 'border-2',
-    xl: 'border-2'
+    xs: 'border-0',
+    sm: 'border-0',
+    md: 'border-0',
+    lg: 'border-0',
+    xl: 'border-0'
   };
   
-  const avatarClasses = `${sizeClasses[size]} rounded-full ${borderSizes[size]} border-neutral-600 object-cover flex-shrink-0`;
+  const avatarClasses = `${sizeClasses[size]} rounded-full ${borderSizes[size]} object-cover flex-shrink-0`;
   
   const handleClick = (e) => {
     if (onClick) {

@@ -369,48 +369,50 @@ function ThreadDetail() {
 
   return (
     <div className="min-h-screen bg-neutral-900">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-1 sm:px-2 md:px-4 py-2 sm:py-4 md:py-6">
         {/* Back Button */}
         <Link 
           to="/community" 
-          className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-200 mb-4 sm:mb-6 transition-colors group"
+          className="inline-flex items-center gap-1.5 sm:gap-2 text-gray-400 hover:text-gray-200 mb-2 sm:mb-4 md:mb-6 transition-colors group"
         >
-          <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span className="text-sm font-medium">Back to Community</span>
+          <span className="text-xs sm:text-sm font-medium">Back to Community</span>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-3 space-y-2 sm:space-y-4 md:space-y-6">
             {/* Thread Card */}
-            <div className="bg-neutral-800 border border-neutral-700 rounded-xl overflow-hidden">
-              <div className="p-4 sm:p-6">
-                <div className="mb-4 sm:mb-6">
+            <div className="bg-neutral-800 border border-neutral-700 rounded-lg sm:rounded-xl overflow-hidden">
+              <div className="p-2 sm:p-4 md:p-6">
+                <div className="mb-2 sm:mb-4 md:mb-6">
                   {/* Category and Actions */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
-                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)} w-fit`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 sm:mb-3 md:mb-4 gap-2 sm:gap-3">
+                    <span className={`px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 md:py-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)} inline-block w-fit`}>
                       {thread.category}
                     </span>
                     {isThreadAuthor(thread.author) && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
                         <Button
                           variant="secondary"
-                          size="sm"
+                          size="xs"
+                          className="sm:text-sm md:text-base"
                           onClick={handleEditClick}
                         >
-                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                           Edit
                         </Button>
                         <Button
                           variant="danger"
-                          size="sm"
+                          size="xs"
+                          className="sm:text-sm md:text-base"
                           onClick={handleDelete}
                         >
-                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                           Delete
@@ -420,7 +422,7 @@ function ThreadDetail() {
                   </div>
 
                   {/* Title */}
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">{thread.title}</h1>
+                  <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3 md:mb-4 leading-tight">{thread.title}</h1>
 
                   {/* Content */}
                   <div className="prose prose-invert prose-sm max-w-none">
@@ -436,18 +438,19 @@ function ThreadDetail() {
                   </div>
                 </div>
 
-                <div className="mt-6 space-y-6">
+                <div className="mt-3 sm:mt-4 md:mt-6 space-y-3 sm:space-y-4 md:space-y-6">
                   {/* Vote Counter */}
-                  <div className="flex items-center gap-4 pt-5 border-t border-neutral-700">
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4 pt-3 sm:pt-4 md:pt-5 border-t border-neutral-700">
                     <VoteCounter
                       score={voteScore}
                       userVote={voteStatus}
                       onUpvote={() => handleVote('upvote')}
                       onDownvote={() => handleVote('downvote')}
                       orientation="horizontal"
-                      size="md"
+                      size="sm"
+                      className="text-xs sm:text-sm md:text-base"
                     />
-                    <span className="text-xs text-gray-500">Vote to help others find quality content</span>
+                    <span className="text-[10px] sm:text-xs text-gray-500">Vote to help others find quality content</span>
                   </div>
                 </div>
               </div>

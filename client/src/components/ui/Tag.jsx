@@ -21,7 +21,7 @@ function Tag({
   const clickableClass = onClick ? 'cursor-pointer' : '';
   
   const variantClasses = {
-    primary: 'bg-transparent text-green-500 border border-green-500 hover:bg-green-500/10 hover:cursor-default',
+    primary: 'bg-transparent text-green-500 border border-green-500/80 hover:bg-green-500/10 hover:cursor-default',
     secondary: 'bg-zinc-800 text-gray-300 border border-neutral-700 hover:bg-zinc-700',
     outline: 'bg-transparent text-gray-300 border border-neutral-700 hover:border-primary hover:text-gray-200',
     success: 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30',
@@ -30,7 +30,8 @@ function Tag({
   };
   
   const sizeClasses = {
-    xs: 'px-2 py-0.5 text-xs',
+    xxs: 'px-2 py-0 text-[10px]',
+    xs: 'px-1.5 py-0.5 text-[10px]',
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1 text-xs',
     lg: 'px-4 py-1.5 text-base'

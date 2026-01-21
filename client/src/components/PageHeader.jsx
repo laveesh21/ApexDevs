@@ -36,10 +36,10 @@ function PageHeader({
             <Button
               onClick={handleSearch}
               variant="zinc_secondary"
-              size="md"
-              className="border-l-0 rounded-l-none rounded-r-lg"
+              size="xs"
+              className="border-l-0 rounded-l-none rounded-r-lg px-2 sm:px-3 md:px-4 py-1.5 sm:py-2"
               icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="11" cy="11" r="8" strokeWidth="2"/>
                   <path d="M21 21l-4.35-4.35" strokeWidth="2"/>
                 </svg>
@@ -48,7 +48,7 @@ function PageHeader({
             />
           </div>
           {actionButton && (
-            <div className="w-full sm:w-auto sm:ml-3">
+            <div className="hidden sm:block sm:w-auto sm:ml-3">
               {actionButton}
             </div>
           )}

@@ -4,15 +4,15 @@ function SearchBar({ value, onChange, placeholder = "Search...", attachedButton 
   };
 
   const inputClasses = attachedButton
-    ? "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-l-lg rounded-r-none py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-    : "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-lg py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all";
+    ? "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-l-lg rounded-r-none py-1.5 sm:py-2 md:py-2.5 pl-8 sm:pl-9 md:pl-10 pr-8 sm:pr-9 md:pr-10 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+    : "w-full bg-zinc-800/50 border border-neutral-700/50 rounded-lg py-1.5 sm:py-2 md:py-2.5 pl-8 sm:pl-9 md:pl-10 pr-8 sm:pr-9 md:pr-10 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:bg-zinc-800 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all";
 
   return (
     <div className="relative w-full">
       <svg 
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
-        width="18" 
-        height="18" 
+        className="absolute left-2 sm:left-2.5 md:left-3 top-1/2 -translate-y-1/2 text-gray-400" 
+        width="14" 
+        height="14" 
         viewBox="0 0 24 24" 
         fill="none" 
         stroke="currentColor" 
@@ -30,7 +30,7 @@ function SearchBar({ value, onChange, placeholder = "Search...", attachedButton 
       />
       {value && (
         <button 
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors text-lg"
+          className="absolute right-2 sm:right-2.5 md:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors text-sm sm:text-base md:text-lg"
           onClick={handleClear}
           aria-label="Clear search"
         >

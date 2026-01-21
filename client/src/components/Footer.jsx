@@ -6,7 +6,13 @@ function Footer() {
 
   return (
     <footer className="bg-neutral-900 border-t border-neutral-800 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      {/* Mobile Footer - Hidden */}
+      <div className="hidden">
+      </div>
+
+      {/* Desktop Footer - Full Version */}
+      <div className="hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Footer Top */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div className="lg:col-span-2">
@@ -91,6 +97,7 @@ function Footer() {
             <a href="#security" className="hover:text-gray-200 transition-colors">Security</a>
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );

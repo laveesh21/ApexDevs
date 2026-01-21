@@ -27,6 +27,15 @@ function Homepage() {
     fetchProjects();
   }, [currentPage, searchQuery, selectedTech, sortBy]);
 
+  // Listen for mobile filter toggle event
+  useEffect(() => {
+    const handleToggleFilters = () => {
+      setShowMobileFilters(prev => !prev);
+    };
+    window.addEventListener('toggleMobileFilters', handleToggleFilters);
+    return () => window.removeEventListener('toggleMobileFilters', handleToggleFilters);
+  }, []);
+
   const fetchProjects = async () => {
     setLoading(true);
     try {
@@ -177,15 +186,15 @@ function Homepage() {
       <div className={`flex-1 transition-all duration-300 ${
         isFilterCollapsed ? 'md:ml-16' : 'md:ml-72'
       }`}>
-        {/* Mobile Filter Button */}
+
+        {/* Floating Add Project Button - Mobile Only */}
         <button
-          onClick={() => setShowMobileFilters(true)}
-          className="md:hidden fixed bottom-4 right-4 z-40 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all"
+          onClick={() => setShowProjectForm(true)}
+          className="md:hidden fixed bottom-20 right-4 z-30 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all"
+          aria-label="Add Project"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="18" x2="20" y2="18"/>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         </button>
 
@@ -211,7 +220,7 @@ function Homepage() {
           }
         />
 
-        <div className="max-w-6xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
+        <div className="max-w-6xl mx-auto py-2 sm:py-4 md:py-8 px-1 sm:px-2 md:px-4">
           <ActiveFilters
             selectedTags={selectedTech}
             onRemoveTag={handleRemoveTech}
@@ -231,10 +240,10 @@ function Homepage() {
               </div>
             ) : (
               <>
-                <div className="mb-6 text-sm sm:text-base text-gray-400">
+                <div className="mb-4 sm:mb-6 text-xs sm:text-sm md:text-base text-gray-400">
                   Showing {projects.length} of {totalProjects} {totalProjects === 1 ? 'project' : 'projects'}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
                   {projects.map(project => (
                     <ProjectCard key={project._id} project={project} />
                   ))}
