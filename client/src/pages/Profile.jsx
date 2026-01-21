@@ -282,61 +282,61 @@ function Profile() {
               </div>
 
               <div className="flex-1 mt-14 sm:mt-0">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
                   <div>
-                    <h1 className="text-2xl font-bold text-white">{userInfo.username}</h1>
-                    <p className="text-sm text-gray-500">{userInfo.email}</p>
+                    <h1 className="text-xl sm:text-2xl font-bold text-white">{userInfo.username}</h1>
+                    <p className="text-xs sm:text-sm text-gray-500">{userInfo.email}</p>
                   </div>
                 </div>
                 
                 {userInfo.briefBio && (
-                  <p className="text-gray-400 text-sm mt-3 leading-relaxed">{userInfo.briefBio}</p>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-2 sm:mt-3 leading-relaxed">{userInfo.briefBio}</p>
                 )}
 
                 {/* Stats Row */}
-                <div className="flex flex-wrap gap-3 mt-6 items-center justify-between">
-                  <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6 items-center justify-between">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
                     <Link 
                       to="/profile/connections?tab=followers" 
-                      className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
+                      className="group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
                     >
-                    <span className="text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
-                    <span className="text-xs text-gray-400 uppercase tracking-wider group-hover:text-gray-100 transition-colors flex items-center gap-1">
+                    <span className="text-base sm:text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followersCount || user?.followers?.length || 0}</span>
+                    <span className="text-xs text-gray-400 uppercase tracking-wide group-hover:text-gray-100 transition-colors flex items-center gap-0.5 sm:gap-1">
                         Followers
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </span>
                     </Link>
                     <Link 
                       to="/profile/connections?tab=following" 
-                      className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
+                      className="group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-neutral-700/50 bg-neutral-800/30 hover:bg-neutral-700/50 hover:border-neutral-600 transition-all"
                     >
-                    <span className="text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followingCount || user?.following?.length || 0}</span>
-                    <span className="text-xs text-gray-400 uppercase tracking-wider group-hover:text-gray-100 transition-colors flex items-center gap-1">
+                    <span className="text-base sm:text-lg font-bold text-white group-hover:text-gray-100 transition-colors">{freshUserData?.followingCount || user?.following?.length || 0}</span>
+                    <span className="text-xs text-gray-400 uppercase tracking-wide group-hover:text-gray-100 transition-colors flex items-center gap-0.5 sm:gap-1">
                         Following
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </span>
                     </Link>
-                    <div className="flex items-center gap-2 px-3 py-2">
-                      <span className="text-lg font-bold text-white">{userProjects.length}</span>
-                      <span className="text-xs text-gray-400 uppercase tracking-wider">Projects</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2">
+                      <span className="text-base sm:text-lg font-bold text-white">{userProjects.length}</span>
+                      <span className="text-xs text-gray-400 uppercase tracking-wide">Projects</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-2">
-                      <span className="text-lg font-bold text-white">{userThreads.length}</span>
-                      <span className="text-xs text-gray-500 uppercase tracking-wider">Threads</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2">
+                      <span className="text-base sm:text-lg font-bold text-white">{userThreads.length}</span>
+                      <span className="text-xs text-gray-500 uppercase tracking-wide">Threads</span>
                     </div>
                   </div>
                   
                   {/* Action Buttons - Right Side */}
-                  <div className="flex flex-wrap gap-2">
-                    <Link to="/profile/edit" className="px-4 py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-sm font-medium rounded-lg transition-colors">
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
+                    <Link to="/profile/edit" className="px-3 sm:px-4 py-1.5 sm:py-2 bg-primary hover:bg-primary/90 border border-primary text-white text-xs sm:text-sm font-medium rounded-lg transition-colors text-center">
                       Edit Profile
                     </Link>
                     {(user?.id || user?._id) && (
-                      <Link to={`/user/${user.id || user._id}?preview=true`} className="px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 text-sm font-medium rounded-lg transition-all">
+                      <Link to={`/user/${user.id || user._id}?preview=true`} className="px-3 sm:px-4 py-1.5 sm:py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 text-gray-300 text-xs sm:text-sm font-medium rounded-lg transition-all text-center">
                         View Public
                       </Link>
                     )}
@@ -349,12 +349,12 @@ function Profile() {
 
         {error && <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">{error}</div>}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-3 sm:mb-4 lg:mb-6">
           {/* Left Column - About Section */}
           <div className="lg:col-span-3">
-            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-lg font-bold text-white">About</h2>
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4 sm:mb-5">
+                <h2 className="text-base sm:text-lg font-bold text-white">About</h2>
               </div>
               {isEditing ? (
                 <form className="space-y-4">
@@ -568,24 +568,24 @@ function Profile() {
 
           {/* Right Column - Stats Card */}
           <div>
-            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-5 sticky top-20">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Stats</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-gray-400">Projects</span>
-                  <span className="text-lg font-bold text-gray-400">{userProjects.length}</span>
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4 sm:p-5 lg:sticky lg:top-20">
+              <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-3 sm:mb-4">Stats</h3>
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex justify-between items-center py-1.5 sm:py-2">
+                  <span className="text-xs sm:text-sm text-gray-400">Projects</span>
+                  <span className="text-base sm:text-lg font-bold text-gray-400">{userProjects.length}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
-                  <span className="text-sm text-gray-400">Threads</span>
-                  <span className="text-lg font-bold text-gray-400">{userThreads.length}</span>
+                <div className="flex justify-between items-center py-1.5 sm:py-2 border-t border-neutral-700/50">
+                  <span className="text-xs sm:text-sm text-gray-400">Threads</span>
+                  <span className="text-base sm:text-lg font-bold text-gray-400">{userThreads.length}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
-                  <span className="text-sm text-gray-400">Reputation</span>
-                  <span className="text-lg font-bold text-gray-400">{user?.reputation || 0}</span>
+                <div className="flex justify-between items-center py-1.5 sm:py-2 border-t border-neutral-700/50">
+                  <span className="text-xs sm:text-sm text-gray-400">Reputation</span>
+                  <span className="text-base sm:text-lg font-bold text-gray-400">{user?.reputation || 0}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-neutral-700/50">
-                  <span className="text-sm text-gray-400">Joined</span>
-                  <span className="text-sm font-medium text-gray-400">
+                <div className="flex justify-between items-center py-1.5 sm:py-2 border-t border-neutral-700/50">
+                  <span className="text-xs sm:text-sm text-gray-400">Joined</span>
+                  <span className="text-xs sm:text-sm font-medium text-gray-400">
                     {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { 
                       month: 'short', 
                       year: 'numeric' 
@@ -600,35 +600,32 @@ function Profile() {
         {/* Projects & Threads Section */}
         <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl overflow-hidden">
           {/* Tab Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-700">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-neutral-700 gap-3">
             <div className="flex gap-1">
               <Button
                 variant={activeTab === 'projects' ? 'zinc_secondary_no_border' : 'ghost'}
-                size="md"
+                size="sm"
                 onClick={() => setActiveTab('projects')}
               >
                 Projects
-                <span className="ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userProjects.length}</span>
+                <span className="ml-1.5 sm:ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userProjects.length}</span>
               </Button>
               <Button
                 variant={activeTab === 'threads' ? 'zinc_secondary_no_border' : 'ghost'}
-                size="md"
+                size="sm"
                 onClick={() => setActiveTab('threads')}
               >
                 Threads
-                <span className="ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userThreads.length}</span>
+                <span className="ml-1.5 sm:ml-2 px-1.5 py-0.5 rounded text-xs font-bold bg-black/20">{userThreads.length}</span>
               </Button>
             </div>
             {activeTab === 'projects' ? (
               <Button
                 variant="primary"
-                size="md"
+                size="sm"
                 onClick={() => setShowProjectForm(true)}
-                icon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                }
+                icon={<svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>}
+                className="w-full sm:w-auto"
               >
                 New Project
               </Button>
@@ -636,12 +633,9 @@ function Profile() {
               <Button
                 to="/community"
                 variant="primary"
-                size="md"
-                icon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                }
+                size="sm"
+                icon={<svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>}
+                className="w-full sm:w-auto"
               >
                 New Thread
               </Button>
@@ -649,32 +643,32 @@ function Profile() {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div className="p-3 sm:p-4 md:p-6">
             {activeTab === 'projects' ? (
               projectsLoading ? (
-                <div className="flex flex-col items-center justify-center py-16">
+                <div className="flex flex-col items-center justify-center py-12 sm:py-16">
                   <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
                   <p className="text-gray-500 mt-4 text-sm">Loading projects...</p>
                 </div>
               ) : userProjects.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="w-16 h-16 rounded-full bg-neutral-700/50 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center py-12 sm:py-16">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-neutral-700/50 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">No projects yet</h3>
-                  <p className="text-gray-500 text-sm mb-6">Showcase your work by uploading your first project</p>
+                  <h3 className="text-base sm:text-lg font-bold text-white mb-2">No projects yet</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6">Showcase your work by uploading your first project</p>
                   <Button
                     variant="primary"
-                    size="lg"
+                    size="md"
                     onClick={() => setShowProjectForm(true)}
                   >
                     Upload Project
                   </Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
                   {userProjects.map((project) => (
                     <ProjectCard 
                       key={project._id} 

@@ -13,6 +13,7 @@ function Homepage() {
   const [selectedTech, setSelectedTech] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
   const [isFilterCollapsed, setIsFilterCollapsed] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,10 +127,68 @@ function Homepage() {
         </SidebarSection>
       </Sidebar>
 
+      {/* Mobile Filter Drawer Overlay */}
+      {showMobileFilters && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={() => setShowMobileFilters(false)}
+        />
+      )}
+
+      {/* Mobile Filter Drawer */}
+      <div className={`fixed top-0 left-0 bottom-0 w-72 bg-neutral-900 border-r border-neutral-700 z-50 transform transition-transform duration-300 md:hidden overflow-y-auto ${
+        showMobileFilters ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between p-4 border-b border-neutral-800 sticky top-0 bg-neutral-900">
+          <h2 className="text-xl font-bold text-white">Filters</h2>
+          <button 
+            onClick={() => setShowMobileFilters(false)}
+            className="text-gray-400 hover:text-white transition-colors p-2"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-6">
+          <SidebarSection title="Sort By">
+            <SortFilter
+              sortBy={sortBy} 
+              onSortChange={setSortBy}
+              options={[
+                { value: 'newest', label: 'Newest First' },
+                { value: 'oldest', label: 'Oldest First' },
+                { value: 'popular', label: 'Most Popular' },
+                { value: 'views', label: 'Most Viewed' }
+              ]}
+            />
+          </SidebarSection>
+          
+          <SidebarSection title="Tech Stack" showDivider>
+            <TechStackFilter 
+              selectedTech={selectedTech} 
+              onTechChange={setSelectedTech}
+            />
+          </SidebarSection>
+        </div>
+      </div>
+
       {/* Main Content - Adjusted with left margin */}
       <div className={`flex-1 transition-all duration-300 ${
-        isFilterCollapsed ? 'ml-16' : 'ml-72'
+        isFilterCollapsed ? 'md:ml-16' : 'md:ml-72'
       }`}>
+        {/* Mobile Filter Button */}
+        <button
+          onClick={() => setShowMobileFilters(true)}
+          className="md:hidden fixed bottom-4 right-4 z-40 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+          </svg>
+        </button>
+
         <PageHeader
           title="Discover Amazing Projects"
           description="Browse through developer projects and get inspired"
@@ -152,7 +211,7 @@ function Homepage() {
           }
         />
 
-        <div className="max-w-6xl mx-auto py-8 px-4">
+        <div className="max-w-6xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
           <ActiveFilters
             selectedTags={selectedTech}
             onRemoveTag={handleRemoveTech}
@@ -167,15 +226,15 @@ function Homepage() {
               </div>
             ) : projects.length === 0 ? (
               <div className="text-center py-20">
-                <h2 className="text-2xl font-bold text-white mb-2">No projects found</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">No projects found</h2>
                 <p className="text-gray-400">Try adjusting your filters to see more results</p>
               </div>
             ) : (
               <>
-                <div className="mb-6 text-gray-400">
+                <div className="mb-6 text-sm sm:text-base text-gray-400">
                   Showing {projects.length} of {totalProjects} {totalProjects === 1 ? 'project' : 'projects'}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {projects.map(project => (
                     <ProjectCard key={project._id} project={project} />
                   ))}

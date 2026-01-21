@@ -33,7 +33,7 @@ function DiscussionCard({ discussion }) {
   return (
     <Link 
       to={`/thread/${discussion._id}`} 
-      className="flex gap-4 bg-neutral-800 border border-neutral-600 rounded-xl p-5 hover:border-primary/50 transition-all group"
+      className="flex flex-col sm:flex-row gap-3 sm:gap-4 bg-neutral-800 border border-neutral-600 rounded-xl p-4 sm:p-5 hover:border-primary/50 transition-all group"
     >
       <VoteCounter
         score={voteScore}
@@ -45,11 +45,11 @@ function DiscussionCard({ discussion }) {
       />
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-start gap-3 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 mb-3">
           <Tag variant={getCategoryVariant(discussion.category)} size="sm">
             {discussion.category}
           </Tag>
-          <h3 className="text-xl font-bold text-white group-hover:text-green-500 transition-colors line-clamp-2 flex-1">
+          <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-green-500 transition-colors line-clamp-2 flex-1">
             {discussion.title}
           </h3>
         </div>

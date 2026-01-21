@@ -41,8 +41,8 @@ function ProjectCard({ project, showEditButton = false, onEdit }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <div className="p-5">
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{project.title}</h3>
+      <div className="p-4 sm:p-5">
+        <h3 className="text-lg sm:text-xl font-bold text-white mb-2 line-clamp-1">{project.title}</h3>
         <p className="text-gray-400 text-sm mb-4 line-clamp-2 min-h-[5rem]">{project.description}</p>
         <div className="mb-4">
           <AuthorAvatar 

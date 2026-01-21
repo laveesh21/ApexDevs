@@ -34,14 +34,14 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl max-w-md w-full animate-scale-up" onClick={(e) => e.stopPropagation()}>
-        <div className={`flex items-center justify-between p-6 border-b border-neutral-600 ${
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className={`flex items-center justify-between p-4 sm:p-6 border-b border-neutral-600 ${
           type === 'error' ? 'bg-red-500/10' : 
           type === 'warning' ? 'bg-yellow-500/10' : 
           type === 'success' ? 'bg-primary/10' : ''
         }`}>
-          <h3 className="text-xl font-semibold text-gray-100">{title}</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-100">{title}</h3>
           <button 
             className="text-gray-500 hover:text-gray-300 text-2xl leading-none transition-colors"
             onClick={onClose}
@@ -50,11 +50,11 @@ function Modal({ isOpen, onClose, title, message, type = 'info', confirmText, ca
           </button>
         </div>
         
-        <div className="p-6">
-          <p className="text-gray-300 leading-relaxed">{message}</p>
+        <div className="p-4 sm:p-6">
+          <p className="text-sm sm:text-base text-gray-300 leading-relaxed">{message}</p>
         </div>
         
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-neutral-600 bg-neutral-700/30">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t border-neutral-600 bg-neutral-700/30">
           {onConfirm ? (
             <>
               <button 

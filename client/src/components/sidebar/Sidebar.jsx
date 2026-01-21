@@ -8,7 +8,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, title = "Sidebar", children })
   return (
     <aside className={`fixed left-0 top-0 bottom-0 transition-all duration-300 z-40 ${
       isCollapsed ? 'w-16' : 'w-72'
-    } bg-neutral-900 border-r border-neutral-700`}>
+    } bg-neutral-900 border-r border-neutral-700 hidden md:block`}>
       {isCollapsed ? (
         <div className="h-full flex items-start justify-center pt-4">
           <button 

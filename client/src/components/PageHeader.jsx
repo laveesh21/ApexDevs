@@ -15,16 +15,16 @@ function PageHeader({
   };
 
   return (
-    <div className="bg-neutral-900 border-b border-neutral-800 py-6 px-4">
+    <div className="bg-neutral-900 border-b border-neutral-800 py-4 sm:py-6 px-2 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between gap-4 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">{title}</h1>
-            <p className="text-gray-400 text-sm">{description}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">{title}</h1>
+            <p className="text-gray-400 text-xs sm:text-sm">{description}</p>
           </div>
         </div>
-        <div className="flex gap-3 items-start">
-          <div className="flex-1 flex gap-0">
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
+          <div className="flex-1 flex gap-0 w-full">
             <div className="flex-1">
               <SearchBar
                 value={searchValue}
@@ -48,7 +48,7 @@ function PageHeader({
             />
           </div>
           {actionButton && (
-            <div className="ml-3">
+            <div className="w-full sm:w-auto sm:ml-3">
               {actionButton}
             </div>
           )}

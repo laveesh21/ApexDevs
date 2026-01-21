@@ -12,6 +12,7 @@ import { Tag, Button } from '../components/ui';
 function Community() {
   const { token } = useAuth();
   const [isFilterCollapsed, setIsFilterCollapsed] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewDiscussionForm, setShowNewDiscussionForm] = useState(false);
   const [discussions, setDiscussions] = useState([]);
@@ -174,10 +175,82 @@ function Community() {
         </SidebarSection>
       </Sidebar>
 
+      {/* Mobile Filter Drawer Overlay */}
+      {showMobileFilters && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={() => setShowMobileFilters(false)}
+        />
+      )}
+
+      {/* Mobile Filter Drawer */}
+      <div className={`fixed top-0 left-0 bottom-0 w-72 bg-neutral-900 border-r border-neutral-700 z-50 transform transition-transform duration-300 md:hidden overflow-y-auto ${
+        showMobileFilters ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between p-4 border-b border-neutral-800 sticky top-0 bg-neutral-900">
+          <h2 className="text-xl font-bold text-white">Filters</h2>
+          <button 
+            onClick={() => setShowMobileFilters(false)}
+            className="text-gray-400 hover:text-white transition-colors p-2"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-6">
+          <SidebarSection title="Sort By">
+            <SortFilter 
+              sortBy={filters.sort} 
+              onSortChange={handleSortChange}
+              options={[
+                { value: 'newest', label: 'Newest First' },
+                { value: 'popular', label: 'Most Popular' },
+                { value: 'trending', label: 'Trending' }
+              ]}
+            />
+          </SidebarSection>
+          
+          <SidebarSection title="Category" showDivider>
+            <CategoryFilter 
+              selectedCategory={filters.category} 
+              onCategoryChange={handleCategoryChange}
+              categories={[
+                { value: 'All', label: 'All Categories' },
+                { value: 'General', label: 'General Discussion' },
+                { value: 'Help', label: 'Help & Support' },
+                { value: 'Showcase', label: 'Project Showcase' },
+                { value: 'Feedback', label: 'Feedback' }
+              ]}
+            />
+          </SidebarSection>
+
+          <SidebarSection title="Tags" showDivider>
+            <TagFilter 
+              selectedTags={filters.tags} 
+              onTagChange={handleTagChange}
+              tags={['React', 'JavaScript', 'Python', 'TypeScript', 'Node.js', 'Tutorial', 'Question', 'Discussion', 'Bug', 'Feature']}
+            />
+          </SidebarSection>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className={`flex-1 transition-all duration-300 ${
-        isFilterCollapsed ? 'ml-16' : 'ml-72'
+        isFilterCollapsed ? 'md:ml-16' : 'md:ml-72'
       }`}>
+        {/* Mobile Filter Button */}
+        <button
+          onClick={() => setShowMobileFilters(true)}
+          className="md:hidden fixed bottom-4 right-4 z-40 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+          </svg>
+        </button>
+
         <PageHeader
           title="Community Discussions"
           description="Ask questions, share knowledge, and help fellow developers"
@@ -200,19 +273,19 @@ function Community() {
           }
         />
 
-        <div className="max-w-6xl mx-auto py-8 px-4">
+        <div className="max-w-6xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
           <ActiveFilters
             selectedTags={filters.tags}
             onRemoveTag={handleRemoveTag}
             label="Filtered by"
           />
           
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
                 {filters.category === 'All' ? 'All Discussions' : filters.category}
               </h2>
-              <span className="px-3 py-1 bg-neutral-700 text-gray-400 rounded-full text-sm">({filteredDiscussions.length})</span>
+              <span className="px-2 py-0.5 sm:py-1 bg-neutral-700 text-gray-400 rounded-full text-xs">({filteredDiscussions.length})</span>
             </div>
           </div>
           {loading ? (

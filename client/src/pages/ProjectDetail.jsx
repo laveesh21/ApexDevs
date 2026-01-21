@@ -231,10 +231,10 @@ function ProjectDetail() {
   const isOwner = user && project.author && userId === authorId;
 
   return (
-    <div className="min-h-screen bg-neutral-900 py-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen bg-neutral-900 py-4 sm:py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6">
         {/* Breadcrumb */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-600">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 pb-4 border-b border-neutral-600 gap-3">
           <div className="flex items-center gap-2 text-sm">
             <Link to="/" className="text-gray-400 hover:text-gray-200 transition-colors">Home</Link>
             <span className="text-gray-600">/</span>
@@ -273,7 +273,7 @@ function ProjectDetail() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-4">
             {/* Hero Section */}

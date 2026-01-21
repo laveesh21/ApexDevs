@@ -369,11 +369,11 @@ function ThreadDetail() {
 
   return (
     <div className="min-h-screen bg-neutral-900">
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Back Button */}
         <Link 
           to="/community" 
-          className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-200 mb-6 transition-colors group"
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-200 mb-4 sm:mb-6 transition-colors group"
         >
           <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -381,16 +381,16 @@ function ThreadDetail() {
           <span className="text-sm font-medium">Back to Community</span>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
             {/* Thread Card */}
             <div className="bg-neutral-800 border border-neutral-700 rounded-xl overflow-hidden">
-              <div className="p-6">
-                <div className="mb-6">
+              <div className="p-4 sm:p-6">
+                <div className="mb-4 sm:mb-6">
                   {/* Category and Actions */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)}`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)} w-fit`}>
                       {thread.category}
                     </span>
                     {isThreadAuthor(thread.author) && (
@@ -420,7 +420,7 @@ function ThreadDetail() {
                   </div>
 
                   {/* Title */}
-                  <h1 className="text-3xl font-bold text-white mb-4 leading-tight">{thread.title}</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">{thread.title}</h1>
 
                   {/* Content */}
                   <div className="prose prose-invert prose-sm max-w-none">

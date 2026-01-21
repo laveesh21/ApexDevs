@@ -151,11 +151,11 @@ function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 py-8 px-4">
+    <div className="min-h-screen bg-neutral-900 py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Settings</h1>
-          <p className="text-gray-400 mt-2">Manage your account preferences and privacy</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Settings</h1>
+          <p className="text-gray-400 mt-2 text-sm sm:text-base">Manage your account preferences and privacy</p>
         </div>
 
         {message.text && (
@@ -175,10 +175,10 @@ function Settings() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Tabs */}
           <div className="lg:col-span-1">
-            <div className="bg-neutral-800/50 backdrop-blur-sm border border-neutral-700 rounded-xl p-2 space-y-1 sticky top-4">
+            <div className="bg-neutral-800/50 backdrop-blur-sm border border-neutral-700 rounded-xl p-2 space-y-1 lg:sticky lg:top-4 mb-4 lg:mb-0">
               <button
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   activeTab === 'profile' 
