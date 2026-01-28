@@ -38,7 +38,7 @@ function AuthorAvatar({
   };
   
   const textSizes = {
-    xs: 'text-[10px]',
+    xs: 'text-[12px]',
     sm: 'text-sm',
     md: 'text-sm',
     lg: 'text-base',

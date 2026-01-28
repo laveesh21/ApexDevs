@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI, projectAPI, threadAPI } from '../services/api';
 import ProjectCard from '../components/ProjectCard';
+import ProjectCardMobile from '../components/ProjectCardMobile';
+import ProfileMobile from '../components/ProfileMobile';
 import DiscussionCard from '../components/DiscussionCard';
 import NewProjectForm from '../components/NewProjectForm';
 import EditProjectForm from '../components/EditProjectForm';
@@ -211,6 +213,22 @@ function Profile() {
     setEditingProject(project);
   };
 
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm('Are you sure you want to delete this project?')) {
+      return;
+    }
+    
+    try {
+      await projectAPI.delete(projectId, token);
+      // Refresh projects list
+      const response = await projectAPI.getAll({ userId: user._id }, token);
+      setUserProjects(response.data.projects);
+    } catch (err) {
+      console.error('Failed to delete project:', err);
+      alert('Failed to delete project. Please try again.');
+    }
+  };
+
   const handleCloseEditForm = () => {
     setEditingProject(null);
   };
@@ -232,8 +250,27 @@ function Profile() {
   const selectedAvatar = getSelectedAvatar(user);
 
   return (
-    <div className="min-h-screen bg-neutral-900 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-neutral-900">
+      {/* Mobile View */}
+      <ProfileMobile
+        user={user}
+        freshUserData={freshUserData}
+        userInfo={userInfo}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        projectsLoading={projectsLoading}
+        threadsLoading={threadsLoading}
+        userProjects={userProjects}
+        userThreads={userThreads}
+        handleEditProject={handleEditProject}
+        setShowProjectForm={setShowProjectForm}
+        navigate={navigate}
+        handleAvatarChange={handleAvatarChange}
+        uploadingAvatar={uploadingAvatar}
+      />
+
+      {/* Desktop View */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {/* Profile Header - Compact Design */}
         <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl overflow-hidden mb-6">
           {/* Cover Banner - Cool geometric pattern */}
@@ -668,16 +705,31 @@ function Profile() {
                   </Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
-                  {userProjects.map((project) => (
-                    <ProjectCard 
-                      key={project._id} 
-                      project={project} 
-                      showEditButton={true}
-                      onEdit={handleEditProject}
-                    />
-                  ))}
-                </div>
+                <>
+                  {/* Mobile: 2 column grid */}
+                  <div className="md:hidden grid grid-cols-2 gap-1.5">
+                    {userProjects.map((project) => (
+                      <ProjectCardMobile 
+                        key={project._id} 
+                        project={project} 
+                        showEditButton={true}
+                        onEdit={handleEditProject}
+                      />
+                    ))}
+                  </div>
+                  {/* Desktop: Single column list */}
+                  <div className="hidden md:flex md:flex-col md:gap-4">
+                    {userProjects.map((project) => (
+                      <ProjectCard 
+                        key={project._id} 
+                        project={project} 
+                        showEditButton={true}
+                        onEdit={handleEditProject}
+                        onDelete={handleDeleteProject}
+                      />
+                    ))}
+                  </div>
+                </>
               )
             ) : (
               threadsLoading ? (
@@ -708,22 +760,22 @@ function Profile() {
             )}
           </div>
         </div>
-
-        {showProjectForm && (
-          <NewProjectForm
-            onClose={() => setShowProjectForm(false)}
-            onSuccess={fetchUserProjects}
-          />
-        )}
-
-        {editingProject && (
-          <EditProjectForm
-            project={editingProject}
-            onClose={handleCloseEditForm}
-            onSuccess={fetchUserProjects}
-          />
-        )}
       </div>
+
+      {showProjectForm && (
+        <NewProjectForm
+          onClose={() => setShowProjectForm(false)}
+          onSuccess={fetchUserProjects}
+        />
+      )}
+
+      {editingProject && (
+        <EditProjectForm
+          project={editingProject}
+          onClose={handleCloseEditForm}
+          onSuccess={fetchUserProjects}
+        />
+      )}
     </div>
   );
 }

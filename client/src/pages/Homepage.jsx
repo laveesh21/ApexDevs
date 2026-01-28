@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectCard from '../components/ProjectCard';
+import ProjectCardMobile from '../components/ProjectCardMobile';
 import ActiveFilters from '../components/ActiveFilters';
 import { Sidebar, SidebarSection, SortFilter, TechStackFilter } from '../components/sidebar';
 import SearchBar from '../components/SearchBar';
@@ -184,7 +185,7 @@ function Homepage() {
 
       {/* Main Content - Adjusted with left margin */}
       <div className={`flex-1 transition-all duration-300 ${
-        isFilterCollapsed ? 'md:ml-16' : 'md:ml-72'
+        isFilterCollapsed ? 'md:ml-16' : 'md:ml-48 lg:ml-64 xl:ml-72'
       }`}>
 
         {/* Floating Add Project Button - Mobile Only */}
@@ -243,7 +244,14 @@ function Homepage() {
                 <div className="mb-4 sm:mb-6 text-xs sm:text-sm md:text-base text-gray-400">
                   Showing {projects.length} of {totalProjects} {totalProjects === 1 ? 'project' : 'projects'}
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
+                {/* Mobile: 2 column grid */}
+                <div className="md:hidden grid grid-cols-2 gap-1.5">
+                  {projects.map(project => (
+                    <ProjectCardMobile key={project._id} project={project} />
+                  ))}
+                </div>
+                {/* Desktop: Single column list */}
+                <div className="hidden md:flex md:flex-col md:gap-4">
                   {projects.map(project => (
                     <ProjectCard key={project._id} project={project} />
                   ))}

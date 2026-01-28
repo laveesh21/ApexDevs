@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AuthorAvatar } from './ui';
+import OptionsMenu from './OptionsMenu';
 
 function ReviewSection({ 
   reviews, 
@@ -13,7 +14,8 @@ function ReviewSection({
   showReviewForm,
   setShowReviewForm,
   reviewFormData,
-  setReviewFormData
+  setReviewFormData,
+  currentUserId
 }) {
   return (
     <div className="bg-neutral-800/50 border border-neutral-700 rounded-2xl p-8">
@@ -36,73 +38,37 @@ function ReviewSection({
       </div>
 
       {/* Review Actions */}
-      {!isOwner && (
+      {!isOwner && !userReview && (
         <div className="mb-8">
-          {userReview ? (
-            <div className="bg-neutral-800 border border-neutral-700 rounded-xl p-6">
-              <div className="flex items-start gap-4 mb-4">
-                <div className={`p-2 rounded-lg ${userReview.rating === 'like' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
-                  {userReview.rating === 'like' ? (
-                    <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-6 h-6 text-red-500 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                    </svg>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className="text-white font-semibold mb-1">Your Review</p>
-                  {userReview.comment && <p className="text-gray-400">{userReview.comment}</p>}
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button 
-                  className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 rounded-lg transition-colors text-sm font-medium"
-                  onClick={() => setShowReviewForm(true)}
-                >
-                  Edit
-                </button>
-                <button 
-                  className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg transition-colors text-sm font-medium"
-                  onClick={onDeleteReview}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-3">
-              <button 
-                className="flex items-center gap-2 px-6 py-3 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 rounded-xl transition-all font-medium"
-                onClick={() => onQuickReview('like')}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                </svg>
-                Helpful
-              </button>
-              <button 
-                className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl transition-all font-medium"
-                onClick={() => onQuickReview('dislike')}
-              >
-                <svg className="w-5 h-5 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                </svg>
-                Not Helpful
-              </button>
-              <button 
-                className="flex items-center gap-2 px-6 py-3 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 rounded-xl transition-all font-medium"
-                onClick={() => setShowReviewForm(true)}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Write Review
-              </button>
-            </div>
-          )}
+          <div className="flex flex-wrap gap-3">
+            <button 
+              className="flex items-center gap-2 px-6 py-3 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 rounded-xl transition-all font-medium"
+              onClick={() => onQuickReview('like')}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+              </svg>
+              Helpful
+            </button>
+            <button 
+              className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl transition-all font-medium"
+              onClick={() => onQuickReview('dislike')}
+            >
+              <svg className="w-5 h-5 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+              </svg>
+              Not Helpful
+            </button>
+            <button 
+              className="flex items-center gap-2 px-6 py-3 bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 text-gray-300 rounded-xl transition-all font-medium"
+              onClick={() => setShowReviewForm(true)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Write Review
+            </button>
+          </div>
         </div>
       )}
 
@@ -174,56 +140,79 @@ function ReviewSection({
       {/* Reviews List */}
       {reviews.length > 0 ? (
         <div className="space-y-3">
-          {reviews.map((review) => (
-            <div key={review._id} className="flex items-start gap-3 py-4 border-b border-neutral-700/50 last:border-0 hover:bg-neutral-800/30 px-4 -mx-4 rounded-lg transition-colors">
-              <div className="flex-shrink-0">
-                <AuthorAvatar
-                  author={review.user}
-                  size="sm"
-                  clickable={!!review.user?._id}
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-gray-200 text-sm">
-                    {review.user?.username || 'Anonymous'}
-                  </span>
-                  <span className="text-xs text-gray-500">•</span>
-                  <span className="text-xs text-gray-500">
-                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                  <div className={`ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                    review.rating === 'like' 
-                      ? 'bg-green-500/10 text-green-500' 
-                      : 'bg-red-500/10 text-red-500'
-                  }`}>
-                    {review.rating === 'like' ? (
-                      <>
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                        </svg>
-                        Helpful
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-3 h-3 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                        </svg>
-                        Not Helpful
-                      </>
+          {reviews.map((review) => {
+            const isOwnReview = review.user?._id === currentUserId || review.user?.id === currentUserId;
+            
+            return (
+              <div key={review._id} className="flex items-start gap-3 py-4 border-b border-neutral-700/50 last:border-0 hover:bg-neutral-800/30 px-4 -mx-4 rounded-lg transition-colors">
+                <div className="flex-shrink-0">
+                  <AuthorAvatar
+                    author={review.user}
+                    size="sm"
+                    clickable={!!review.user?._id}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-gray-200 text-sm">
+                      {review.user?.username || 'Anonymous'}
+                    </span>
+                    <span className="text-xs text-gray-500">•</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(review.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </span>
+                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                      review.rating === 'like' 
+                        ? 'bg-green-500/10 text-green-500' 
+                        : 'bg-red-500/10 text-red-500'
+                    }`}>
+                      {review.rating === 'like' ? (
+                        <>
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                          </svg>
+                          Helpful
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3 h-3 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                          </svg>
+                          Not Helpful
+                        </>
+                      )}
+                    </div>
+                    {isOwnReview && (
+                      <div className="ml-auto">
+                        <OptionsMenu
+                          options={[
+                            {
+                              label: 'Edit',
+                              onClick: () => setShowReviewForm(true),
+                              icon: 'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z'
+                            },
+                            {
+                              label: 'Delete',
+                              onClick: onDeleteReview,
+                              icon: 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 6h18',
+                              danger: true
+                            }
+                          ]}
+                        />
+                      </div>
                     )}
                   </div>
+                  {review.comment && (
+                    <p className="text-sm text-gray-400 leading-relaxed mt-1">{review.comment}</p>
+                  )}
                 </div>
-                {review.comment && (
-                  <p className="text-sm text-gray-400 leading-relaxed mt-1">{review.comment}</p>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         !isOwner && !userReview && (

@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import ThreadSidebar from '../components/ThreadSidebar';
 import CommentsSection from '../components/CommentsSection';
 import NewDiscussionForm from '../components/NewDiscussionForm';
+import OptionsMenu from '../components/OptionsMenu';
 import { Tag, Button, VoteCounter } from '../components/ui';
 
 function ThreadDetail() {
@@ -389,35 +390,26 @@ function ThreadDetail() {
               <div className="p-2 sm:p-4 md:p-6">
                 <div className="mb-2 sm:mb-4 md:mb-6">
                   {/* Category and Actions */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 sm:mb-3 md:mb-4 gap-2 sm:gap-3">
+                  <div className="flex  sm:items-center justify-between mb-2 sm:mb-3 md:mb-4 gap-2 sm:gap-3">
                     <span className={`px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 md:py-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold text-white uppercase tracking-wide ${getCategoryColor(thread.category)} inline-block w-fit`}>
                       {thread.category}
                     </span>
                     {isThreadAuthor(thread.author) && (
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <Button
-                          variant="secondary"
-                          size="xs"
-                          className="sm:text-sm md:text-base"
-                          onClick={handleEditClick}
-                        >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="xs"
-                          className="sm:text-sm md:text-base"
-                          onClick={handleDelete}
-                        >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                          Delete
-                        </Button>
-                      </div>
+                      <OptionsMenu
+                        options={[
+                          {
+                            label: 'Edit',
+                            onClick: handleEditClick,
+                            icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                          },
+                          {
+                            label: 'Delete',
+                            onClick: handleDelete,
+                            icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
+                            danger: true
+                          }
+                        ]}
+                      />
                     )}
                   </div>
 

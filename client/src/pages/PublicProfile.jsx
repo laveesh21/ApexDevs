@@ -425,7 +425,7 @@ function PublicProfile() {
         {/* Content Area */}
         <div className="p-4 border-t border-neutral-700 mt-4">
           {activeTab === 'projects' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-4">
               {projects.length > 0 ? (
                 projects.map(project => (
                   <ProjectCard key={project._id} project={project} />

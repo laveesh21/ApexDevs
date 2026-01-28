@@ -246,7 +246,7 @@ function Community() {
 
       {/* Main Content */}
       <div className={`flex-1 transition-all duration-300 ${
-        isFilterCollapsed ? 'md:ml-16' : 'md:ml-72'
+        isFilterCollapsed ? 'md:ml-16' : 'md:ml-48 lg:ml-64 xl:ml-72'
       }`}>
 
         {/* Floating New Thread Button - Mobile Only */}
